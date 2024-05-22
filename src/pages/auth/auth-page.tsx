@@ -1,19 +1,63 @@
-import { Input } from "@components/ui/input";
-import { useAuth } from "@lib/hooks/useAuth";
+import { Button } from "@components/ui/button"
+import { Input } from "@components/ui/input"
+import { Label } from "@components/ui/label"
 
 export default function AuthPage() {
-
-  const {register} = useAuth();
   return (
-    <div className='font-restart w-screen h-screen flex'>
-      <div className="w-[55%] h-[100%] bg-slate-400 rounded-e-3xl">
-      </div>
-      <div className="w-[45%] h-[100%]">
-        <div className="">
-          <p className="text-3xl font-normal text-center">Hello Again!</p>
-          <p className="font-light text-sm text-center text-gray-600">Welcome back you've been missed</p>
-    
+    <div className="w-screen h-screen lg:grid lg:grid-cols-2">
+      <div className="flex items-center justify-center py-12">
+        <div className="mx-auto grid w-[350px] gap-6">
+          <div className="grid gap-2 text-center">
+            <h1 className="text-3xl font-bold">Welcome Back!</h1>
+            <p className="text-balance text-muted-foreground">
+              Enter your email below to login to your account
+            </p>
+          </div>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+                <a
+                  href="/forgot-password"
+                  className="ml-auto inline-block text-sm underline"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+              <Input id="password" type="password" required />
+            </div>
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+            <Button variant="outline" className="w-full">
+              Login with Google
+            </Button>
+          </div>
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{" "}
+            <a href="#" className="underline">
+              Sign up
+            </a>
+          </div>
         </div>
+      </div>
+      <div className="hidden bg-muted lg:block">
+        <img
+          src="/placeholder.svg"
+          alt="Image"
+          width="1920"
+          height="1080"
+          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        />
       </div>
     </div>
   )
