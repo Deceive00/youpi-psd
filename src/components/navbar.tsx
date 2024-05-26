@@ -1,6 +1,6 @@
 import logo from "@assets/logo/default-logo.png";
 import blank from "@assets/logo/blankprofpic.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@components/ui/button";
 import { AuthContext } from "src/context/auth-context";
 import { useContext } from "react";
@@ -10,6 +10,7 @@ type props = {
 };
 
 const Navbar = ({ className = "bg-transparent" }: props) => {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   return (
@@ -33,8 +34,8 @@ const Navbar = ({ className = "bg-transparent" }: props) => {
           />
         ) : (
           <div className="flex gap-2">
-            <Button>Login</Button>
-            <Button>Register</Button>
+            <Button onClick={() => navigate("/auth")}>Login</Button>
+            <Button onClick={() => navigate("/auth")}>Register</Button>
           </div>
         )}
       </div>
