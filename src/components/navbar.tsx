@@ -14,7 +14,7 @@ const Navbar = ({ className = "bg-transparent" }: props) => {
 
   return (
     <div
-      className={`${className} flex justify-between w-full shadow-md p-3 px-8 items-center h-14`}
+      className={`${className} flex justify-between w-full shadow-md p-3 px-8 items-center h-14 z-1000`}
     >
       <div className="flex py-1 gap-8 items-center justify-center h-full">
         <img src={logo} className="h-5" alt="" />
