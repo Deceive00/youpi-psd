@@ -10,7 +10,7 @@ type props = {
 
 const Navbar = ({ className = "bg-transparent" }: props) => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div
@@ -18,13 +18,10 @@ const Navbar = ({ className = "bg-transparent" }: props) => {
     >
       <div className="flex py-1 gap-8 items-center justify-center h-full">
         <img src={logo} className="h-5" alt="" />
-        <Link to="">Order</Link>
+        <Link to="/order">Order</Link>
         <Link to="">About</Link>
         <Link to="">History</Link>
-        <Button onClick={() => logout()}>Logout</Button>
       </div>
-      {/* <div className="flex py-1 gap-5 items-center justify-center">
-      </div> */}
       <div className="flex gap-8 items-center justify-center h-full">
         {user ? (
           <img
@@ -34,7 +31,12 @@ const Navbar = ({ className = "bg-transparent" }: props) => {
           />
         ) : (
           <div className="flex gap-2">
-            <Button className="rounded-md" onClick={() => navigate("/auth")}>Login</Button>
+            <Button
+              className="rounded-md font-nunito font-bold"
+              onClick={() => navigate("/auth")}
+            >
+              Login
+            </Button>
           </div>
         )}
       </div>
