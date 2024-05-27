@@ -70,7 +70,7 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px]"
+      className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px] mt-16 overflow-scroll"
     >
       <div className="grid gap-2">
         <h1 className="text-4xl font-extrabold">Sign Up</h1>
@@ -78,7 +78,7 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
           Create an account by filling in the information below
         </p>
       </div>
-      <div className="grid gap-5 lg:grid-cols-2 lg:gap-4">
+      <div className="lg:grid gap-5 flex flex-col lg:grid-cols-2 lg:gap-4">
         <Controller
           name="nim"
           control={control}
@@ -217,7 +217,7 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
       >
         Sign Up
       </Button>
-      <div className="mt-4 text-center text-sm">
+      <div className="mb-4 text-center text-sm">
         Already have an account?{" "}
         <a
           href="#"

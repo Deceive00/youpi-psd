@@ -23,7 +23,7 @@ export default function AuthPage() {
   };
   return (
     <AuthMiddleware>
-      <div className="w-screen h-screen lg:items-start lg:justify-start font-nunito flex items-center justify-center ">
+      <div className="w-screen h-screen lg:items-start lg:justify-start font-nunito flex items-center justify-center">
         <div
           className={`hidden lg:block ${
             mode === "login" ? "lg:w-[65%]" : "lg:w-[55%]"
@@ -36,7 +36,7 @@ export default function AuthPage() {
           />
         </div>
         <div
-          className={`flex items-center justify-center py-12 ${
+          className={`flex h-full w-full items-center justify-center overflow-y-scroll ${
             mode === "login" ? "lg:w-[35%]" : "lg:w-[45%]"
           } lg:p-[5%] h-full transition-all duration-300 ${
             transitioning ? "opacity-0" : "opacity-100"

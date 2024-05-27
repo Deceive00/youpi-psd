@@ -156,19 +156,21 @@ export default function AuthContextProvider({
         isSender: false,
         ...userRegisData,
       });
-      return userCredential;
+      return successCallback;
     },
     {
-      onSuccess: (userCredential) => {
-        if (userCredential.user) {
-          fetchUserData(userCredential.user.uid);
-        }
-        console.log("User created:", userCredential.user);
-        toast({
-          title: "Register Successful!",
-          description: "Your account has been created",
-          variant: "success",
-        })
+      onSuccess: (successCallback) => {
+        console.log(successCallback);
+        // if (userCredential.user) {
+          //   fetchUserData(userCredential.user.uid);
+          // }
+          // console.log("User created:", userCredential.user);
+          toast({
+            title: "Register Successful!",
+            description: "Your account has been created",
+            variant: "success",
+          })
+          successCallback();
       },
       onError: (error: any) => {
         console.error("Error creating user:", error.message);

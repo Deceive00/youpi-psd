@@ -1,3 +1,4 @@
+import Loader from "@components/loading/loader";
 import { useAuth } from "@lib/hooks/useAuth";
 import { AuthState } from "@lib/types/user-types";
 import { ReactNode, Suspense, useEffect } from "react";
@@ -21,10 +22,10 @@ export default function AuthMiddleware({ children }: AuthMiddlewareProps) {
   if (isLoading) {
     return (
       <div className="w-[100vw] h-[100vh] flex justify-center items-center">
-        {/* <div className="font-bold text-5xl">Loading</div> */}
+        <Loader/>
       </div>
     );
   }
 
-  return <Suspense fallback={<>Loading</>}>{children}</Suspense>;
+  return <Suspense fallback={<Loader/>}>{children}</Suspense>;
 }

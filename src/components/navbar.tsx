@@ -10,7 +10,7 @@ type props = {
 
 const Navbar = ({ className = "bg-transparent" }: props) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <div
@@ -24,11 +24,19 @@ const Navbar = ({ className = "bg-transparent" }: props) => {
       </div>
       <div className="flex gap-8 items-center justify-center h-full">
         {user ? (
-          <img
-            className="w-9 h-9 object-cover rounded-3xl"
-            src={blank}
-            alt=""
-          />
+          <>
+            <img
+              className="w-9 h-9 object-cover rounded-3xl"
+              src={blank}
+              alt=""
+            />
+            <Button
+              className="rounded-md font-nunito font-bold"
+              onClick={() => logout()}
+            >
+              Log Out
+            </Button>
+          </>
         ) : (
           <div className="flex gap-2">
             <Button
