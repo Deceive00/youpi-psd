@@ -20,16 +20,23 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
 
   const onSubmit = (data: any) => {
     console.log(data);
-    register({
-      nim: data.nim,
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      dob: data.dob,
-      confirmationPassword: data.confirmationPassword,
-      phoneNumber: data.phoneNumber,
-      password: data.password,
-    } as UserRegis);
+    register(
+      {
+        userRegisData: {
+          nim: data.nim,
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          dob: data.dob,
+          confirmationPassword: data.confirmationPassword,
+          phoneNumber: data.phoneNumber,
+          password: data.password,
+        } as UserRegis,
+        successCallback: () => {
+          changeMode("login");
+        },
+      }
+    );
   };
 
   if (Object.keys(errors).length > 0 && errorMsg === null) {

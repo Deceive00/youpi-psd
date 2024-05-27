@@ -27,7 +27,7 @@ export type AuthContextType = {
     password: string;
   }) => any;
   logout: () => Promise<void>;
-  register: (userRegisData: UserRegis) => any;
+  register: ({userRegisData, successCallback} : {userRegisData: UserRegis, successCallback : any}) => any;
   isLoading: boolean;
 };
 
@@ -134,6 +134,7 @@ export default function AuthContextProvider({
         toast({
           title: "Login Failed",
           description: "Something went wrong",
+          variant: "error",
         })
         throw error;
       },
@@ -144,16 +145,16 @@ export default function AuthContextProvider({
     mutate: register,
     isLoading: createLoading,
   } = useMutation(
-    async (userData: UserRegis) => {
+    async ({userRegisData, successCallback} : {userRegisData: UserRegis, successCallback : any}) => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        userData.email,
-        userData.password
+        userRegisData.email,
+        userRegisData.password
       );
       const userRef = doc(db, "users", userCredential.user.uid);
       await setDoc(userRef, {
         isSender: false,
-        ...userData,
+        ...userRegisData,
       });
       return userCredential;
     },
@@ -163,9 +164,19 @@ export default function AuthContextProvider({
           fetchUserData(userCredential.user.uid);
         }
         console.log("User created:", userCredential.user);
+        toast({
+          title: "Register Successful!",
+          description: "Your account has been created",
+          variant: "success",
+        })
       },
       onError: (error: any) => {
         console.error("Error creating user:", error.message);
+        toast({
+          title: "Register Failed",
+          description: "Something went wrong",
+          variant: "error",
+        })
         throw error;
       },
     }

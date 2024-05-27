@@ -4,6 +4,9 @@ import { buttonVariants } from "@components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { Controller, useForm } from "react-hook-form";
 import { useAuth } from "@lib/hooks/useAuth";
+import { SeedVendor } from "src/seeder/vendor-seeder";
+import { useEffect, useState } from "react";
+import { useToast } from "@components/ui/use-toast";
 
 interface LoginSubPageProps {
   changeMode: any;
@@ -15,7 +18,29 @@ export default function LoginSubPage({ changeMode }: LoginSubPageProps) {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { toast } = useToast();
   const { login } = useAuth();
+  const [errorMsg, setErrorMsg] = useState<null | {title : string, description : string, variant : string}>(null);
+
+  if (Object.keys(errors).length > 0 && errorMsg === null) {
+    Object.values(errors).forEach((error) => {
+      if (error && error.message) {
+        setErrorMsg({
+          title: "Form Validation Error",
+          description: error.message as string,
+          variant: "error",
+        })
+      }
+    });
+  }
+
+  useEffect(() => {
+    if(errorMsg !== null) {
+      // @ts-ignore
+      let { id } = toast(errorMsg)
+      
+    }
+  }, [errorMsg]);
 
   const submitLogin = async (data: any) => {
     await login({
@@ -30,6 +55,7 @@ export default function LoginSubPage({ changeMode }: LoginSubPageProps) {
       className="mx-auto grid w-[350px] gap-6"
     >
       <div className="grid gap-2">
+        {/* <Button onClick={() => SeedVendor()}>Seed Vendor</Button> */}
         <h1 className="text-4xl font-extrabold">Welcome Back !</h1>
         <p className="text-balance text-muted-foreground pb-4">
           Continue with Google or enter your credentials
@@ -84,7 +110,7 @@ export default function LoginSubPage({ changeMode }: LoginSubPageProps) {
         >
           Forgot password?
         </a>
-        <Button type="submit" className="w-full font-bold h-12">
+        <Button type="submit" className="w-full font-bold h-12" onClick={() => setErrorMsg(null)}>
           Log In
         </Button>
         <div className="flex flex-row items-center justify-between">
