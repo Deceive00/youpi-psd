@@ -2,8 +2,37 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import MainLayout from "src/layout/main-layout";
 import { IoLocationSharp } from "react-icons/io5";
+import { collection, doc, getDocs } from "firebase/firestore";
+import { db } from "src/firebase/firebase-config";
+import { useEffect, useState } from "react";
+import RestaurantCard from "./restaurant-card";
 
 export default function Order() {
+  const [restaurantData, setRestaurantData] = useState([] as any[]);
+
+  const fetchRestaurantData = async () => {
+    try {
+      const restaurantDoc = await getDocs(collection(db, "campus"));
+      if (restaurantDoc) {
+        setRestaurantData(
+          restaurantDoc.docs.map((doc) => {
+            console.log(doc.data());
+            return doc.data();
+          })
+        );
+        // restaurantDoc.docs.map((doc) => {
+        //   console.log(doc.data());
+        // });
+      }
+    } catch (error) {
+      console.log("Error fetching restaurant data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurantData();
+  }, []);
+
   return (
     <MainLayout className={"pt-14 sm:pt-16"}>
       <div className="w-full font-nunito">
@@ -33,13 +62,26 @@ export default function Order() {
               </Button>
             </div>
           </div>
-          <div className="mt-16 w-full h-full flex flex-col items-center">
-            <div className="text-3xl font-bold">
+          <div className="mt-28 sm:mt-16 w-full h-full flex flex-col items-center px-4 ">
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold">
               We've got <span className="text-red-500">restaurants</span>{" "}
               waiting for your order
             </div>
-            <div className="w-full h-full flex flex-col items-center justify-center">
-              asd
+            <div className="w-full  h-[80%] flex flex-col items-center justify-start">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 h-[80%] items-center justify-center mt-6 sm:mt-10">
+                {restaurantData.length > 0 &&
+                  restaurantData
+                    .flatMap((restaurant) => restaurant.vendors)
+                    .map((vendor, index) => (
+                      <RestaurantCard vendor={vendor} key={index} />
+                    ))}
+                {restaurantData.length > 0 &&
+                  restaurantData
+                    .flatMap((restaurant) => restaurant.vendors)
+                    .map((vendor, index) => (
+                      <RestaurantCard vendor={vendor} key={index} />
+                    ))}
+              </div>
             </div>
           </div>
         </div>

@@ -41,7 +41,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         />
         <span
           className={cn(
-            "absolute left-3 px-1 transition-all duration-300 font-nunito z-50 text-ellipsis overflow-hidden max-h-6",
+            "absolute left-3 px-1 transition-all duration-300 font-nunito z-3 text-ellipsis overflow-hidden max-h-6",
             {
               "top-[28%] opacity-50 text-black": !focused && !props.value,
               "top-0 left-2 -translate-y-1/2 text-orange-500 bg-white px-1 text-sm":
