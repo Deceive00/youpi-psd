@@ -1,4 +1,5 @@
 import Navbar from "@components/navbar";
+import { useAuth } from "@lib/hooks/useAuth";
 import React, { ReactNode } from "react";
 type Props = {
   children: ReactNode;
@@ -7,6 +8,10 @@ type Props = {
 };
 
 const MainLayout: React.FC<Props> = ({ children, className = "p-6" }) => {
+  const {isLoading} = useAuth();
+  if(isLoading){
+    return <div>Loadinggggg</div>
+  }
   return (
     <>
       <div className={` fixed z-40 w-screen`}>

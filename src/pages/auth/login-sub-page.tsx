@@ -1,30 +1,81 @@
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { buttonVariants } from "@components/ui/button"
+import { buttonVariants } from "@components/ui/button";
 import { FcGoogle } from "react-icons/fc";
-interface LoginSubPageProps{
+import { Controller, useForm } from "react-hook-form";
+import { useAuth } from "@lib/hooks/useAuth";
+
+interface LoginSubPageProps {
   changeMode: any;
-};
-export default function LoginSubPage({changeMode} : LoginSubPageProps) {
+}
+
+export default function LoginSubPage({ changeMode }: LoginSubPageProps) {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { login } = useAuth();
+
+  const submitLogin = async (data: any) => {
+    await login({
+      email: data.email,
+      password: data.password,
+    });
+  };
+
   return (
-    <div className="mx-auto grid w-[350px] gap-6">
+    <form
+      onSubmit={handleSubmit(submitLogin)}
+      className="mx-auto grid w-[350px] gap-6"
+    >
       <div className="grid gap-2">
         <h1 className="text-4xl font-extrabold">Welcome Back !</h1>
         <p className="text-balance text-muted-foreground pb-4">
-          Continue with google or enter your credentials
+          Continue with Google or enter your credentials
         </p>
       </div>
       <div className="grid gap-5">
         <div className="grid gap-2">
-          <Input id="email" type="email" required placeholder="Email" />
+          <Controller
+            name="email"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                message: "Invalid email address",
+              },
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                id="email"
+                type="email"
+                required
+                placeholder="Email"
+              />
+            )}
+          />
         </div>
         <div className="grid gap-2">
-          <div className="flex items-center"></div>
-          <Input
-            id="password"
-            type="password"
-            required
-            placeholder="Password"
+          <Controller
+            name="password"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: "Password is required",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                id="password"
+                type="password"
+                required
+                placeholder="Password"
+              />
+            )}
           />
         </div>
         <a
@@ -42,7 +93,6 @@ export default function LoginSubPage({changeMode} : LoginSubPageProps) {
           <div className="bg-muted-foreground h-[1px] w-[30%]"></div>
         </div>
         <Button
-          type="submit"
           className={`${buttonVariants({
             variant: "outline",
           })} w-full text-black h-12 flex flex-row gap-1`}
@@ -52,11 +102,15 @@ export default function LoginSubPage({changeMode} : LoginSubPageProps) {
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">
-        Don&apos;t have an account ?{" "}
-        <a href="#" className="orange-text-color font-semibold underline" onClick={() => changeMode('register')}>
+        Don&apos;t have an account?{" "}
+        <a
+          href="#"
+          className="orange-text-color font-semibold underline"
+          onClick={() => changeMode("register")}
+        >
           Sign up for free
         </a>
       </div>
-    </div>
+    </form>
   );
 }

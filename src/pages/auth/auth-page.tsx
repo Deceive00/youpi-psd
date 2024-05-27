@@ -1,8 +1,7 @@
 import { useState } from "react";
 import LoginSubPage from "./login-sub-page";
 import RegisterSubPage from "./register-sub-page";
-import { resolve } from "path";
-
+import { Toaster } from "@components/ui/toaster";
 export default function AuthPage() {
   const [mode, setMode] = useState('login');
   const [transitioning, setTransitioning] = useState(false);
@@ -20,7 +19,7 @@ export default function AuthPage() {
     }
     else if(mode === 'register'){
       return <RegisterSubPage changeMode={handleModeChange}/>
-    }
+    } 
   }
   return (
     <div className="w-screen h-screen lg:items-start lg:justify-start font-nunito flex items-center justify-center ">
@@ -32,8 +31,9 @@ export default function AuthPage() {
         />
       </div>
       <div className={`flex items-center justify-center py-12 lg:${mode === 'login' ? 'w-[35%]' : 'w-[60%]'} lg:p-[5%] h-full transition-all duration-300 ${transitioning ? 'opacity-0' : 'opacity-100'}`}>
-        {transitioning ? null : renderSubPage()}
+        {renderSubPage()}
       </div>
+      <Toaster/>
     </div>
   );
 }

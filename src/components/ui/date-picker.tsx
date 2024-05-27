@@ -1,23 +1,18 @@
-import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-
 import { cn } from "@lib/utils/cn";
 import { Button } from "@components/ui/button";
 import { Calendar } from "@components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 
-interface DatepickerProps{
+interface DatepickerProps {
+  value: Date | null;
+  onChange: (date: Date | null) => void;
   placeholder: string;
   className?: string;
 }
-export function DatePicker({placeholder, className} : DatepickerProps) {
-  const [date, setDate] = React.useState<Date>();
 
+export function DatePicker({ value, onChange, placeholder, className }: DatepickerProps) {
   return (
     <div className={`relative ${className}`}>
       <Popover>
@@ -26,19 +21,19 @@ export function DatePicker({placeholder, className} : DatepickerProps) {
             variant={"outline"}
             className={cn(
               "justify-start text-left font-nunito flex h-14 w-full rounded-lg border border-gray-400 bg-background px-3 py-6 text-sm ring-offset-background outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-transparent focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:border-orange-500",
-              !date && "text-muted-foreground"
+              !value && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : <span>Pick a date</span>}
+            {value ? format(value, "PPP") : <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={date}
+            selected={value || undefined}
             onSelect={(selectedDate) => {
-              setDate(selectedDate);
+              onChange(selectedDate || null);
             }}
             initialFocus
           />
@@ -47,7 +42,7 @@ export function DatePicker({placeholder, className} : DatepickerProps) {
       <span
         className={cn(
           "absolute left-3 px-1 transition-all duration-500 font-nunito z-50",
-            "top-0 left-2 -translate-y-1/2 text-orange-500 bg-white px-1 text-sm"
+          "top-0 left-2 -translate-y-1/2 text-orange-500 bg-white px-1 text-sm"
         )}
         style={{ pointerEvents: "none" }}
       >

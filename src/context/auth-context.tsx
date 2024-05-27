@@ -1,10 +1,17 @@
 import { AuthState, User, UserRegis } from "@lib/types/user-types";
-import { ReactNode, createContext, useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { ReactNode, createContext, useState, useEffect } from "react";
+import { useMutation } from "react-query";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db, auth } from "../firebase/firebase-config";
 import { queryClient } from "@lib/settings/query-settings";
+import { useToast } from "@components/ui/use-toast";
+
 interface AuthContextProviderProps {
   children: ReactNode;
 }
@@ -12,7 +19,13 @@ interface AuthContextProviderProps {
 export type AuthContextType = {
   user: User | null;
   authState: AuthState;
-  login: ({email, password} : {email : string, password: string}) => any;
+  login: ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => any;
   logout: () => Promise<void>;
   register: (userRegisData: UserRegis) => any;
   isLoading: boolean;
@@ -20,7 +33,7 @@ export type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
-  authState: AuthState.NotAuthenthicated,
+  authState: AuthState.NotAuthenticated,
   login: async () => {},
   logout: async () => {},
   register: async () => {},
@@ -30,52 +43,103 @@ export const AuthContext = createContext<AuthContextType>({
 export default function AuthContextProvider({
   children,
 }: AuthContextProviderProps) {
-
   const [user, setUser] = useState<User | null>(null);
-  const [authState, setAuthState] = useState<AuthState>(AuthState.NotAuthenthicated);
+  const [authState, setAuthState] = useState<AuthState>(
+    AuthState.NotAuthenticated
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { toast } = useToast();
 
-  const logout = () : Promise<void> => {
-    return new Promise((resolve, reject) => {
-      signOut(auth).then(() => {
-        console.log("Sign out succesful");
+  const fetchUserData = async (uid?: string) => {
+    if (!uid) return;
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as User;
+        setUser(userData);
+        setAuthState(AuthState.Authenticated);
+        queryClient.invalidateQueries(["userData"]);
+      } else {
+        throw new Error("No user data found");
+      }
+    } catch (error: any) {
+      console.error("Error fetching user data:", error.message);
+      setUser(null);
+      setAuthState(AuthState.NotAuthenticated);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData(auth?.currentUser?.uid);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        fetchUserData(currentUser.uid);
+      } else {
         setUser(null);
-        setAuthState(AuthState.NotAuthenthicated);
-        queryClient.invalidateQueries(['userData']);
-        resolve();
-        window.location.reload()
-      }).catch((logoutError) => {
-        console.log('Error logging out : ', logoutError);
-        reject(logoutError);
-      })
-    })
+        setAuthState(AuthState.NotAuthenticated);
+        setIsLoading(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const logout = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      signOut(auth)
+        .then(() => {
+          console.log("Sign out successful");
+          setUser(null);
+          setAuthState(AuthState.NotAuthenticated);
+          queryClient.invalidateQueries(["userData"]);
+          resolve();
+          window.location.reload();
+        })
+        .catch((logoutError) => {
+          console.log("Error logging out : ", logoutError);
+          reject(logoutError);
+        });
+    });
   };
 
   const {
     mutate: login,
     isLoading: loginLoading,
   } = useMutation(
-    async ({email, password} : {email : string, password: string}) => {
+    async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
       await signInWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
-      if(user){
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const userData = userDoc.data() as User;
-        setUser(userData);
-        queryClient.invalidateQueries(['userData']);
-      }
-      else{
-        throw new Error("Not authenticated")
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        fetchUserData(currentUser.uid);
+        console.log(currentUser);
       }
     },
     {
       onSuccess: () => {
-        console.log("User created succesfully");
+        console.log("User logged in successfully");
+        setAuthState(AuthState.Authenticated)
+        window.location.href = '/';
       },
       onError: (error: any) => {
-        console.error("Error creating user:", error.message);
+        console.log('tolong')
+        console.error("Error logging in user:", error.message);
+        setAuthState(AuthState.NotAuthenticated);
+        toast({
+          title: "Login Failed",
+          description: "Something went wrong",
+        })
+        throw error;
       },
     }
   );
+
   const {
     mutate: register,
     isLoading: createLoading,
@@ -87,46 +151,22 @@ export default function AuthContextProvider({
         userData.password
       );
       const userRef = doc(db, "users", userCredential.user.uid);
-      const res = await setDoc(userRef, {
+      await setDoc(userRef, {
         isSender: false,
         ...userData,
       });
-      return res;
+      return userCredential;
     },
     {
-      onSuccess: (user) => {
-        console.log("User created:", user);
+      onSuccess: (userCredential) => {
+        if (userCredential.user) {
+          fetchUserData(userCredential.user.uid);
+        }
+        console.log("User created:", userCredential.user);
       },
       onError: (error: any) => {
         console.error("Error creating user:", error.message);
-      },
-    }
-  );
-
-  const { isLoading } = useQuery(
-    ["userData"],
-    async () => {
-      if (auth.currentUser) {
-        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
-        if (userDoc.exists()) {
-          return userDoc.data() as User;
-        } else {
-          throw new Error("No user data found");
-        }
-      }
-      throw new Error("No current user");
-    
-    },
-    {
-      retry: false,
-      staleTime: 0,
-      onSuccess: (userData: User) => {
-        setUser(userData);
-        setAuthState(AuthState.Authenticated);
-      },
-      onError: (error: Error) => {
-        console.error("Error fetching user data:", error.message);
-        setAuthState(AuthState.NotAuthenthicated);
+        throw error;
       },
     }
   );

@@ -1,17 +1,48 @@
-import AddAvatar from "@components/pictures/add-avatar";
+import { useForm, Controller } from 'react-hook-form';
 import { Button } from "@components/ui/button";
 import { DatePicker } from "@components/ui/date-picker";
 import { Input } from "@components/ui/input";
-import defaultPP from '@assets/images/default.png';
+import { useToast } from '@components/ui/use-toast';
+import { useEffect } from 'react';
+import { useAuth } from '@lib/hooks/useAuth';
+import { UserRegis } from '@lib/types/user-types';
 
 interface RegisterSubPageProps {
-  changeMode: any;
+  changeMode: (mode: string) => void;
 }
 
 export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
-  
+  const { control, handleSubmit, formState: { errors } } = useForm();
+  const { toast } = useToast();
+  const { register } = useAuth();
+  const onSubmit = (data: any) => {
+    console.log(data);
+    register({
+      nim: data.nim,
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      dob: data.dob,
+      confirmationPassword: data.confirmationPassword,
+      phoneNumber: data.phoneNumber,
+      password:  data.password,
+    } as UserRegis)
+  };
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach(error => {
+        toast({
+          title: "Form Validation Error",
+          description: error?.message,
+          status: "error",
+        });
+      });
+    }
+  }, [errors, toast]);
+
   return (
-    <div className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px]">
+    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px]">
       <div className="grid gap-2">
         <h1 className="text-4xl font-extrabold">Sign Up</h1>
         <p className="text-balance text-muted-foreground pb-4">
@@ -19,12 +50,85 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
         </p>
       </div>
       <div className="grid gap-5 lg:grid-cols-2 lg:gap-4">
-        <Input id="nim" type="text" required placeholder="NIM" />
-        <Input id="email" type="email" required placeholder="Email" />
-        <Input id="firstName" type="text" required placeholder="First Name" />
-        <Input id="lastName" type="text" required placeholder="Last Name" />
-        <Input id="phoneNumber" type="tel" required placeholder="Phone Number" />
-        <DatePicker placeholder="Date Of Birth" className="col-span-2 lg:col-span-1"/>
+        <Controller
+          name="nim"
+          control={control}
+          defaultValue=""
+          rules={{ required: 'NIM is required' }}
+          render={({ field }) => <Input {...field} id="nim" type="text" required placeholder="NIM" />}
+        />
+        <Controller
+          name="email"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: 'Email is required',
+            pattern: {
+              value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+              message: 'Invalid email address'
+            }
+          }}
+          render={({ field }) => <Input {...field} id="email" type="email" required placeholder="Email" />}
+        />
+        <Controller
+          name="password"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: 'Password is required',
+          }}
+          render={({ field }) => <Input {...field} id="password" type="password" required placeholder="Password" />}
+        />
+        <Controller
+          name="confirmationPassword"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: 'Confirmation password is required',
+          }}
+          render={({ field }) => <Input {...field} id="confirmationPassword" type="password" required placeholder="Confirmation Password" />}
+        />
+        <Controller
+          name="firstName"
+          control={control}
+          defaultValue=""
+          rules={{ required: 'First name is required' }}
+          render={({ field }) => <Input {...field} id="firstName" type="text" required placeholder="First Name" />}
+        />
+        <Controller
+          name="lastName"
+          control={control}
+          defaultValue=""
+          rules={{ required: 'Last name is required' }}
+          render={({ field }) => <Input {...field} id="lastName" type="text" required placeholder="Last Name" />}
+        />
+        <Controller
+          name="phoneNumber"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: 'Phone number is required',
+            pattern: {
+              value: /^[0-9]+$/,
+              message: 'Phone number should only contain digits'
+            }
+          }}
+          render={({ field }) => <Input {...field} id="phoneNumber" type="tel" required placeholder="Phone Number" />}
+        />
+        <Controller
+          name="dob"
+          control={control}
+          defaultValue={null}
+          rules={{ required: 'Date of birth is required' }}
+          render={({ field }) => (
+            <DatePicker
+              value={field.value}
+              onChange={field.onChange}
+              placeholder="Date Of Birth"
+              className="col-span-2 lg:col-span-1"
+            />
+          )}
+        />
       </div>
       <Button type="submit" className="w-full font-bold h-12">
         Sign Up
@@ -35,6 +139,6 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
           Log In
         </a>
       </div>
-    </div>
+    </form>
   );
 }

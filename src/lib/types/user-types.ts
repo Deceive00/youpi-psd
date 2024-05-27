@@ -10,14 +10,18 @@ export interface User{
 
 export enum AuthState {
   Authenticated = "Authenticated",
-  NotAuthenthicated = "Not Authenticated",
+  NotAuthenticated = "Not Authenticated",
   Loading = "Loading",
 }
 
 export interface UserRegis{
   nim: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  dob: Date;
   phoneNumber: string;
   password: string;
+  confirmationPassword: string;
+  
 }
