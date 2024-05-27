@@ -7,8 +7,8 @@ interface RestaurantCardProps {
 
 export default function RestaurantCard({ vendor }: RestaurantCardProps) {
   return (
-    <div className="w-40 sm:w-60 xl:w-64 h-[275px] shadow-md rounded-lg hover:shadow-lg hover:-translate-y-1 hover:cursor-pointer transition-all duration-500 ease-in-out">
-      <div className="w-full h-[60%]">
+    <div className="w-52 md:w-60 xl:w-64 h-[250px] md:h-[275px] shadow-md rounded-lg hover:shadow-lg hover:-translate-y-1 hover:cursor-pointer transition-all duration-500 ease-in-out flex-shrink-0 border">
+      <div className="w-full h-[50%] md:h-[60%]">
         <img
           className="rounded-t-lg h-full w-full object-cover"
           src={vendor.coverImage}
@@ -23,7 +23,7 @@ export default function RestaurantCard({ vendor }: RestaurantCardProps) {
           </div>
           <div className="font-light">{vendor.review}+ ratings</div>
         </div>
-        <div className="flex bg-red-600 justify-between text-white w-[95%] sm:w-[65%] xl:w-[50%] p-1 px-2 rounded-md my-1">
+        <div className="flex bg-red-600 justify-between text-white w-[95%] md:w-[65%] xl:w-[50%] p-1 px-2 rounded-md my-1">
           <IoPricetag />
           <p className="text-xs">Rp. 25.000 off</p>
         </div>
