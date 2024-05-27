@@ -3,7 +3,7 @@ import { Button } from "@components/ui/button";
 import { DatePicker } from "@components/ui/date-picker";
 import { Input } from "@components/ui/input";
 import { useToast } from '@components/ui/use-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@lib/hooks/useAuth';
 import { UserRegis } from '@lib/types/user-types';
 
@@ -12,9 +12,12 @@ interface RegisterSubPageProps {
 }
 
 export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
-  const { control, handleSubmit, formState: { errors } } = useForm();
+  const { control, handleSubmit, formState: { errors }, watch } = useForm();
   const { toast } = useToast();
   const { register } = useAuth();
+  const [errorMsg, setErrorMsg] = useState<null | {title : string, description : string, variant : string}>(null);
+  const password = watch("password");
+
   const onSubmit = (data: any) => {
     console.log(data);
     register({
@@ -25,21 +28,29 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
       dob: data.dob,
       confirmationPassword: data.confirmationPassword,
       phoneNumber: data.phoneNumber,
-      password:  data.password,
-    } as UserRegis)
+      password: data.password,
+    } as UserRegis);
   };
 
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      Object.values(errors).forEach(error => {
-        toast({
+  if (Object.keys(errors).length > 0 && errorMsg === null) {
+    Object.values(errors).forEach((error) => {
+      if (error && error.message) {
+        setErrorMsg({
           title: "Form Validation Error",
-          description: error?.message,
-          status: "error",
-        });
-      });
+          description: error.message as string,
+          variant: "error",
+        })
+      }
+    });
+  }
+
+  useEffect(() => {
+    if(errorMsg !== null) {
+      // @ts-ignore
+      let { id } = toast(errorMsg)
+      
     }
-  }, [errors, toast]);
+  }, [errorMsg])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px]">
@@ -85,6 +96,7 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
           defaultValue=""
           rules={{
             required: 'Confirmation password is required',
+            validate: value => value === password || 'Passwords do not match'
           }}
           render={({ field }) => <Input {...field} id="confirmationPassword" type="password" required placeholder="Confirmation Password" />}
         />
@@ -130,7 +142,7 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
           )}
         />
       </div>
-      <Button type="submit" className="w-full font-bold h-12">
+      <Button type="submit" className="w-full font-bold h-12" onClick={() => setErrorMsg(null)}>
         Sign Up
       </Button>
       <div className="mt-4 text-center text-sm">
