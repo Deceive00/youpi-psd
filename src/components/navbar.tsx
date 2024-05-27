@@ -34,7 +34,7 @@ const Navbar = ({ className = "bg-transparent" }: props) => {
           />
         ) : (
           <div className="flex gap-2">
-            <Button onClick={() => navigate("/auth")}>Login</Button>
+            <Button className="rounded-md" onClick={() => navigate("/auth")}>Login</Button>
           </div>
         )}
       </div>
