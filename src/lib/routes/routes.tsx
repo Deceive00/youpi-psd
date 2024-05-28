@@ -1,3 +1,4 @@
+import About from '@pages/about/about';
 import AuthPage from '@pages/auth/auth-page';
 import LandingPage from '@pages/landing/landing-page';
 import Order from '@pages/order/order';
@@ -16,4 +17,8 @@ export const router = createBrowserRouter([
     path: '/order',
     element: <Order />,
   },
+  {
+    path: '/about',
+    element: <About/>
+  }
 ]);
