@@ -1,34 +1,11 @@
+import { Campus, Vendor } from "@lib/types/user-types";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "src/firebase/firebase-config";
 
 const DEFAULT_PASSWORD = "vendor123";
 const DEFAULT_IMAGE = "https://firebasestorage.googleapis.com/v0/b/dg-travelohi.appspot.com/o/434228032_387590770791800_8682384244587217201_n.jpeg?alt=media&token=ec92f6c2-8871-4965-b1d3-346bd34fbf33"
-interface Menu{
-  name: string;
-  description: string;
-  image: string;
-  price: Number;
-};
-interface MenuCategory{
-  name: string;
-  menus: Menu[];
-}
 
-interface Vendor{
-  email: string;
-  name: string;
-  coverImage: string;
-  rating: Number;
-  review: Number;
-  id: string;
-  categories: MenuCategory[];
-}
-
-interface Campus{
-  name: string;
-  vendors: Vendor[];
-}
 const campus: Campus[] = [
   {
     name: "BINUS Alam Sutera",

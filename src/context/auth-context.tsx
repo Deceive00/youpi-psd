@@ -67,7 +67,7 @@ export default function AuthContextProvider({
       setUser(null);
       setAuthState(AuthState.NotAuthenticated);
     } finally {
-      setIsLoading(false);
+      setIsLoading(false);  
     }
   };
 
