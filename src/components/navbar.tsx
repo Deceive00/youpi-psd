@@ -19,7 +19,7 @@ const Navbar = ({ className = "bg-transparent" }: props) => {
       <div className="flex py-1 gap-8 items-center justify-center h-full">
         <img src={logo} className="h-5" alt="" />
         <Link to="/order">Order</Link>
-        <Link to="">About</Link>
+        <Link to="/about">About</Link>
         <Link to="">History</Link>
       </div>
       <div className="flex gap-8 items-center justify-center h-full">
