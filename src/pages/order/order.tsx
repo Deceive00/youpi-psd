@@ -2,13 +2,32 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import MainLayout from "src/layout/main-layout";
 import { IoLocationSharp } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import RestaurantCard, { RestaurantCardSkeleton } from "./restaurant-card";
 import { useQuery } from "react-query";
 import { fetchRestaurantData } from "@lib/services/restaurant.service";
-
+import { LuChevronDown } from "react-icons/lu";
 export default function Order() {
   const [restaurantData, setRestaurantData] = useState([] as any[]);
+  const cardReferenceFade = useRef(null);
+
+  const [isIntersecting, setIntersecting] = useState(false)
+
+  const observer = useMemo(() => new IntersectionObserver(
+    ([entry]) => setIntersecting(entry.isIntersecting)
+  ), [cardReferenceFade])
+
+
+  useEffect(() => {
+    if(cardReferenceFade.current){
+      observer.observe(cardReferenceFade.current)
+    }
+    return () => {
+      if(cardReferenceFade.current){
+        observer.unobserve(cardReferenceFade.current)
+      }
+    }
+  }, []);
 
   const { isLoading } = useQuery(
     ["fetchRestaurantData"],
@@ -63,12 +82,12 @@ export default function Order() {
             </div>
           </div>
           <div className="mt-14 sm:mt-16 w-full h-auto flex flex-col items-center px-4 ">
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold">
+            <div className="mt-14 text-xl sm:text-2xl md:text-4xl font-bold">
               We've got <span className="text-red-500">restaurants</span>{" "}
               waiting for your order
             </div>
             <div className="w-full flex flex-col items-start md:items-center justify-start h-[300px] md:h-auto">
-              <div className="flex w-[95%] md:w-auto h-full md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 items-center justify-start md:justify-center mt-2 md:mt-8 overflow-x-auto overflow-y-hidden py-4">
+              <div className="flex w-[95%] md:w-auto h-full md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-center justify-start md:justify-center mt-2 md:mt-8 overflow-x-auto overflow-y-hidden py-4">
                 {isLoading && showSkeleton()}
                 {!isLoading && (
                   <>
@@ -88,8 +107,12 @@ export default function Order() {
                 )}
               </div>
             </div>
+            <div ref={cardReferenceFade} className="bg-transparent h-1 w-full"></div>
           </div>
         </div>
+        <div className="h-screen"></div>
+        <LuChevronDown className={`w-14 h-14 bottom-[2vh] right-4 fixed animate-bounce transition-all duration-1000 ${isIntersecting ? 'opacity-0' : 'opacity-100'} text-orange-500`} 
+       />
       </div>
     </MainLayout>
   );
