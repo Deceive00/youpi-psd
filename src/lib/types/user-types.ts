@@ -25,3 +25,29 @@ export interface UserRegis{
   confirmationPassword: string;
   
 }
+
+export interface Menu{
+  name: string;
+  description: string;
+  image: string;
+  price: Number;
+};
+export interface MenuCategory{
+  name: string;
+  menus: Menu[];
+}
+
+export interface Vendor{
+  email: string;
+  name: string;
+  coverImage: string;
+  rating: Number;
+  review: Number;
+  id: string;
+  categories: MenuCategory[];
+}
+
+export interface Campus{
+  name: string;
+  vendors: Vendor[];
+}
