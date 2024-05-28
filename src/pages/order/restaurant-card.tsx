@@ -1,10 +1,16 @@
+import { Skeleton } from "@components/ui/skeleton";
 import { IoIosStar } from "react-icons/io";
 import { IoPricetag } from "react-icons/io5";
 
 interface RestaurantCardProps {
   vendor: any;
 }
-
+export const RestaurantCardSkeleton = () =>{
+  return(
+      <Skeleton className='min-w-52 w-52 md:w-60 xl:w-64 h-[250px] md:h-[275px] bg-gray-200'>
+      </Skeleton>
+  );
+}
 export default function RestaurantCard({ vendor }: RestaurantCardProps) {
   return (
     <div className="w-52 md:w-60 xl:w-64 h-[250px] md:h-[275px] shadow-md rounded-lg hover:shadow-lg hover:-translate-y-1 hover:cursor-pointer transition-all duration-500 ease-in-out flex-shrink-0 border">

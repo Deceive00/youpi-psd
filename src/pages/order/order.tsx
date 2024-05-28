@@ -2,40 +2,40 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import MainLayout from "src/layout/main-layout";
 import { IoLocationSharp } from "react-icons/io5";
-import { collection, doc, getDocs } from "firebase/firestore";
-import { db } from "src/firebase/firebase-config";
-import { useEffect, useState } from "react";
-import RestaurantCard from "./restaurant-card";
+import { useState } from "react";
+import RestaurantCard, { RestaurantCardSkeleton } from "./restaurant-card";
+import { useQuery } from "react-query";
+import { fetchRestaurantData } from "@lib/services/restaurant.service";
 
 export default function Order() {
   const [restaurantData, setRestaurantData] = useState([] as any[]);
 
-  const fetchRestaurantData = async () => {
-    try {
-      const restaurantDoc = await getDocs(collection(db, "campus"));
-      if (restaurantDoc) {
+  const { isLoading } = useQuery(
+    ["fetchRestaurantData"],
+    () => fetchRestaurantData(),
+    {
+      onSuccess: (data) => {
         setRestaurantData(
-          restaurantDoc.docs.map((doc) => {
+          data.docs.map((doc) => {
             console.log(doc.data());
             return doc.data();
           })
         );
-        // restaurantDoc.docs.map((doc) => {
-        //   console.log(doc.data());
-        // });
-      }
-    } catch (error) {
-      console.log("Error fetching restaurant data: ", error);
+      },
+      onError: (error: any) => {
+        console.error("Restaurant fetch failed!", error);
+      },
     }
+  );
+
+  const showSkeleton = () => {
+    return Array.from({ length: 8 }).map((_, index) => (
+      <RestaurantCardSkeleton key={index} />
+    ));
   };
-
-  useEffect(() => {
-    fetchRestaurantData();
-  }, []);
-
   return (
     <MainLayout className={"pt-14 sm:pt-16"}>
-      <div className="w-full font-nunito">
+      <div className="w-full font-nunito ">
         <div className="px-0 md:px-6 sm:py-2 w-full flex justify-center items-center h-80 sm:h-[28rem]">
           <img
             className="sm:rounded-md h-full object-bottom object-cover w-full"
@@ -69,24 +69,25 @@ export default function Order() {
             </div>
             <div className="w-full flex flex-col items-start md:items-center justify-start h-[300px] md:h-auto">
               <div className="flex w-[95%] md:w-auto h-full md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 items-center justify-start md:justify-center mt-2 md:mt-8 overflow-x-auto overflow-y-hidden py-4">
-                {restaurantData.length > 0 &&
-                  restaurantData
-                    .flatMap((restaurant) => restaurant.vendors)
-                    .map((vendor, index) => (
-                      <RestaurantCard vendor={vendor} key={index} />
-                    ))}
-                {restaurantData.length > 0 &&
-                  restaurantData
-                    .flatMap((restaurant) => restaurant.vendors)
-                    .map((vendor, index) => (
-                      <RestaurantCard vendor={vendor} key={index} />
-                    ))}
+                {isLoading && showSkeleton()}
+                {!isLoading && (
+                  <>
+                    {restaurantData.length > 0 &&
+                      restaurantData
+                        .flatMap((restaurant) => restaurant.vendors)
+                        .map((vendor, index) => (
+                          <RestaurantCard vendor={vendor} key={index} />
+                        ))}
+                    {restaurantData.length > 0 &&
+                      restaurantData
+                        .flatMap((restaurant) => restaurant.vendors)
+                        .map((vendor, index) => (
+                          <RestaurantCard vendor={vendor} key={index} />
+                        ))}
+                  </>
+                )}
               </div>
             </div>
-          </div>
-          <div className="mt-10 h-screen w-full flex">
-            <div className="w-1/2 h-full bg-[#2B2929]"></div>
-            <div className="w-1/2 h-full bg-[#F1EFEF]"></div>
           </div>
         </div>
       </div>
