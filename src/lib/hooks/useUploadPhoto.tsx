@@ -3,16 +3,14 @@ import { storage } from 'src/firebase/firebase-config';
 
 
 const useUploadPhoto = () => {
-  const uploadPhoto = async (photo:File, parentPath:string) => {
+  const uploadPhoto = async (photo:File, path: string) => {
     if (!photo) return null;
 
-    const uniquePhotoName = `${photo.name}}`;
-    const fullPath = `${parentPath}/${uniquePhotoName}`;
-    const photoRef = ref(storage, fullPath);
+    const photoRef = ref(storage, path);
 
     await uploadBytes(photoRef, photo);
-    return fullPath;
-  };
+    return await getDownloadURL(photoRef);
+    };
 
   const getPhotoURL = async (path:string) => {
     const photoRef = ref(storage, path);

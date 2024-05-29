@@ -25,7 +25,7 @@ export function Combobox({value, onChange, placeholder, items, itemTitle}: Combo
   return (
 
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger  className="w-full h-full relative" onClick={()=>{setFocused(true)}} onFocus={()=>{setFocused(true)}} onBlur={()=>{setFocused(false)}}>
+      <SelectTrigger  className="w-full relative" onClick={()=>{setFocused(true)}} onFocus={()=>{setFocused(true)}} onBlur={()=>{setFocused(false)}}>
       <span
           className={cn(
             "absolute left-3 px-1 transition-all duration-300 font-nunito z-3 text-ellipsis overflow-hidden max-h-6",

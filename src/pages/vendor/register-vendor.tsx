@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { Toaster } from "@components/ui/toaster";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "src/firebase/firebase-config";
+import { VendorImgInput } from "@components/ui/vendor-image-input";
+import useUploadPhoto from "@lib/hooks/useUploadPhoto";
 
 export default function VendorRegisterPage() {
   const {
@@ -30,15 +32,29 @@ export default function VendorRegisterPage() {
     variant: string;
   }>(null);
   const password = watch("password");
-
-  const onSubmit = (data: any) => {
+  const { getPhotoURL, uploadPhoto } = useUploadPhoto();
+  const onSubmit = async (data: any) => {
+    const defaultPhoto =
+      "https://firebasestorage.googleapis.com/v0/b/youpi-92b43.appspot.com/o/default.png?alt=media&token=429db833-8c08-4045-8122-ad42130f2883";
+    let coverImageUrl: string = defaultPhoto;
     console.log(data);
+    if (data.coverImage) {
+      const ext = data.coverImage.name.split(".")[1];
+      console.log(data.coverImage.name);
+      const emailValue = data.email;
+      const fileName = `vendors/${data.campusName}/coverImage/${emailValue}.${ext}`;
+
+      coverImageUrl =
+        (await uploadPhoto(data.coverImage, fileName)) || defaultPhoto;
+    }
+    console.log(coverImageUrl);
+
     register({
       regisData: {
         campusName: data.campusName,
         email: data.email,
         name: data.vendorName,
-        coverImage: '',
+        coverImage: coverImageUrl,
         confirmationPassword: data.confirmationPassword,
         password: data.password,
       } as VendorRegis,
@@ -58,17 +74,17 @@ export default function VendorRegisterPage() {
     });
   }
 
-  async function getCampuses(){
+  async function getCampuses() {
     const snapshot = await getDocs(collection(db, "campus"));
-    let campuses : string[] = [];
-    if(!snapshot.empty){
-      snapshot.forEach((campus)=>{
+    let campuses: string[] = [];
+    if (!snapshot.empty) {
+      snapshot.forEach((campus) => {
         console.log(campus.data());
         campuses.push(campus.data().name);
-      })
+      });
     }
     setCampuses(campuses);
-  } 
+  }
 
   useEffect(() => {
     if (errorMsg !== null) {
@@ -77,9 +93,9 @@ export default function VendorRegisterPage() {
     }
   }, [errorMsg]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getCampuses();
-  }, [campuses])
+  }, [campuses]);
 
   return (
     <div className="w-screen h-screen lg:items-start lg:justify-start font-nunito flex items-center justify-center">
@@ -97,7 +113,7 @@ export default function VendorRegisterPage() {
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px] mt-16 overflow-scroll"
+          className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px] mt-6 overflow-scroll"
         >
           <div className="grid gap-2">
             <h1 className="text-4xl font-extrabold">Register as Vendor</h1>
@@ -105,21 +121,15 @@ export default function VendorRegisterPage() {
               Start selling your menus by filling the form below
             </p>
           </div>
-          {/* <Controller
-            name="vendorName"
+          <Controller
+            name="coverImage"
             control={control}
             defaultValue=""
-            rules={{ required: "Vendor name is required" }}
+            rules={{}}
             render={({ field }) => (
-              <Input
-                {...field}
-                id="vendorName"
-                type="text"
-                required
-                placeholder="Vendor Name"
-              />
+              <VendorImgInput value={field.value} onChange={field.onChange} />
             )}
-          /> */}
+          />
           <div className="lg:grid gap-5 flex flex-col lg:grid-cols-2 lg:gap-4">
             <Controller
               name="campusName"
@@ -132,7 +142,7 @@ export default function VendorRegisterPage() {
                   onChange={field.onChange}
                   placeholder="Campus Name"
                   itemTitle="Campus"
-                  items = {campuses}
+                  items={campuses}
                 />
               )}
             />
