@@ -3,6 +3,7 @@ import AuthPage from '@pages/auth/auth-page';
 import LandingPage from '@pages/landing/landing-page';
 import Order from '@pages/order/order-page';
 import VendorDetailPage from '@pages/vendor-detail/vendor-detail-page';
+import VendorRegisterPage from '@pages/vendor/register-vendor';
 import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter([
@@ -25,5 +26,9 @@ export const router = createBrowserRouter([
   {
     path: '/vendor/:campusId/:vendorId',
     element: <VendorDetailPage/>
+  },
+  {
+    path: '/auth/vendor',
+    element: <VendorRegisterPage/>
   }
 ]);

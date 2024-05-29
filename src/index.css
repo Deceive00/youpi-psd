@@ -115,11 +115,11 @@
   width: 4px;
 }
 ::-moz-selection { 
-  color: black;
+  color: #f56565;
   background: rgb(254 249 195);;
 }
 
 ::selection {
-  color: black;
+  color: #f56565;
   background: rgb(254 249 195);;
 }

@@ -4,9 +4,13 @@ import foodWhite from "@assets/images/food-white.png";
 import partnerImg from "@assets/images/partner.png";
 import vendorImg from "@assets/images/vendor.png";
 import { Button } from "@components/ui/button";
+import { UserType } from "@lib/types/user-types";
+import { useAuth } from "@lib/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const {userType} = useAuth();
+  const navigate = useNavigate();
   if(userType === UserType.VENDOR){
     // masukin ke dashboard vendor
   };
@@ -39,7 +43,7 @@ export default function LandingPage() {
               We assist 500,000+ Business Partners in multiplying sales,
               expanding reach, and growing with new technologies.
             </p>
-            <Button className="font-bold text">Learn More</Button>
+            <Button className="font-bold text" onClick={() => {navigate("/auth/vendor")}}>Learn More</Button>
           </div>
         </div>
       </div>
