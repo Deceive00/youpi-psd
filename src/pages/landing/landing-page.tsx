@@ -4,6 +4,8 @@ import foodWhite from "@assets/images/food-white.png";
 import partnerImg from "@assets/images/partner.png";
 import vendorImg from "@assets/images/vendor.png";
 import { Button } from "@components/ui/button";
+import { UserType } from "@lib/types/user-types";
+import { useAuth } from "@lib/hooks/useAuth";
 
 export default function LandingPage() {
   const {userType} = useAuth();

@@ -16,6 +16,7 @@ export interface Vendor{
   rating: Number;
   review: Number;
   id: string;
+  campusName: string;
   categories: MenuCategory[];
 }
 
