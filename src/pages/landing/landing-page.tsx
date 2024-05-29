@@ -1,8 +1,9 @@
 import MainLayout from "src/layout/main-layout";
 import foodBlack from "@assets/images/food-black.png";
-import foodWhite from "@assets/images/food-white2.png";
-import { useAuth } from "@lib/hooks/useAuth";
-import { UserType } from "@lib/types/user-types";
+import foodWhite from "@assets/images/food-white.png";
+import partnerImg from "@assets/images/partner.png";
+import vendorImg from "@assets/images/vendor.png";
+import { Button } from "@components/ui/button";
 
 export default function LandingPage() {
   const {userType} = useAuth();
@@ -11,6 +12,37 @@ export default function LandingPage() {
   };
   return (
     <MainLayout className={"bg-white pt-14"}>
+      <div className="w-full md:h-[80vh] flex flex-col gap-5 justify-center items-center font-nunito">
+        <div className="font-extrabold text-4xl p-10 pb-16 text-center">
+          Thrive with {""}
+          <span className="text-[#E68D3B]">You</span>
+          <span className="text-[#E81A1B]">Pi</span>: Unleash Your Potential.
+        </div>
+        <div className="mb-12 pb-10 px-10 sm:px-16 gap-20 md:gap-12 lg:px-24 lg:gap-20 w-full flex flex-col md:flex-row md:h-1/2 justify-center items-center">
+          <div className="gap-4 md:gap-0 relative sm:w-2/3 lg:w-1/3 h-full bg-white shadow-md rounded-lg p-12 pb-8 flex flex-col items-start justify-around hover:cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all ease-in-out duration-500">
+            <img src={partnerImg} className="absolute -top-7 w-16" />
+            <p className="font-bold text-2xl text-left w-full">
+              Join as a Delivery Partner
+            </p>
+            <p>
+              We are home to over 2 thounsand partner drivers in Southeast Asia,
+              who receive financial security and healthcare facilities.
+            </p>
+            <Button className="font-bold">Learn More</Button>
+          </div>
+          <div className="gap-4 md:gap-0 relative sm:w-2/3 lg:w-1/3 h-full bg-white shadow-md rounded-lg p-12 pb-8 flex flex-col items-start justify-around hover:cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all ease-in-out duration-500">
+            <img src={vendorImg} className="absolute -top-7 w-16" />
+            <p className="font-bold text-2xl text-left w-full">
+              Join as a Vendor Partner
+            </p>
+            <p>
+              We assist 500,000+ Business Partners in multiplying sales,
+              expanding reach, and growing with new technologies.
+            </p>
+            <Button className="font-bold text">Learn More</Button>
+          </div>
+        </div>
+      </div>
       <div className="w-full">
         <div className="h-screen md:h-[83vh] w-full flex flex-col md:flex-row">
           <div className="relative w-full md:w-1/2 h-full bg-[#2B2929] p-4 xl:p-16 text-[#F1EFEF] font-nunito">
