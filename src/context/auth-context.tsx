@@ -55,7 +55,7 @@ export default function AuthContextProvider({
   const { toast } = useToast();
 
   const fetchUserData = async (uid?: string) => {
-    if (!uid) return;
+    if (!uid || user) return;
     try {
       const userDoc = await getDoc(doc(db, "users", uid));
       if (userDoc.exists()) {
@@ -65,22 +65,26 @@ export default function AuthContextProvider({
         setUserType(UserType.USER);
         return;
       } else {
+        
         const campusQuerySnapshot = await getDocs(collection(db, "campus"));
+        let matchingVendorFound = false;
         campusQuerySnapshot.forEach((campusDoc) => {
           const campusData = campusDoc.data();
-          let matchingVendorFound = false;
           for (const vendor of campusData.vendors || []) {
             if (vendor.id === uid) {
               matchingVendorFound = true;
               setUser(vendor as Vendor);
               setAuthState(AuthState.Authenticated);
               setUserType(UserType.VENDOR);
-              return;
-            }
+              break;
+            } 
           }
+          
           if (!matchingVendorFound) {
             console.error("No matching vendor found in campus");
             throw new Error("Vendor not found");
+          } else{
+            return;
           }
         });
       }
@@ -93,6 +97,7 @@ export default function AuthContextProvider({
     }
   };
 
+  console.log(auth?.currentUser?.uid)
   useEffect(() => {
     fetchUserData(auth?.currentUser?.uid);
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

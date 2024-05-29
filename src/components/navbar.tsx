@@ -50,7 +50,7 @@ const Navbar = ({ className = "bg-transparent" }: Props) => {
     >
       <div className="flex py-1 gap-8 items-center justify-center h-full z-10">
         <img src={logo} className="h-5" alt="" onClick={() => navigate('/')}/>
-        <div className="hidden md:flex gap-8">
+        <div className="hidden md:flex gap-8 font-bold">
           <Link to="/order">Order</Link>
           <Link to="/about">About</Link>
           <Link to="">History</Link>
