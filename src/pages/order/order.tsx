@@ -5,7 +5,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useEffect, useMemo, useRef, useState } from "react";
 import RestaurantCard, { RestaurantCardSkeleton } from "./restaurant-card";
 import { useQuery } from "react-query";
-import { fetchRestaurantData } from "@lib/services/restaurant.service";
+import { fetchRestaurantData } from "@lib/services/vendor.service";
 import { LuChevronDown } from "react-icons/lu";
 export default function Order() {
   const [restaurantData, setRestaurantData] = useState([] as any[]);
@@ -111,8 +111,7 @@ export default function Order() {
           </div>
         </div>
         <div className="h-screen"></div>
-        <LuChevronDown className={`w-14 h-14 bottom-[2vh] right-4 fixed animate-bounce transition-all duration-1000 ${isIntersecting ? 'opacity-0' : 'opacity-100'} text-orange-500`} 
-       />
+        <LuChevronDown className={`md:block hidden w-14 h-14 bottom-[2vh] right-4 fixed animate-bounce transition-all duration-1000 ${isIntersecting ? 'opacity-0' : 'opacity-100'} text-orange-500`}  />
       </div>
     </MainLayout>
   );

@@ -1,8 +1,14 @@
 import MainLayout from "src/layout/main-layout";
 import foodBlack from "@assets/images/food-black.png";
 import foodWhite from "@assets/images/food-white2.png";
+import { useAuth } from "@lib/hooks/useAuth";
+import { UserType } from "@lib/types/user-types";
 
 export default function LandingPage() {
+  const {userType} = useAuth();
+  if(userType === UserType.VENDOR){
+    // masukin ke dashboard vendor
+  };
   return (
     <MainLayout className={"bg-white pt-14"}>
       <div className="w-full">

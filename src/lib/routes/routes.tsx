@@ -2,6 +2,7 @@ import About from '@pages/about/about';
 import AuthPage from '@pages/auth/auth-page';
 import LandingPage from '@pages/landing/landing-page';
 import Order from '@pages/order/order';
+import VendorDetailPage from '@pages/vendor-detail/vendor-detail-page';
 import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter([
@@ -20,5 +21,9 @@ export const router = createBrowserRouter([
   {
     path: '/about',
     element: <About/>
+  },
+  {
+    path: '/vendor/:campusId/:vendorId',
+    element: <VendorDetailPage/>
   }
 ]);

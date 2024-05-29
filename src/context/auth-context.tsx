@@ -1,4 +1,4 @@
-import { AuthState, User, UserRegis } from "@lib/types/user-types";
+import { AuthState, User, UserRegis, UserType } from "@lib/types/user-types";
 import { ReactNode, createContext, useState, useEffect } from "react";
 import { useMutation } from "react-query";
 import {
@@ -7,17 +7,18 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { arrayUnion, collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../firebase/firebase-config";
 import { queryClient } from "@lib/settings/query-settings";
 import { useToast } from "@components/ui/use-toast";
+import { Vendor, VendorRegis } from "@lib/types/vendor-types";
 
 interface AuthContextProviderProps {
   children: ReactNode;
 }
 
 export type AuthContextType = {
-  user: User | null;
+  user: User | Vendor | null;
   authState: AuthState;
   login: ({
     email,
@@ -27,8 +28,9 @@ export type AuthContextType = {
     password: string;
   }) => any;
   logout: () => Promise<void>;
-  register: ({userRegisData, successCallback} : {userRegisData: UserRegis, successCallback : any}) => any;
+  register: ({regisData, userType} : {regisData: UserRegis | VendorRegis, userType: UserType}) => any;
   isLoading: boolean;
+  userType: UserType;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -38,12 +40,14 @@ export const AuthContext = createContext<AuthContextType>({
   logout: async () => {},
   register: async () => {},
   isLoading: false,
+  userType: UserType.USER,
 });
 
 export default function AuthContextProvider({
   children,
 }: AuthContextProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | Vendor | null>(null);
+  const [userType, setUserType] = useState<UserType>(UserType.USER);
   const [authState, setAuthState] = useState<AuthState>(
     AuthState.NotAuthenticated
   );
@@ -58,9 +62,27 @@ export default function AuthContextProvider({
         const userData = userDoc.data() as User;
         setUser(userData);
         setAuthState(AuthState.Authenticated);
-        queryClient.invalidateQueries(["userData"]);
+        setUserType(UserType.USER);
+        return;
       } else {
-        throw new Error("No user data found");
+        const campusQuerySnapshot = await getDocs(collection(db, "campus"));
+        campusQuerySnapshot.forEach((campusDoc) => {
+          const campusData = campusDoc.data();
+          let matchingVendorFound = false;
+          for (const vendor of campusData.vendors || []) {
+            if (vendor.id === uid) {
+              matchingVendorFound = true;
+              setUser(vendor as Vendor);
+              setAuthState(AuthState.Authenticated);
+              setUserType(UserType.VENDOR);
+              return;
+            }
+          }
+          if (!matchingVendorFound) {
+            console.error("No matching vendor found in campus");
+            throw new Error("Vendor not found");
+          }
+        });
       }
     } catch (error: any) {
       console.error("Error fetching user data:", error.message);
@@ -105,7 +127,6 @@ export default function AuthContextProvider({
 
   const {
     mutate: login,
-    isLoading: loginLoading,
   } = useMutation(
     async ({
       email,
@@ -118,7 +139,6 @@ export default function AuthContextProvider({
       const currentUser = auth.currentUser;
       if (currentUser) {
         fetchUserData(currentUser.uid);
-        console.log(currentUser);
       }
     },
     {
@@ -126,9 +146,9 @@ export default function AuthContextProvider({
         console.log("User logged in successfully");
         setAuthState(AuthState.Authenticated)
         window.location.href = '/';
+        setIsLoading(false);
       },
       onError: (error: any) => {
-        console.log('tolong')
         console.error("Error logging in user:", error.message);
         setAuthState(AuthState.NotAuthenticated);
         toast({
@@ -136,6 +156,7 @@ export default function AuthContextProvider({
           description: "Something went wrong",
           variant: "error",
         })
+        setIsLoading(false);
         throw error;
       },
     }
@@ -143,34 +164,57 @@ export default function AuthContextProvider({
 
   const {
     mutate: register,
-    isLoading: createLoading,
   } = useMutation(
-    async ({userRegisData, successCallback} : {userRegisData: UserRegis, successCallback : any}) => {
+    async ({regisData, userType} : {regisData: UserRegis | VendorRegis, userType: UserType}) => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        userRegisData.email,
-        userRegisData.password
+        regisData.email,
+        regisData.password
       );
-      const userRef = doc(db, "users", userCredential.user.uid);
-      await setDoc(userRef, {
-        isSender: false,
-        ...userRegisData,
-      });
-      return successCallback;
+      if(userType === UserType.USER){
+        let data = regisData as UserRegis;
+        const { password, confirmationPassword, ...dataWithoutPasswords } = data;
+        const userRef = doc(db, "users", userCredential.user.uid);
+        console.log(dataWithoutPasswords);
+        await setDoc(userRef, {
+          isSender: false,
+          ...dataWithoutPasswords,
+        });
+        return;
+      }
+      else if(userType === UserType.VENDOR){
+        let data = regisData as VendorRegis;
+        const { password, confirmationPassword, ...dataWithoutPasswords } = data;
+        const campusDocRef = doc(db, "campus", data.campusName);
+        const campusDoc = await getDoc(campusDocRef);
+
+        if (campusDoc.exists()) {
+          const newVendorData = {
+            rating: 0,
+            review: 0,
+            id: userCredential.user.uid,
+            categories: [],
+            ...dataWithoutPasswords
+          };
+  
+          await updateDoc(campusDocRef, {
+            vendors: arrayUnion(newVendorData),
+          });
+  
+          return;
+        } else {
+          throw new Error("Campus document not found");
+        }
+      }
     },
     {
-      onSuccess: (successCallback) => {
-        console.log(successCallback);
-        // if (userCredential.user) {
-          //   fetchUserData(userCredential.user.uid);
-          // }
-          // console.log("User created:", userCredential.user);
+      onSuccess: () => {
           toast({
             title: "Register Successful!",
             description: "Your account has been created",
             variant: "success",
           })
-          successCallback();
+        ;
       },
       onError: (error: any) => {
         console.error("Error creating user:", error.message);
@@ -187,10 +231,11 @@ export default function AuthContextProvider({
   return (
     <AuthContext.Provider
       value={{
-        isLoading: isLoading || createLoading || loginLoading,
+        isLoading: isLoading,
         user,
         authState,
         login,
+        userType,
         logout,
         register,
       }}

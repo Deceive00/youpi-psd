@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "@assets/logo/default-logo.png";
 import blank from "@assets/logo/blankprofpic.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@components/ui/button";
 import { useAuth } from "@lib/hooks/useAuth";
-import { FaBars, FaTimes } from "react-icons/fa";
 import { RxCross2, RxHamburgerMenu } from "react-icons/rx";
 import { BiChevronDown } from "react-icons/bi";
 type Props = {
@@ -50,10 +49,10 @@ const Navbar = ({ className = "bg-transparent" }: Props) => {
       className={`${className} font-nunito flex justify-between w-full shadow-md p-3 px-5 md:px-8 items-center h-14 z-1000`}
     >
       <div className="flex py-1 gap-8 items-center justify-center h-full z-10">
-        <img src={logo} className="h-5" alt="" />
+        <img src={logo} className="h-5" alt="" onClick={() => navigate('/')}/>
         <div className="hidden md:flex gap-8">
           <Link to="/order">Order</Link>
-          <Link to="">About</Link>
+          <Link to="/about">About</Link>
           <Link to="">History</Link>
         </div>
       </div>
@@ -101,7 +100,7 @@ const Navbar = ({ className = "bg-transparent" }: Props) => {
           <Link to="/" className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl flex items-center" style={navStyles2}>
             Partner with us <BiChevronDown/>
           </Link>
-          <Link to="" className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl" style={navStyles3}>
+          <Link to="/about" className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl" style={navStyles3}>
             About
           </Link>
           <Link to="" className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl" style={navStyles4}>

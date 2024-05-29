@@ -1,6 +1,6 @@
-import { Campus, Vendor } from "@lib/types/user-types";
+import { Campus, Vendor } from "@lib/types/vendor-types";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "src/firebase/firebase-config";
 
 const DEFAULT_PASSWORD = "vendor123";
