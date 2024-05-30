@@ -41,12 +41,12 @@ const PartnerContainer: React.FC<PartnerCircleContainerProps> = ({radius, top}) 
   const angleStep = (Math.PI / 4) / (filteredData.length - 1.5);
 
   return (
-    <div className={`relative w-full h-full`}>
+    <div className={`relative w-full h-auto`}>
       <div
-        className={`absolute top-${top} left-0`}
+        className={`absolute`}
         style={{
             width: circleRadius * 2,
-            height: circleRadius * 2
+            height: circleRadius * 1.5
         }}
       >
         {filteredData.map((src, index) => {
