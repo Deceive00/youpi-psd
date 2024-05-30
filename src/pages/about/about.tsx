@@ -3,14 +3,17 @@ import MainLayout from "src/layout/main-layout";
 import PartnerContainer from "./partner-container";
 import Timeline from "@components/ui/timeline";
 
+const red = 'E71B1B'
+const orange = 'E78D3A'
+
 export default function About() {
   return (
     <MainLayout className={"pt-14 sm:pt-16"}>
     {/* Layout terluar */}  
-    <div className={`w-screen h-auto font-nunito`}>
+    <div className={`w-screen-1 h-max font-nunito box-border overflow-x-hidden`}>
       {/* 1. Eat and Enjoy With Youpi */}
       <div
-        className={`flex justify-between items-center w-full h-3/5 px-16 mt-8`}
+        className={`flex justify-between items-center w-full h-screen px-16 mt-8`}
       >
         <div className="w-1/2 h-full gap-4 flex flex-col gap-8 px-4">
           <h1 className={`text-6xl font-bold tracking-wide`}>
@@ -23,11 +26,11 @@ export default function About() {
             ones. Your trusted companion in food delivery and you can be on
             one of Youpers
           </span>
-          <div className={`flex flex-row h-full w-full overflow-hidden`}>
+          <div className={`flex flex-row h-full w-full overflow-x-hidden`}>
             {/* Image */}
-            <div className="w-3/6 h-full">
+            <div className="w-3/6 h-3/5">
               <img
-                className={`w-full h-full object-fit`}
+                className={`w-full h-full object-cover`}
                 src="https://firebasestorage.googleapis.com/v0/b/youpi-92b43.appspot.com/o/about-us%2F72238845164.png?alt=media&token=d52c6093-6d74-426e-b7c4-276d7af28699"
                 alt="masukin image yg ada di line"
               />
@@ -73,7 +76,7 @@ export default function About() {
         </div>
       </div>
 
-      <div className={`w-full h-2/6 flex flex-row px-20 mt-8`}>
+      <div className={`w-screen h-72 flex flex-row px-20 mt-0`}>
         {/* Left */}
         <div className={`w-2/6 h-full flex flex-col gap-4`}>
           <h1 className={`text-3xl font-bold`}>Savor</h1>
@@ -88,7 +91,6 @@ export default function About() {
         <div className={`w-2/6 h-full bg-blue-200 mx-12`}>
           <img
             className="w-full h-full object-cover"
-            // src="https://firebasestorage.googleapis.com/v0/b/youpi-92b43.appspot.com/o/about-us%2FICE%20CREAM.png?alt=media&token=225fd2cf-8522-4fa7-91ba-f78b2be89106"
             src="https://firebasestorage.googleapis.com/v0/b/youpi-92b43.appspot.com/o/about-us%2Fdownload.png?alt=media&token=b1d013f6-ac03-4add-88cb-ca671643265e"
             alt="masukin gambar yang di line"
           />
@@ -110,7 +112,7 @@ export default function About() {
       </div>
 
       {/* 3. Three Pillars*/}
-      <div className={`flex flex-row w-screen h-screen px-16 mt-8`}>
+      <div className={`flex flex-row w-screen h-96 px-16 my-20`}>
         <div className={`w-1/2 h-full px-4 flex flex-col gap-y-10`}>
           {/* Left */}
           <h1 className={`text-5xl font-bold tracking-wide`}>

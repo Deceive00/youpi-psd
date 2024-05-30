@@ -9,7 +9,7 @@ interface IProps {
 const CircleDiv : React.FC<IProps> = ({src, top, left}) => {
     return (
         <div 
-            className={`w-24 h-24 absolute rounded-full shadow-xl bg-red-500 overflow-hidden`}
+            className={`w-24 h-24 absolute rounded-full overflow-hidden shadow-[0_3px_10px_rgb(0,0,0,0.3)]`}
             style={{
                 top: `${top}px`,
                 left: `${left}px`
