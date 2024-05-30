@@ -51,8 +51,14 @@ export default function AddCategoryPopup({
     }
   })
 
+  const changeOpen = (opened : boolean) => {
+    if(!isLoading) {
+      setOpen(opened)
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={changeOpen} >
       <DialogTrigger asChild>
         <Button variant="outline">Add Category</Button>
       </DialogTrigger>

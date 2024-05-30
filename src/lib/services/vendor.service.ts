@@ -1,4 +1,4 @@
-import { Campus, MenuCategory } from "@lib/types/vendor-types";
+import { Campus, Menu, MenuCategory } from "@lib/types/vendor-types";
 import {
   collection,
   doc,
@@ -7,7 +7,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "src/firebase/firebase-config";
-
+import { v4 as uuidv4 } from 'uuid';
 export const fetchRestaurantData = async () => {
   const restaurantDoc = await getDocs(collection(db, "campus"));
   return restaurantDoc;
@@ -62,6 +62,46 @@ export const addCategory = async (
         vendors: restaurantData.vendors,
       });
       return "Category succesfully added!";
+    } else {
+      console.error("Vendor not found in this campus");
+      throw new Error("Vendor Not Found");
+    }
+  }
+};
+
+export const addMenu = async (
+  campusId: string,
+  vendorId: string,
+  newMenu: Menu,
+  categoryName: string
+) => {
+  const restaurantDoc = await getDoc(doc(db, "campus", campusId));
+  const restaurantData: Campus = restaurantDoc.data() as Campus;
+  if (restaurantData) {
+    const vendorIdx = restaurantData.vendors.findIndex(
+      (v: any) => v.id === vendorId
+    );
+    const vendor = restaurantData.vendors[vendorIdx];
+    if (vendor) {
+      const categoryIdx = vendor.categories.findIndex((c : MenuCategory) => c.name === categoryName)
+      const categories = vendor.categories[categoryIdx];
+      if(categories){
+        newMenu.id = uuidv4();
+        const updatedCategories = {
+          ...categories,
+          menus: [...categories.menus, newMenu],
+        }
+        restaurantData.vendors[vendorIdx].categories[categoryIdx] = updatedCategories;
+        await updateDoc(doc(db, "campus", campusId), {
+          vendors: restaurantData.vendors,
+        });
+        console.log(restaurantData)
+        return "Menu succesfully added!";
+      }
+      else{
+        throw new Error("Category Not Found")
+      }
+
     } else {
       console.error("Vendor not found in this campus");
       throw new Error("Vendor Not Found");

@@ -97,7 +97,6 @@ export default function AuthContextProvider({
     }
   };
 
-  console.log(auth?.currentUser?.uid)
   useEffect(() => {
     fetchUserData(auth?.currentUser?.uid);
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

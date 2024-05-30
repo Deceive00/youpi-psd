@@ -12,7 +12,6 @@ import { Toaster } from "@components/ui/toaster";
 export default function ManageMenuPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const { user } = useAuth();
-  const [newCategory, setNewCategory] = useState('');
   useEffect(() => {
     if (user && (user as Vendor)?.categories !== undefined) {
       setVendor(user as Vendor);
@@ -25,7 +24,7 @@ export default function ManageMenuPage() {
       menuName="Manage Menu"
     >
       <div className="font-nunito">
-        <AddCategoryPopup vendor={vendor}/>
+        <AddCategoryPopup vendor={vendor} />
         <Accordion type="single" collapsible className="mt-4">
           {vendor?.categories.map((category, index) => {
             return <CategoryCard category={category} key={index} />;
