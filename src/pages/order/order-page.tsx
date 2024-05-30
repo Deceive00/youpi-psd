@@ -11,22 +11,25 @@ export default function Order() {
   const [restaurantData, setRestaurantData] = useState([] as any[]);
   const cardReferenceFade = useRef(null);
 
-  const [isIntersecting, setIntersecting] = useState(false)
+  const [isIntersecting, setIntersecting] = useState(false);
 
-  const observer = useMemo(() => new IntersectionObserver(
-    ([entry]) => setIntersecting(entry.isIntersecting)
-  ), [cardReferenceFade])
-
+  const observer = useMemo(
+    () =>
+      new IntersectionObserver(([entry]) =>
+        setIntersecting(entry.isIntersecting)
+      ),
+    [cardReferenceFade]
+  );
 
   useEffect(() => {
-    if(cardReferenceFade.current){
-      observer.observe(cardReferenceFade.current)
+    if (cardReferenceFade.current) {
+      observer.observe(cardReferenceFade.current);
     }
     return () => {
-      if(cardReferenceFade.current){
-        observer.unobserve(cardReferenceFade.current)
+      if (cardReferenceFade.current) {
+        observer.unobserve(cardReferenceFade.current);
       }
-    }
+    };
   }, []);
 
   const { isLoading } = useQuery(
@@ -107,11 +110,18 @@ export default function Order() {
                 )}
               </div>
             </div>
-            <div ref={cardReferenceFade} className="bg-transparent h-1 w-full"></div>
+            <div
+              ref={cardReferenceFade}
+              className="bg-transparent h-1 w-full"
+            ></div>
           </div>
         </div>
         <div className="h-screen"></div>
-        <LuChevronDown className={`md:block hidden w-14 h-14 bottom-[2vh] right-4 fixed animate-bounce transition-all duration-1000 ${isIntersecting ? 'opacity-0' : 'opacity-100'} text-orange-500`}  />
+        <LuChevronDown
+          className={`md:block hidden w-14 h-14 bottom-[2vh] right-4 fixed animate-bounce transition-all duration-1000 ${
+            isIntersecting ? "opacity-0" : "opacity-100"
+          } text-orange-500`}
+        />
       </div>
     </MainLayout>
   );

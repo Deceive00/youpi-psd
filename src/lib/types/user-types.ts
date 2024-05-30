@@ -13,7 +13,7 @@ export enum AuthState {
   Loading = "Loading",
 }
 
-export interface UserRegis{
+export interface UserRegis {
   nim: string;
   email: string;
   firstName: string;
@@ -24,7 +24,18 @@ export interface UserRegis{
   confirmationPassword: string;
 }
 
+export interface UserCart {
+  campusName: string;
+  vendorName: string;
+  name: string;
+  description: string;
+  price: Number;
+  coverImage: string;
+  notes: string;
+  quantity: Number;
+}
+
 export enum UserType {
-  USER = "User", 
+  USER = "User",
   VENDOR = "Vendor",
 }

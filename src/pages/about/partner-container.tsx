@@ -1,7 +1,12 @@
 import CircleDiv from "@components/ui/circle-div";
 import React from "react";
 
-const PartnerContainer: React.FC = () => {
+interface PartnerCircleContainerProps {
+    radius:number;
+    top:number;
+}
+
+const PartnerContainer: React.FC<PartnerCircleContainerProps> = ({radius, top}) => {
   // Data
   const [data, setData] = React.useState<string[]>([]);
 
@@ -10,17 +15,12 @@ const PartnerContainer: React.FC = () => {
     // Masih pake dummy data
     // [!] Ganti pake dari firebase
     const imageUrls = [
-      "https://res.cloudinary.com/dffeysr9l/image/upload/v1716800486/burgerrrr_qwklus.jpg",
-      "https://example.com/image2.jpg",
-      "https://example.com/image3.jpg",
-      "https://res.cloudinary.com/dffeysr9l/image/upload/v1716800486/burgerrrr_qwklus.jpg",
-      "https://example.com/image2.jpg",
-      "https://example.com/image3.jpg",
-      "https://res.cloudinary.com/dffeysr9l/image/upload/v1716800486/burgerrrr_qwklus.jpg",
-      "https://example.com/image2.jpg",
-      "https://example.com/image3.jpg",
-      "https://res.cloudinary.com/dffeysr9l/image/upload/v1716800486/burgerrrr_qwklus.jpg",
-
+        "https://example.com/image2.jpg",
+        "https://example.com/image2.jpg",
+        "https://example.com/image3.jpg",
+        "https://example.com/image2.jpg",
+        "https://example.com/image2.jpg",
+        "https://example.com/image2.jpg",
     ];
 
     setData(imageUrls);
@@ -31,39 +31,41 @@ const PartnerContainer: React.FC = () => {
     fetchdata();
   }, []);
 
-  // Transform the data into rows with incrementing numbers
-  const rows: string[][] = [];
-  let index = 0;
-  let rowCount = 1;
+  // Determine the maximum number of items
+  let maxItems = Math.floor(radius / 100);
+  const filteredData = data.slice(0, maxItems);
 
-  while (index < data.length) {
-    rows.push(data.slice(index, index + rowCount + 1));
-    index += rowCount;
-    rowCount++;
-  }
+  // Transform the data into rows with incrementing numbers
+  const circleRadius = radius;
+  const circleCenter = circleRadius;
+  const angleStep = (Math.PI / 4) / (filteredData.length - 1.5);
 
   return (
-    <div className={`relative w-full h-full flex justify-center items-end`}>
-      {rows.map((row, rowIndex) => (
-        <div
-          key={rowIndex}
-          className={`absolute flex justify-start`}
-          style={{
-            bottom: `${rowIndex * 100}px`,
-            left: `${rowIndex * 100}px`,
-            transform: `translateX(-25%) translateY(${rowIndex * 15}px) rotate(${rowIndex * 5}deg)`,
-          }}
-        >
-          {row.map((src, index) => (
-            <CircleDiv src={src} key={index} />
-          ))}
-        </div>
-      ))}
+    <div className={`relative w-full h-full`}>
+      <div
+        className={`absolute top-${top} left-0`}
+        style={{
+            width: circleRadius * 2,
+            height: circleRadius * 2
+        }}
+      >
+        {filteredData.map((src, index) => {
+            const angle = index * angleStep;
+            const x = circleCenter - circleRadius * Math.cos(angle) - 24;
+            const y = circleCenter - circleRadius * Math.sin(angle) - 24;
+
+            return (
+                <CircleDiv
+                    key={index}
+                    src={src}
+                    top={y}
+                    left={x}
+                />
+            )
+        })}
+      </div>
     </div>
   );
 };
 
 export default PartnerContainer;
-
-
-
