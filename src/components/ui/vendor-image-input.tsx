@@ -1,12 +1,12 @@
-import blank from "@assets/logo/blankprofpic.png";
+import blank from "@assets/logo/image-placeholder.webp";
 import { useState } from "react";
 
-interface VendorImageInputProp {
+interface ImageInputProp {
   value: string;
   onChange: (url: string | ArrayBuffer | null) => void;
 }
 
-export function VendorImgInput({ value, onChange }: VendorImageInputProp) {
+export function ImgInput({ value, onChange }: ImageInputProp) {
   const [imageUrl, setImageUrl] = useState<string | null | ArrayBuffer>(null);
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
@@ -26,12 +26,12 @@ export function VendorImgInput({ value, onChange }: VendorImageInputProp) {
 
   return (
     <div
-      className="px-0  w-full flex justify-center items-center h-40 sm:h-[11rem]"
+      className={`px-0  w-full flex justify-center items-center h-full`}
       onClick={handleDivClick}
     >
       <img
-        className="sm:rounded-md h-full  object-bottom object-cover w-full"
-        src={imageUrl ? imageUrl as string : blank}
+        className="sm:rounded-md h-full  object-center object-cover w-full"
+        src={imageUrl ? (imageUrl as string) : blank}
         // alt = {blank}
       />
       <input
