@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table";
-import { VendorImgInput } from "@components/ui/vendor-image-input";
+import { ImgInput } from "@components/ui/vendor-image-input";
 import { useAuth } from "@lib/hooks/useAuth";
 import useUploadPhoto from "@lib/hooks/useUploadPhoto";
 import { Menu, Vendor } from "@lib/types/vendor-types";
@@ -30,6 +30,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useToast } from "@components/ui/use-toast";
 import { addMenu } from "@lib/services/vendor.service";
 import { useMutation } from "react-query";
+import LoadingCircle from "@components/ui/loading-circle";
 
 interface props {
   menu: Menu[];
@@ -40,18 +41,18 @@ export default function MenuTable({ menu, categoryName }: props) {
     control,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm();
   const [errorMsg, setErrorMsg] = useState<null | {
     title: string;
     description: string;
     variant: string;
   }>(null);
-
+  const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const { uploadPhoto } = useUploadPhoto();
   if (Object.keys(errors).length > 0 && errorMsg === null) {
+    console.log('tes');
     Object.values(errors).forEach((error) => {
       if (error && error.message) {
         setErrorMsg({
@@ -110,7 +111,7 @@ export default function MenuTable({ menu, categoryName }: props) {
   })
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <Table>
         <TableHeader>
           <TableRow>
@@ -231,12 +232,12 @@ export default function MenuTable({ menu, categoryName }: props) {
             defaultValue=""
             rules={{}}
             render={({ field }) => (
-              <VendorImgInput value={field.value} onChange={field.onChange} />
+              <ImgInput value={field.value} onChange={field.onChange} />
             )}
           />
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="submit">Add Menu</Button>
+              <Button type="submit" onClick={() => setOpen(false)}>{isLoading ? <LoadingCircle/> : 'Add Menu'}</Button>
             </DialogClose>
           </DialogFooter>
         </form>

@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "@components/ui/dialog";
 import { Input } from "@components/ui/input";
+import LoadingCircle from "@components/ui/loading-circle";
 import { useToast } from "@components/ui/use-toast";
 import { addCategory } from "@lib/services/vendor.service";
 import { Vendor } from "@lib/types/vendor-types";
@@ -82,7 +83,7 @@ export default function AddCategoryPopup({
         <DialogFooter>
           <Button type="submit" onClick={() => add()}>
             {
-              isLoading ? "Loading" : "Add Category"
+              isLoading ? <LoadingCircle/> : "Add Category"
             }
           </Button>
         </DialogFooter>
