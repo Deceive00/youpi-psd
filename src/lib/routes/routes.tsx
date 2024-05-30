@@ -4,6 +4,7 @@ import CartPage from "@pages/cart/cart-page";
 import LandingPage from "@pages/landing/landing-page";
 import Order from "@pages/order/order-page";
 import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
+import ManageMenuPage from "@pages/vendor/manage-menu-page";
 import VendorRegisterPage from "@pages/vendor/register-vendor";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -35,5 +36,9 @@ export const router = createBrowserRouter([
   {
     path: "/cart", // mungkin nanti kasih :transactionId? buat id penanda datanya
     element: <CartPage />,
+  },
+  {
+    path: "/vendor/manage/menu",
+    element: <ManageMenuPage />,
   },
 ]);

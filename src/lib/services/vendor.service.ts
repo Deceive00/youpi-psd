@@ -25,3 +25,4 @@ export const fetchVendorDataById = async (campusId: string, vendorId: string) =>
     return new Error("Campus Not Found"); 
   }
 }
+
