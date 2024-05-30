@@ -1,6 +1,6 @@
-import { Campus, Vendor } from "@lib/types/user-types";
+import { Campus, Vendor } from "@lib/types/vendor-types";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "src/firebase/firebase-config";
 
 const DEFAULT_PASSWORD = "vendor123";
@@ -11,6 +11,7 @@ const campus: Campus[] = [
     name: "BINUS Alam Sutera",
     vendors: [
       {
+        campusName: "BINUS Alam Sutera",
         email: "ramen.saia@gmail.com",
         name: "Ramen Saia",
         coverImage: DEFAULT_IMAGE,
@@ -55,6 +56,7 @@ const campus: Campus[] = [
         ],
       },
       {
+        campusName: "BINUS Alam Sutera",
         email: "boba.licious@gmail.com",
         name: "Boba Licious",
         coverImage: DEFAULT_IMAGE,
@@ -104,6 +106,7 @@ const campus: Campus[] = [
     name: "BINUS Anggrek",
     vendors: [
       {
+        campusName: "BINUS Anggrek",
         email: "sushi.san@gmail.com",
         name: "Sushi San",
         coverImage: DEFAULT_IMAGE,
@@ -165,6 +168,7 @@ const campus: Campus[] = [
         ],
       },
       {
+        campusName: "BINUS Anggrek",
         email: "pizza.mania@gmail.com",
         name: "Pizza Mania",
         coverImage: DEFAULT_IMAGE,

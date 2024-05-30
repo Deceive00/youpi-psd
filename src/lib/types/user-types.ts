@@ -1,4 +1,4 @@
-export interface User{
+export interface User {
   id: string;
   nim: string;
   email: string;
@@ -14,7 +14,7 @@ export enum AuthState {
   Loading = "Loading",
 }
 
-export interface UserRegis{
+export interface UserRegis {
   nim: string;
   email: string;
   firstName: string;
@@ -23,31 +23,20 @@ export interface UserRegis{
   phoneNumber: string;
   password: string;
   confirmationPassword: string;
-  
 }
 
-export interface Menu{
+export interface UserCart {
+  campusName: string;
+  vendorName: string;
   name: string;
   description: string;
-  image: string;
   price: Number;
-};
-export interface MenuCategory{
-  name: string;
-  menus: Menu[];
-}
-
-export interface Vendor{
-  email: string;
-  name: string;
   coverImage: string;
-  rating: Number;
-  review: Number;
-  id: string;
-  categories: MenuCategory[];
+  notes: string;
+  quantity: Number;
 }
 
-export interface Campus{
-  name: string;
-  vendors: Vendor[];
+export enum UserType {
+  USER = "User",
+  VENDOR = "Vendor",
 }

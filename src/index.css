@@ -3,6 +3,28 @@
 @tailwind components;
 @tailwind utilities;
 
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #86cfd8;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-moz-selection { 
+  color: black;
+  background: rgb(254 249 195);;
+}
+
+::selection {
+  color: black;
+  background: rgb(254 249 195);;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -79,4 +101,25 @@
 
 .orange-text-color{ 
   @apply text-orange-500 hover:text-orange-300 transition-all
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: 	#e68c37;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-moz-selection { 
+  color: #f56565;
+  background: rgb(254 249 195);;
+}
+
+::selection {
+  color: #f56565;
+  background: rgb(254 249 195);;
 }

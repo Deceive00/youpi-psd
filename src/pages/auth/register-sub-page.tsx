@@ -5,7 +5,7 @@ import { Input } from "@components/ui/input";
 import { useToast } from "@components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { useAuth } from "@lib/hooks/useAuth";
-import { UserRegis } from "@lib/types/user-types";
+import { UserRegis, UserType } from "@lib/types/user-types";
 
 interface RegisterSubPageProps {
   changeMode: (mode: string) => void;
@@ -31,7 +31,7 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
     console.log(data);
     register(
       {
-        userRegisData: {
+        regisData: {
           nim: data.nim,
           email: data.email,
           firstName: data.firstName,
@@ -41,9 +41,8 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
           phoneNumber: data.phoneNumber,
           password: data.password,
         } as UserRegis,
-        successCallback: () => {
-          changeMode("login");
-        },
+        userType:UserType.USER
+
       }
     );
   };
