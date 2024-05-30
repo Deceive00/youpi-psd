@@ -8,7 +8,7 @@ const orange = 'E78D3A'
 
 export default function About() {
   return (
-    <MainLayout className={"pt-14 sm:pt-16"}>
+    <MainLayout className={"pt-14 sm:pt-16 overflow-x-hidden"}>
     {/* Layout terluar */}  
     <div className={`w-screen-1 h-max font-nunito box-border overflow-x-hidden`}>
       {/* 1. Eat and Enjoy With Youpi */}

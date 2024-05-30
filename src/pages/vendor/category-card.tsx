@@ -1,13 +1,14 @@
 import { MenuCategory } from "@lib/types/vendor-types";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@components/ui/accordion";
 import { IoFastFoodOutline } from "react-icons/io5";
+import MenuTable from "./menu-table";
 interface CategoryCardProps {
   category: MenuCategory;
 }
 export default function CategoryCard({ category }: CategoryCardProps) {
   return (
-    <AccordionItem value={category.name} className="">
-      <AccordionTrigger className="border rounded-lg p-4">
+    <AccordionItem value={category.name} className="mb-4">
+      <AccordionTrigger className="border rounded-md p-4">
         {" "}
         <div className="flex flex-row items-center gap-4">
           <IoFastFoodOutline className="w-10 h-10" />
@@ -17,8 +18,8 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="p-4">
-        Yes. It adheres to the WAI-ARIA design pattern.
+      <AccordionContent className="p-4 rounded-md">
+        <MenuTable menu={category.menus} categoryName={category.name}/>
       </AccordionContent>
     </AccordionItem>
   );

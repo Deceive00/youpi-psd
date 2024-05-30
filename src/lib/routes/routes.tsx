@@ -3,6 +3,7 @@ import AuthPage from "@pages/auth/auth-page";
 import CartPage from "@pages/cart/cart-page";
 import LandingPage from "@pages/landing/landing-page";
 import Order from "@pages/order/order-page";
+import SenderRegisterPage from '@pages/sender/register-sender';
 import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
 import ManageMenuPage from "@pages/vendor/manage-menu-page";
 import VendorRegisterPage from "@pages/vendor/register-vendor";
@@ -40,5 +41,9 @@ export const router = createBrowserRouter([
   {
     path: "/vendor/manage/menu",
     element: <ManageMenuPage />,
+  },
+  {
+    path: '/auth/sender',
+    element: <SenderRegisterPage/>
   },
 ]);
