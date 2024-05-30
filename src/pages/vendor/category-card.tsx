@@ -6,8 +6,8 @@ interface CategoryCardProps {
 }
 export default function CategoryCard({ category }: CategoryCardProps) {
   return (
-    <AccordionItem value={category.name} className="">
-      <AccordionTrigger className="border rounded-lg p-4">
+    <AccordionItem value={category.name} className="mb-4">
+      <AccordionTrigger className="border rounded-md p-4">
         {" "}
         <div className="flex flex-row items-center gap-4">
           <IoFastFoodOutline className="w-10 h-10" />
@@ -17,7 +17,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="p-4">
+      <AccordionContent className="p-4 rounded-md">
         Yes. It adheres to the WAI-ARIA design pattern.
       </AccordionContent>
     </AccordionItem>

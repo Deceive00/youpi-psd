@@ -3,7 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-::-webkit-scrollbar-track {
+
+/* ::-webkit-scrollbar-track {
   background-color: transparent;
 }
 
@@ -14,7 +15,7 @@
 
 ::-webkit-scrollbar {
   width: 2px;
-}
+} */
 ::-moz-selection { 
   color: black;
   background: rgb(254 249 195);;
@@ -112,7 +113,7 @@
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 2px;
 }
 ::-moz-selection { 
   color: #f56565;

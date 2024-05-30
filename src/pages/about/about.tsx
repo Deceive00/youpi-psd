@@ -5,7 +5,7 @@ import Timeline from "@components/ui/timeline";
 
 export default function About() {
   return (
-    <MainLayout className={"pt-14 sm:pt-16"}>
+    <MainLayout className={"pt-14 sm:pt-16 overflow-x-hidden"}>
     {/* Layout terluar */}  
     <div className={`w-screen h-auto font-nunito`}>
       {/* 1. Eat and Enjoy With Youpi */}
