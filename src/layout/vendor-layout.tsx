@@ -29,7 +29,7 @@ export default function VendorLayout({
           </div>
         </div>
 
-        <div className="px-24 pt-24 pb-8 h-full w-full flex flex-col">
+        <div className="px-12 pt-24 pb-8 h-full w-full flex flex-col">
           <div className="mb-8" />
           <div className="w-full h-28 py-4 flex flex-col gap-2">
             <h1 className="text-3xl font-medium ">{menuName}</h1>
@@ -46,9 +46,9 @@ export default function VendorLayout({
                         navigate(`${menu.path}`);
                       }}
                       variant={"secondary"}
-                      className={`w-full justify-start text-base ${
+                      className={`w-full justify-start text-base  ${
                         menu.path == location.pathname
-                          ? "bg-orange-100"
+                          ? "bg-orange-100 hover:bg-orange-100"
                           : "bg-white"
                       }`}
                     >
