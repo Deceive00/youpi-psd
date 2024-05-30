@@ -21,9 +21,28 @@ const MainLayout: React.FC<Props> = ({ children, className = "p-6" }) => {
         <Navbar className="bg-white" />
       </div>
       <div className={`${className} w-full min-h-screen`}>{children}</div>
-      
+
       {/* Footer */}
-      <Footer />
+      <div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+        <div>asd</div>
+      </div>
     </>
   );
 };
