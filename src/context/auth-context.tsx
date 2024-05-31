@@ -68,15 +68,10 @@ export default function AuthContextProvider({
         
         const campusQuerySnapshot = await getDocs(collection(db, "campus"));
         let matchingVendorFound = false;
-        
         campusQuerySnapshot.forEach((campusDoc) => {
           const campusData = campusDoc.data();
-          console.log(campusData);  
           for (const vendor of campusData.vendors || []) {
-            console.log(vendor.id , uid);
-            
             if (vendor.id === uid) {
-              console.log("uid", uid);
               matchingVendorFound = true;
               setUser(vendor as Vendor);
               setAuthState(AuthState.Authenticated);
@@ -84,13 +79,13 @@ export default function AuthContextProvider({
               break;
             } 
           }
-          console.log(matchingVendorFound);
-          console.log(user);
-          
           
           if (!matchingVendorFound) {
             console.error("No matching vendor found in campus");
-          } 
+            throw new Error("Vendor not found");
+          } else{
+            return;
+          }
         });
       }
     } catch (error: any) {

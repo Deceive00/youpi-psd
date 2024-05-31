@@ -1,4 +1,4 @@
-export interface Menu {
+export interface Menu{
   uid: string;
   name: string;
   description: string;

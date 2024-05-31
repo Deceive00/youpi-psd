@@ -34,7 +34,9 @@ const Timeline = () => {
                         {event.direction === 'left' ? (
                             <EventCard heading={event.heading} subHeading={event.subHeading}/>
                         ) : (
-                            <div></div>
+                            <div>
+                                
+                            </div>
                         )}
 
                         <Pillar/>
@@ -42,7 +44,9 @@ const Timeline = () => {
                         {event.direction === 'right' ? (
                             <EventCard heading={event.heading} subHeading={event.subHeading}/>
                         ) : (
-                            <div></div>
+                            <div>
+                                
+                            </div>
                         )}
                     </div>
 
@@ -59,7 +63,7 @@ export default Timeline
 
 const Circle = () => {
     return (
-        <div className='rounded-full w-4 h-4 bg-gray-400 mx-auto'>
+        <div className='rounded-full w-4 h-4 bg-primary mx-auto'>
             
         </div>
     )
@@ -67,7 +71,7 @@ const Circle = () => {
 
 const Pillar = () => {
     return (
-        <div className='rounded-t-full rounded-b-full w-2 h-full bg-gray-600 mx-auto'>
+        <div className='rounded-t-md rounded-b-md w-1.5 h-full bg-slate-700 mx-auto'>
             
         </div>
     )
@@ -76,7 +80,7 @@ const Pillar = () => {
 const EventCard = ({heading, subHeading} : any) => {
     return (
         <div className='flex flex-col gap-y-2 border shadow-md rounded-xl p-4'>
-            <div className='text-red-800 font-bold text-lg border-b'>{heading}</div>
+            <div className='text-red-800 font-bold text-xl border-b'>{heading}</div>
             <div className='text-sm text-gray-700'>{subHeading}</div>
         </div>
     )

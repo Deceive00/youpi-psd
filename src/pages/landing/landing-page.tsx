@@ -32,7 +32,7 @@ export default function LandingPage() {
               We are home to over 2 thounsand partner drivers in Southeast Asia,
               who receive financial security and healthcare facilities.
             </p>
-            <Button className="font-bold">Learn More</Button>
+            <Button className="font-bold" onClick={()=>{navigate("/auth/sender")}}>Learn More</Button>
           </div>
           <div className="gap-4 md:gap-0 relative sm:w-2/3 lg:w-1/3 h-full bg-white shadow-md rounded-lg p-12 pb-8 flex flex-col items-start justify-around hover:cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all ease-in-out duration-500">
             <img src={vendorImg} className="absolute -top-7 w-16" />

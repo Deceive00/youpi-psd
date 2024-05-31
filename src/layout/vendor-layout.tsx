@@ -19,7 +19,7 @@ export default function VendorLayout({
   const location = useLocation();
   return (
     <VendorMiddleware>
-      <div className="bg-white w-screen h-screen flex-col flex">
+      <div className="bg-white w-full h-screen flex-col flex overflow-x-hidden">
         <div className="w-full h-20 p-6 fixed">
           <div className="flex items-center gap-2 px-6 py-6">
             <img src={logo} className="object-cover h-10" alt="" />
@@ -29,7 +29,7 @@ export default function VendorLayout({
           </div>
         </div>
 
-        <div className="px-24 pt-24 pb-8 h-full w-full flex flex-col">
+        <div className="px-12 pt-24 pb-8 h-full w-full flex flex-col">
           <div className="mb-8" />
           <div className="w-full h-28 py-4 flex flex-col gap-2">
             <h1 className="text-3xl font-medium ">{menuName}</h1>
@@ -45,10 +45,11 @@ export default function VendorLayout({
                       onClick={() => {
                         navigate(`${menu.path}`);
                       }}
+                      key={menu.path}
                       variant={"secondary"}
-                      className={`w-full justify-start text-base ${
+                      className={`w-full justify-start text-base  ${
                         menu.path == location.pathname
-                          ? "bg-orange-100"
+                          ? "bg-orange-100 hover:bg-orange-100"
                           : "bg-white"
                       }`}
                     >

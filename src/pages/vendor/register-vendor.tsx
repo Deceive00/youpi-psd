@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Toaster } from "@components/ui/toaster";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "src/firebase/firebase-config";
-import { VendorImgInput } from "@components/ui/vendor-image-input";
+import { ImgInput } from "@components/ui/vendor-image-input";
 import useUploadPhoto from "@lib/hooks/useUploadPhoto";
 
 export default function VendorRegisterPage() {
@@ -127,7 +127,15 @@ export default function VendorRegisterPage() {
             defaultValue=""
             rules={{}}
             render={({ field }) => (
-              <VendorImgInput value={field.value} onChange={field.onChange} />
+              <div >
+                <h2 className="text-lg font-semibold  mb-3">
+                  <span className="text-orange-400">Cover Image</span>
+                </h2>
+                <div className="h-[9rem] sm:h-[10rem]">
+                <ImgInput value={field.value} onChange={field.onChange}  />
+
+                </div>
+              </div>
             )}
           />
           <div className="lg:grid gap-5 flex flex-col lg:grid-cols-2 lg:gap-4">
