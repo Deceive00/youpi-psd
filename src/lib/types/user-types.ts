@@ -36,6 +36,17 @@ export interface UserCart {
   quantity: Number;
 }
 
+export interface UserCartNew {
+  vendorId: string;
+  menus: MenuCart[];
+}
+
+export interface MenuCart {
+  menuId: string;
+  quantity: Number;
+  notes: string;
+}
+
 export enum UserType {
   USER = "User",
   VENDOR = "Vendor",

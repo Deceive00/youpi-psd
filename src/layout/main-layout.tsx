@@ -23,26 +23,6 @@ const MainLayout: React.FC<Props> = ({ children, className = "p-6" }) => {
       <div className={`${className} w-full min-h-screen`}>{children}</div>
 
       {/* Footer */}
-      <div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-        <div>asd</div>
-      </div>
     </>
   );
 };
