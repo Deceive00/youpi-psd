@@ -1,5 +1,5 @@
 export interface Menu{
-  id: string;
+  uid: string;
   name: string;
   description: string;
   image: string;

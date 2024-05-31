@@ -2,12 +2,6 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import {
   Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog";
 import {
@@ -19,22 +13,26 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table";
-import { ImgInput } from "@components/ui/vendor-image-input";
 import { useAuth } from "@lib/hooks/useAuth";
 import useUploadPhoto from "@lib/hooks/useUploadPhoto";
 import { Menu, Vendor } from "@lib/types/vendor-types";
 import { ReactNode, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline } from "react-icons/md";
 import { useToast } from "@components/ui/use-toast";
 import { addMenu } from "@lib/services/vendor.service";
 import { useMutation } from "react-query";
-import LoadingCircle from "@components/ui/loading-circle";
+
+import MenuPopup from "./menu-popup";
 
 interface props {
   menu: Menu[];
   categoryName: string;
+}
+enum MenuMode { 
+  INSERT = "Insert",
+  UPDATE = "Update"
 }
 export default function MenuTable({ menu, categoryName }: props) {
   const {
@@ -50,9 +48,9 @@ export default function MenuTable({ menu, categoryName }: props) {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const [mode, setMode] = useState<MenuMode | null>(null);
   const { uploadPhoto } = useUploadPhoto();
   if (Object.keys(errors).length > 0 && errorMsg === null) {
-    console.log('tes');
     Object.values(errors).forEach((error) => {
       if (error && error.message) {
         setErrorMsg({
@@ -86,8 +84,12 @@ export default function MenuTable({ menu, categoryName }: props) {
       image: imageUrl,
     } as Menu)
   };
+  const handleUpdateMenu = async (data : any) => {
+    console.log(data);
+    
+  }
 
-  const {mutate: add, isLoading} = useMutation(async (menu : Menu) => {
+  const {mutate: add, isLoading : insertLoading} = useMutation(async (menu : Menu) => {
     if(user){
       return await addMenu((user as Vendor).campusName, (user as Vendor).id, menu, categoryName);
     }
@@ -146,8 +148,8 @@ export default function MenuTable({ menu, categoryName }: props) {
                     </TableCell>
                     <TableCell className="">
                       <div className="flex flex-row gap-1">
-                        <CiEdit className="w-7 h-7 hover:bg-gray-100 p-1 transition-all rounded-md" />
-                        <MdDeleteOutline className="w-7 h-7 text-red-500 p-1 hover:bg-gray-100 transition-all rounded-md" />
+                        <CiEdit className="w-7 h-7 hover:bg-gray-100 p-1 transition-all rounded-md pointer-events-auto cursor-pointer" />
+                        <MdDeleteOutline className="w-7 h-7 text-red-500 p-1 hover:bg-gray-100 transition-all rounded-md pointer-events-auto cursor-pointer" />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -159,89 +161,12 @@ export default function MenuTable({ menu, categoryName }: props) {
         <TableFooter>
           <TableCell>
             <DialogTrigger>
-              <Button variant={"outline"}>+ Add Menu</Button>
+              <Button variant={"outline"} onClick={() => setMode(MenuMode.INSERT)}>+ Add Menu</Button>
             </DialogTrigger>
           </TableCell>
         </TableFooter>
       </Table>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Insert Menu</DialogTitle>
-          <DialogDescription>
-            Insert new menus for your vendor. Click add when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={handleSubmit(handleInsertMenu)}
-          className="grid gap-6 py-4"
-        >
-          <Controller
-            name="name"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: "Menu name is required",
-            }}
-            render={({ field }) => (
-              <Input
-                {...field}
-                id="name"
-                type="text"
-                required
-                placeholder="Menu Name"
-              />
-            )}
-          />
-          <Controller
-            name="description"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: "Menu description is required",
-            }}
-            render={({ field }) => (
-              <Input
-                {...field}
-                id="description"
-                type="text"
-                required
-                placeholder="Menu Description"
-              />
-            )}
-          />
-          <Controller
-            name="price"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: "Menu price is required",
-            }}
-            render={({ field }) => (
-              <Input
-                {...field}
-                id="price"
-                type="number"
-                required
-                placeholder="Menu Price"
-              />
-            )}
-          />
-          <Controller
-            name="image"
-            control={control}
-            defaultValue=""
-            rules={{}}
-            render={({ field }) => (
-              <ImgInput value={field.value} onChange={field.onChange} />
-            )}
-          />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="submit" onClick={() => setOpen(false)}>{isLoading ? <LoadingCircle/> : 'Add Menu'}</Button>
-            </DialogClose>
-          </DialogFooter>
-        </form>
-      </DialogContent>
+      <MenuPopup control={control} handleSubmit={handleSubmit(MenuMode.INSERT === mode ? handleInsertMenu : handleUpdateMenu)} isLoading={insertLoading} />
     </Dialog>
   );
 }

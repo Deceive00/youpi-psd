@@ -86,7 +86,7 @@ export const addMenu = async (
       const categoryIdx = vendor.categories.findIndex((c : MenuCategory) => c.name === categoryName)
       const categories = vendor.categories[categoryIdx];
       if(categories){
-        newMenu.id = uuidv4();
+        newMenu.uid = uuidv4();
         const updatedCategories = {
           ...categories,
           menus: [...categories.menus, newMenu],

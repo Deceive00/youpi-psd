@@ -61,7 +61,7 @@ export default function AddCategoryPopup({
   return (
     <Dialog open={open} onOpenChange={changeOpen} >
       <DialogTrigger asChild>
-        <Button variant="outline">Add Category</Button>
+        <Button variant="outline">+ Add Category</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
