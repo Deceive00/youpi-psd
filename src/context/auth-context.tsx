@@ -118,6 +118,7 @@ export default function AuthContextProvider({
           console.log("Sign out successful");
           setUser(null);
           setAuthState(AuthState.NotAuthenticated);
+          setUserType(UserType.USER);
           queryClient.invalidateQueries(["userData"]);
           resolve();
           window.location.reload();

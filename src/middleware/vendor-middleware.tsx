@@ -13,7 +13,7 @@ export default function VendorMiddleware({ children }: VendorMiddlewareProps) {
 
   useEffect(() => {
     if (!isLoading) {
-      if(userType === UserType.USER){
+      if(userType !== UserType.VENDOR){
         navigate('/');
       }
     }

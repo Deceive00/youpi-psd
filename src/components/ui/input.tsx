@@ -27,6 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </div>
         )}
         <input
+  
           type={isPassword && showPassword ? "text" : type}
           className={cn(
             "flex h-14 w-full rounded-lg border border-gray-400 bg-background px-3 py-6 text-base ring-offset-background outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-transparent focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:border-orange-500",
@@ -43,14 +44,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             "absolute left-3 px-1 transition-all duration-300 font-nunito z-3 text-ellipsis overflow-hidden max-h-6",
             {
-              "top-[28%] opacity-50 text-black": !focused && !props.value,
+              "top-[28%] opacity-50 text-black": !focused && !props.value && !props.defaultValue,
               "top-0 left-2 -translate-y-1/2 text-orange-500 bg-white px-1 text-sm":
-                focused,
+                ( focused || props.defaultValue),
             },
             leftIcon ? "ml-8" : ""
           )}
           style={{ pointerEvents: "none" }}
         >
+          
           {placeholder}
         </span>
         {isPassword && (
