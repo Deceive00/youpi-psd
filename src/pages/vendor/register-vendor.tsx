@@ -14,6 +14,8 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "src/firebase/firebase-config";
 import { ImgInput } from "@components/ui/vendor-image-input";
 import useUploadPhoto from "@lib/hooks/useUploadPhoto";
+import { useMutation } from "react-query";
+import LoadingCircle from "@components/ui/loading-circle";
 
 export default function VendorRegisterPage() {
   const {
@@ -61,6 +63,7 @@ export default function VendorRegisterPage() {
       userType: UserType.VENDOR,
     });
   };
+  const { status, mutate: submitMutate } = useMutation(onSubmit);
 
   if (Object.keys(errors).length > 0 && errorMsg === null) {
     Object.values(errors).forEach((error) => {
@@ -112,7 +115,7 @@ export default function VendorRegisterPage() {
         className={`flex h-full w-full items-center justify-center overflow-y-scroll ${"lg:w-[45%]"} lg:p-[5%] h-full transition-all duration-300 ${"opacity-100"}`}
       >
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit((data) => {submitMutate(data)})}
           className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px] mt-6 overflow-scroll"
         >
           <div className="grid gap-2">
@@ -234,8 +237,9 @@ export default function VendorRegisterPage() {
             type="submit"
             className="w-full font-bold h-12"
             onClick={() => setErrorMsg(null)}
+            disabled = {status === 'loading'}
           >
-            Register as Vendor
+            {status === 'loading' ? <LoadingCircle/> : "Register as Vendor"}
           </Button>
         </form>
       </div>
