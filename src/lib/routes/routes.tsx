@@ -1,6 +1,7 @@
-import About from "@pages/about/about";
+import About from "@pages/about/about-page";
 import AuthPage from "@pages/auth/auth-page";
 import CartPage from "@pages/cart/cart-page";
+import ChatPage from "@pages/chat/chat-page";
 import LandingPage from "@pages/landing/landing-page";
 import Order from "@pages/order/order-page";
 import SenderRegisterPage from '@pages/sender/register-sender';
@@ -50,5 +51,9 @@ export const router = createBrowserRouter([
   {
     path: '/auth/sender',
     element: <SenderRegisterPage/>
+  },
+  {
+    path: '/chat', //nanti tambahin user id nya
+    element: <ChatPage />
   },
 ]);
