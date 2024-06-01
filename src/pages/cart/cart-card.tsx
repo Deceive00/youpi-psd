@@ -1,3 +1,7 @@
+import {
+  calculateFakeDiscount,
+  formatPrice,
+} from "@lib/services/price.service";
 import { UserCart } from "@lib/types/user-types";
 import { FiPlusCircle } from "react-icons/fi";
 import { FiMinusCircle } from "react-icons/fi";
@@ -7,15 +11,6 @@ interface CartCardProps {
 }
 
 export default function CartCard({ item }: CartCardProps) {
-  const formatPrice = (amount: Number) => {
-    return new Intl.NumberFormat("de-DE").format(Number(amount));
-  };
-
-  const calculateFakeDiscount = (amount: Number) => {
-    const fakeAmount = Number(amount) + Number(amount) * 0.15;
-    return new Intl.NumberFormat("de-DE").format(fakeAmount);
-  };
-
   return (
     <div className="w-full sm:shadow-md h-auto border flex justify-between p-5 pb-3">
       <div className="flex flex-col w-3/4 md:w-4/5 pr-5">

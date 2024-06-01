@@ -4,10 +4,11 @@ import { useState } from "react";
 interface ImageInputProp {
   value: string;
   onChange: (url: string | ArrayBuffer | null) => void;
+  defaultImage?: string;
 }
 
-export function ImgInput({ value, onChange }: ImageInputProp) {
-  const [imageUrl, setImageUrl] = useState<string | null | ArrayBuffer>(null);
+export function ImgInput({ value, onChange, defaultImage }: ImageInputProp) {
+  const [imageUrl, setImageUrl] = useState<string | null | ArrayBuffer>(defaultImage || null);
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     if (file) {

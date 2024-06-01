@@ -1,16 +1,16 @@
 export interface Menu{
-  id: string;
+  uid: string;
   name: string;
   description: string;
   image: string;
   price: Number;
-};
-export interface MenuCategory{
+}
+export interface MenuCategory {
   name: string;
   menus: Menu[];
 }
 
-export interface Vendor{
+export interface Vendor {
   email: string;
   name: string;
   coverImage: string;
@@ -21,12 +21,12 @@ export interface Vendor{
   categories: MenuCategory[];
 }
 
-export interface Campus{
+export interface Campus {
   name: string;
   vendors: Vendor[];
 }
 
-export interface VendorRegis{
+export interface VendorRegis {
   campusName: string;
   email: string;
   name: string;
