@@ -1,16 +1,40 @@
 import "./App.css";
 import { router } from "@lib/routes/routes";
 import AuthContextProvider from "./context/auth-context";
-import { RouterProvider } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  RouterProvider,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import { useEffect } from "react";
 
 function App() {
+  return (
+    <BrowserRouter>
+      <div className="font-restart">
+        <AuthContextProvider>
+          <RouterComponent />
+        </AuthContextProvider>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+function RouterComponent() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   return (
-    <div className="font-restart">
-      <AuthContextProvider>
-        <RouterProvider router={router} />
-      </AuthContextProvider>
-    </div>
+    <Routes>
+      {router.map((route: any) => {
+        return <Route path={route.path} element={route.element} />;
+      })}
+    </Routes>
   );
 }
 

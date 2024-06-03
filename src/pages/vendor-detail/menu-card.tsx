@@ -11,7 +11,6 @@ export default function MenuCard({
   handleAddToCart,
   formatPrice,
   checkQuantity,
-  isLoadingAddCart,
 }: {
   menuItem: Menu;
   vendorData: Vendor;
@@ -19,7 +18,6 @@ export default function MenuCard({
   handleAddToCart: any;
   formatPrice: any;
   checkQuantity: any;
-  isLoadingAddCart: boolean;
 }) {
   return (
     <div
@@ -54,7 +52,7 @@ export default function MenuCard({
                 })
               }
             >
-              {isLoadingAddCart ? <LoaderCircle /> : "Add"}
+              Add
             </div>
           ) : (
             <div className="flex gap-5 text-sm font-nunito justify-between w-full xl:justify-end items-center">
@@ -80,11 +78,7 @@ export default function MenuCard({
                   />
                 </div>
                 <p className="font-bold">
-                  {isLoadingAddCart ? (
-                    <Loader />
-                  ) : (
-                    (checkQuantity(menuItem.uid) as number)
-                  )}
+                  {checkQuantity(menuItem.uid) as number}
                 </p>
                 <div className="p-2 rounded-3xl hover:cursor-pointer hover:bg-slate-100 transition-all duration-300 ease-in-out">
                   <LuPlusCircle

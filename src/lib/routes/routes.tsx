@@ -11,7 +11,8 @@ import VendorRegisterPage from "@pages/vendor/register-vendor";
 import { createBrowserRouter } from "react-router-dom";
 import VendorLayout from "src/layout/vendor-layout";
 
-export const router = createBrowserRouter([
+// export const router = createBrowserRouter([
+export const router = [
   {
     path: "/",
     element: <LandingPage />,
@@ -56,4 +57,5 @@ export const router = createBrowserRouter([
     path: '/chat', //nanti tambahin user id nya
     element: <ChatPage />
   },
-]);
+// ]);
+]

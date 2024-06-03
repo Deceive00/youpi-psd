@@ -8,7 +8,7 @@ import { Vendor } from "@lib/types/vendor-types";
 import { CgNotes } from "react-icons/cg";
 import { LuMinusCircle } from "react-icons/lu";
 import { LuPlusCircle } from "react-icons/lu";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { GrRestaurant } from "react-icons/gr";
 import { IoIosStar } from "react-icons/io";
@@ -18,6 +18,7 @@ import { auth, db } from "src/firebase/firebase-config";
 import MainLayout from "src/layout/main-layout";
 import SwitchVendor from "./switch-vendor-popup";
 import MenuCard from "./menu-card";
+import { Dice1 } from "lucide-react";
 
 export default function VendorDetailPage() {
   const { campusId, vendorId } = useParams();
@@ -76,7 +77,7 @@ export default function VendorDetailPage() {
     }
   );
 
-  const { mutate: addToCart, isLoading: isLoadingAddCart } = useMutation(
+  const { mutate: addToCart } = useMutation(
     async ({
       vendorId,
       menuId,
@@ -92,6 +93,7 @@ export default function VendorDetailPage() {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(["fetchUserCart"]);
         console.log("function success");
       },
       onError: (error: any) => {
@@ -154,20 +156,36 @@ export default function VendorDetailPage() {
   };
 
   useEffect(() => {
+    let unsubscribe = () => {}
     if (auth.currentUser && auth.currentUser.uid) {
-      const userCartRef = doc(db, "carts", auth.currentUser.uid);
-      const unsubscribe = onSnapshot(userCartRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setUserCart(snapshot.data() as UserCartNew);
+      const userCartRef = collection(db, "carts");
+      unsubscribe = onSnapshot(userCartRef, (snapshot) => {
+        console.log("kepanggil");
+        const currentUserDoc = snapshot.docs.find(
+          (doc) => doc.id === auth.currentUser?.uid
+        );
+        if (currentUserDoc) {
+          const data = currentUserDoc.data();
+          const updatedCart: UserCartNew = {
+            vendorId: data.vendorId,
+            menus: data.menus,
+          };
+          setUserCart(updatedCart);
         } else {
           setUserCart(null);
         }
+        // if (snapshot.exists()) {
+        //   setUserCart(snapshot.data() as UserCartNew);
+        // } else {
+        //   setUserCart(null);
+        // }
       });
 
-      return () => {
-        unsubscribe();
-      };
     }
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (
@@ -253,13 +271,13 @@ export default function VendorDetailPage() {
                   {vendorData?.categories.flatMap((menu) =>
                     menu.menus.map((menuItem) => (
                       <MenuCard
+                        key={menuItem.uid}
                         menuItem={menuItem}
                         vendorData={vendorData}
                         addToCart={addToCart}
                         handleAddToCart={handleAddToCart}
                         formatPrice={formatPrice}
                         checkQuantity={checkQuantity}
-                        isLoadingAddCart={isLoadingAddCart}
                       />
                     ))
                   )}
