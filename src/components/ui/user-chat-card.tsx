@@ -1,4 +1,4 @@
-import { Separator } from "@radix-ui/react-select";
+import { format } from "date-fns";
 import React from "react";
 
 interface UserChatCardProps {
@@ -6,6 +6,11 @@ interface UserChatCardProps {
   lastText: string;
   imageSrc: string;
   unread: string;
+  onClick: () => void;
+  date : {
+    seconds:number;
+    nanoseconds: number;
+  } | null;
 }
 
 const UserChat: React.FC<UserChatCardProps> = ({
@@ -13,6 +18,8 @@ const UserChat: React.FC<UserChatCardProps> = ({
   lastText,
   imageSrc,
   unread,
+  onClick,
+  date
 }) => {
   // State
   const [isHovered, setIsHovered] = React.useState(false);
@@ -22,6 +29,9 @@ const UserChat: React.FC<UserChatCardProps> = ({
   const handleFocus = () => setIsFocused(true);
   const handleMouseLeave = () => setIsHovered(false);
   const handleBlur = () => setIsFocused(false);
+
+  // Format a date
+  const formattedDate = date ? format(new Date(date.seconds * 1000), "hh:mm a") : "";
 
   const outerDivClass =
     isHovered || isFocused ? "bg-yellow-100 rounded-lg" : "";
@@ -38,6 +48,7 @@ const UserChat: React.FC<UserChatCardProps> = ({
       onFocus={handleFocus}
       onBlur={handleBlur}
       tabIndex={0}
+      onClick={onClick}
     >
       <div className="flex items-center bg-red-">
         <div className="flex-shrink-0">
@@ -56,7 +67,7 @@ const UserChat: React.FC<UserChatCardProps> = ({
           </p>
         </div>
         <div className="flex flex-col items-end justify-center text-sm text-gray-600">
-          <span>04:00 PM</span>
+          <span>{formattedDate}</span>
           <div
             className={`text-sm font-semibold text-red-400 px-2 rounded-full ${unreadDivClass}`}
           >
@@ -64,9 +75,6 @@ const UserChat: React.FC<UserChatCardProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Separator */}
-      <Separator className={`bg-gray-300`} />
     </div>
   );
 };

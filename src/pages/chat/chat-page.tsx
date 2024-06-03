@@ -1,66 +1,50 @@
-import ButtonGroup from "@components/ui/button-group";
-import UserChat from "@components/ui/user-chat-card";
-import { useAuth } from "@lib/hooks/useAuth";
 import { Separator } from "@radix-ui/react-select";
+import LeftChatPage from "./left-chat-page";
+import RightChatPage from "./right-chat-page";
+import { useAuth } from "@lib/hooks/useAuth";
+import Loader from "@components/loading/loader";
 import React from "react";
-import MainLayout from "src/layout/main-layout";
-import dummyUser from "../../assets/images/default.png"
+import { auth } from "src/firebase/firebase-config";
 
-export default function ChatPage(){
-    // Hooks user
-    // const {user, logout} = useAuth();
+const ChatPage = () => {
+  // Hooks user, dapetim userId supaya bisa passing ke sub-page
+  const { isLoading } = useAuth();
 
-    React.useEffect(() => {
-        
+  // State
+  const [currId , setCurrId ] = React.useState(auth.currentUser?.uid || "")
+  const [otherId, setOtherId] = React.useState("")
+  const [userInfo, setUserInfo] = React.useState<{displayName : string; uid: string; photoUrl : string} | null>()
+
+  //Change User
+  React.useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if(user) {
+        setCurrId(user.uid)
+      }
     })
+    return () => unsubscribe()
+  }, [])
 
-    const buttons = ['All','Friends','Officials']
+  // Combining ID with validations
+  const combinedId = currId && otherId ? (currId > otherId ? currId + otherId : otherId + currId) : "";
 
-    return(
-        <MainLayout className={`pt-14 sm:pt16 overflow-x-hidden`}>
-            {
-                <div className={`w-screen h-screen flex flec-row px-20 font-nunito`}>
-                    {/* Left */}
-                    <div className={`w-2/6 flex flex-col gap-y-4 pt-4`}>
-                        <div>
-                            <h1 className={`text-xl font-bold`}>Messages</h1>
-                            
-                            {/* Tambahin Icon tapi belom tau icon apa... */}
-                        </div>
+  // HandleOtherID
 
-                        {/* All | Team | Friends */}
-                        <div className="w-full flex justify-start">
-                            <ButtonGroup buttons={buttons} widthX={12}/>
-                        </div>
+  if (isLoading) {
+    return <Loader />;
+  }
 
-                        {/* Mapping from userMessage database */}
-                        <div className={` w-full overflow-y-auto`}>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="Last night before one direction meet taylor swift, did you wait for me?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="yoseftianganteng@gmail.com" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="yoseftianganteng@gmail.com" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                            <UserChat name="Yoseftian Nuhedward" imageSrc={dummyUser} lastText="kata darryl lu udh makan saksang panggang ya vik, gimana rasanya?" unread="1"/>
-                        </div>
+  return (
+    <div className={`w-screen h-screen flex flex-row px-20 font-nunito`}>
+      {/* Left */}
+      <LeftChatPage setUserInfo={setUserInfo} setOtherId={setOtherId}/>
+      {/* Separator */}
+      <Separator aria-orientation="vertical" className="border-[1.5px] shadow-xl mx-2"/>
 
-                    </div>
-                    {/* Separator */}
-                    <Separator className={`bg-gray-300`}/>
+      {/* Right */}
+      <RightChatPage photoUrl={userInfo?.photoUrl || ""} displayName={userInfo?.displayName || "Anonymous"} combinedId={combinedId} currId={currId} otherId={otherId}/>
+    </div>
+  );
+};
 
-                    {/* Right */}
-                    <div className={`w-4/6 bg-blue-100`}>
-                        right
-                    </div>
-                </div>
-            }
-        </MainLayout>
-    )
-}
+export default ChatPage;

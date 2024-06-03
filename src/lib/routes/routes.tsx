@@ -54,6 +54,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '/chat', //nanti tambahin user id nya
-    element: <ChatPage />
+    element: <ChatPage/>
   },
 ]);
