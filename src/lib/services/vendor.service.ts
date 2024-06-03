@@ -4,9 +4,10 @@ import {
   doc,
   getDoc,
   getDocs,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "src/firebase/firebase-config";
+import { auth, db } from "src/firebase/firebase-config";
 import { v4 as uuidv4 } from "uuid";
 export const fetchRestaurantData = async () => {
   const restaurantDoc = await getDocs(collection(db, "campus"));
@@ -181,6 +182,80 @@ export const deleteMenu = async (
     } else {
       console.error("Vendor not found in this campus");
       throw new Error("Vendor Not Found");
+    }
+  }
+};
+
+export const addCart = async ({
+  vendorId,
+  menuId,
+  notes,
+  add = null,
+}: {
+  vendorId: string;
+  menuId: string;
+  notes: string;
+  add?: boolean | null;
+}) => {
+  const cartCollection = await getDocs(collection(db, "carts"));
+  if (cartCollection && cartCollection.empty) {
+    if (auth.currentUser && auth.currentUser.uid) {
+      await setDoc(doc(db, "carts", auth.currentUser.uid), {
+        vendorId: vendorId,
+        menus: [{ menuId: menuId, menuQuantity: 1, notes: notes }],
+      });
+    }
+  } else {
+    if (auth.currentUser && auth.currentUser.uid) {
+      const userCartRef = doc(db, "carts", auth.currentUser.uid);
+      const userCart = await getDoc(userCartRef);
+      if (userCart.exists()) {
+        if (userCart.data().vendorId === vendorId) {
+          if (userCart.data().menus.length > 0) {
+            const existingMenuItemIndex = userCart
+              .data()
+              .menus.findIndex((item: any) => item.menuId === menuId);
+
+            if (existingMenuItemIndex !== -1) {
+              if (add !== null) {
+                const updatedMenus = [...userCart.data().menus];
+                if (add) {
+                  updatedMenus[existingMenuItemIndex].menuQuantity++;
+                } else {
+                  updatedMenus[existingMenuItemIndex].menuQuantity--;
+
+                  if (updatedMenus[existingMenuItemIndex].menuQuantity <= 0) {
+                    updatedMenus.splice(existingMenuItemIndex, 1);
+                  }
+                }
+                await updateDoc(userCartRef, { menus: updatedMenus });
+              }
+            } else {
+              const newMenu = {
+                menuId: menuId,
+                menuQuantity: 1,
+                notes: notes,
+              };
+              const updatedMenus = [...userCart.data().menus, newMenu];
+              await updateDoc(userCartRef, { menus: updatedMenus });
+            }
+          } else {
+            await updateDoc(userCartRef, {
+              menus: [{ menuId: menuId, menuQuantity: 1, notes: notes }],
+            });
+          }
+        } else {
+          await setDoc(doc(db, "carts", auth.currentUser.uid), {
+            vendorId: vendorId,
+            menus: [{ menuId: menuId, menuQuantity: 1, notes: notes }],
+          });
+        }
+      } else {
+        await setDoc(doc(db, "carts", auth.currentUser.uid), {
+          vendorId: vendorId,
+          menus: [{ menuId: menuId, menuQuantity: 1, notes: notes }],
+        });
+      }
     }
   }
 };

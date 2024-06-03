@@ -6,6 +6,8 @@ import { useToast } from "@components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { useAuth } from "@lib/hooks/useAuth";
 import { UserRegis, UserType } from "@lib/types/user-types";
+import { useMutation } from "react-query";
+import LoadingCircle from "@components/ui/loading-circle";
 
 interface RegisterSubPageProps {
   changeMode: (mode: string) => void;
@@ -27,9 +29,9 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
   }>(null);
   const password = watch("password");
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     console.log(data);
-    register(
+    await register(
       {
         regisData: {
           nim: data.nim,
@@ -65,10 +67,11 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
       let { id } = toast(errorMsg);
     }
   }, [errorMsg]);
+  const { status, mutate: submitMutate } = useMutation(onSubmit);
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit((data)=>{submitMutate(data)})}
       className="mx-auto grid w-[350px] gap-6 lg:w-full lg:max-w-[700px] mt-16 overflow-scroll"
     >
       <div className="grid gap-2">
@@ -209,12 +212,14 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
           )}
         />
       </div>
+      {status}
       <Button
         type="submit"
         className="w-full font-bold h-12"
         onClick={() => setErrorMsg(null)}
+        disabled = {status === 'loading' || status === 'success'}
       >
-        Sign Up
+        {status === 'loading' || status === 'success' ? <LoadingCircle/> : "Sign Up"}
       </Button>
       <div className="mb-4 text-center text-sm">
         Already have an account?{" "}

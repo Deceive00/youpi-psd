@@ -3,8 +3,8 @@ import MainLayout from "src/layout/main-layout";
 import PartnerContainer from "./partner-container";
 import Timeline from "@components/ui/timeline";
 
-const red = 'E71B1B'
-const orange = 'E78D3A'
+// const red = 'E71B1B'
+// const orange = 'E78D3A'
 
 export default function About() {
   return (

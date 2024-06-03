@@ -5,6 +5,7 @@ export interface Menu{
   image: string;
   price: Number;
 }
+
 export interface MenuCategory {
   name: string;
   menus: Menu[];
@@ -33,4 +34,4 @@ export interface VendorRegis {
   coverImage: string;
   password: string;
   confirmationPassword: string;
-}
+} 
