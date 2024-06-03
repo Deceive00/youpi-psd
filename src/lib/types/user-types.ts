@@ -42,7 +42,7 @@ export interface UserCartNew {
 
 export interface MenuCart {
   menuId: string;
-  quantity: Number;
+  menuQuantity: Number;
   notes: string;
 }
 
