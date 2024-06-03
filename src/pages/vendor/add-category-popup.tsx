@@ -25,7 +25,7 @@ export default function AddCategoryPopup({
   const {toast} = useToast();
   const [newCategory, setNewCategory] = useState<string>("");
   const {mutate: add, isLoading} = useMutation(async () => {
-    if (newCategory && vendor) {
+    if (newCategory !== '' && vendor) {
       return addCategory(vendor.campusName, vendor.id, {
         name: newCategory,
         menus: [],
@@ -40,15 +40,14 @@ export default function AddCategoryPopup({
       })
     },
     onSuccess: (msg: string | undefined) => {
-      if(msg){
+      if(msg && msg !== ''){
         toast({
           title: msg,
           variant: "success",
         })
+        setNewCategory('');
+        window.location.reload();
       }
-      setOpen(false);
-      setNewCategory('');
-      window.location.reload();
     }
   })
 

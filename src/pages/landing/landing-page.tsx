@@ -12,7 +12,7 @@ export default function LandingPage() {
   const {userType} = useAuth();
   const navigate = useNavigate();
   if(userType === UserType.VENDOR){
-    // masukin ke dashboard vendor
+    navigate("/vendor/");
   };
   return (
     <MainLayout className={"bg-white pt-14"}>

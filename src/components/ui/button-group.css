@@ -1,0 +1,7 @@
+.button-group button {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .button-group button:focus {
+    transform: translateX(5px);
+  }
