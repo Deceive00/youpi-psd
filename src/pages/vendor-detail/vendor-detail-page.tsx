@@ -5,9 +5,6 @@ import { addCart, fetchVendorDataById } from "@lib/services/vendor.service";
 import { queryClient } from "@lib/settings/query-settings";
 import { MenuCart, UserCartNew } from "@lib/types/user-types";
 import { Vendor } from "@lib/types/vendor-types";
-import { CgNotes } from "react-icons/cg";
-import { LuMinusCircle } from "react-icons/lu";
-import { LuPlusCircle } from "react-icons/lu";
 import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { GrRestaurant } from "react-icons/gr";
@@ -18,7 +15,6 @@ import { auth, db } from "src/firebase/firebase-config";
 import MainLayout from "src/layout/main-layout";
 import SwitchVendor from "./switch-vendor-popup";
 import MenuCard from "./menu-card";
-import { Dice1 } from "lucide-react";
 
 export default function VendorDetailPage() {
   const { campusId, vendorId } = useParams();
@@ -156,7 +152,7 @@ export default function VendorDetailPage() {
   };
 
   useEffect(() => {
-    let unsubscribe = () => {}
+    let unsubscribe = () => {};
     if (auth.currentUser && auth.currentUser.uid) {
       const userCartRef = collection(db, "carts");
       unsubscribe = onSnapshot(userCartRef, (snapshot) => {
@@ -174,13 +170,7 @@ export default function VendorDetailPage() {
         } else {
           setUserCart(null);
         }
-        // if (snapshot.exists()) {
-        //   setUserCart(snapshot.data() as UserCartNew);
-        // } else {
-        //   setUserCart(null);
-        // }
       });
-
     }
 
     return () => {

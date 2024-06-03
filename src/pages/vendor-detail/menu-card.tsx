@@ -1,6 +1,4 @@
-import Loader from "@components/loading/loader";
 import { Menu, Vendor } from "@lib/types/vendor-types";
-import { LoaderCircle } from "lucide-react";
 import { CgNotes } from "react-icons/cg";
 import { LuMinusCircle, LuPlusCircle } from "react-icons/lu";
 

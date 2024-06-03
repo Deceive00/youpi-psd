@@ -1,13 +1,7 @@
 import "./App.css";
 import { router } from "@lib/routes/routes";
 import AuthContextProvider from "./context/auth-context";
-import {
-  BrowserRouter,
-  Route,
-  RouterProvider,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 function App() {
