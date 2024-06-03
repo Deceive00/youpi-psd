@@ -1,10 +1,23 @@
 import { Button } from "@components/ui/button";
 import MainLayout from "src/layout/main-layout";
 import CartCard from "./cart-card";
+import { useQuery } from "react-query";
+import { fetchCart } from "@lib/services/vendor.service";
+import { UserCart } from "@lib/types/user-types";
+import { useState } from "react";
 
 export default function CartPage() {
   const array = [1, 2, 3];
-
+  const [userCart, setUserCart] = useState<UserCart | null>(null);
+  const { isLoading } = useQuery(['fetchUserCart'], fetchCart, {
+    onSuccess: (data : UserCart) => {
+      console.log(data);
+      setUserCart(data);
+    },
+    onError: (error : Error) => {
+      console.log(error.message);
+    }
+  })
   const dummyObject = {
     campusName: "BINUS Alam Sutera",
     vendorName: "Ramen Saia",
@@ -25,7 +38,8 @@ export default function CartPage() {
             <div className="text-3xl font-bold p-5 pb-0 sm:p-0">Your Cart</div>
             <div className="flex flex-col sm:gap-5 justify-center">
               {array.map((index) => (
-                <CartCard key={index} item={dummyObject} />
+                // <CartCard key={index} item={dummyObject} />
+                <p>index</p>
               ))}
             </div>
           </div>

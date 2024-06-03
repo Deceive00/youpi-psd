@@ -1,3 +1,5 @@
+import { Menu, Vendor } from "./vendor-types";
+
 export interface User{
   nim: string;
   email: string;
@@ -24,7 +26,7 @@ export interface UserRegis {
   confirmationPassword: string;
 }
 
-export interface UserCart {
+export interface UserCartOld {
   campusName: string;
   vendorName: string;
   name: string;
@@ -35,9 +37,14 @@ export interface UserCart {
   quantity: Number;
 }
 
-export interface UserCartNew {
+export interface UserCart {
   vendorId: string;
   menus: MenuCart[];
+}
+
+export interface UserCartFE{
+  vendor: Vendor;
+  menus: Menu[];
 }
 
 export interface MenuCart {

@@ -259,3 +259,18 @@ export const addCart = async ({
     }
   }
 };
+
+export const fetchCart = async () => {
+  if (auth.currentUser && auth.currentUser.uid) {
+    const userCartRef = doc(db, "carts", auth.currentUser.uid);
+    const userCart = await getDoc(userCartRef);
+
+    if (userCart.exists()) {
+      return userCart.data();
+    } else {
+      throw new Error("Cart still null");
+    }
+  } else {
+    throw new Error("No user");
+  }
+}

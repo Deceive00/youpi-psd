@@ -3,7 +3,7 @@ import { Button } from "@components/ui/button";
 import { formatPrice } from "@lib/services/price.service";
 import { addCart, fetchVendorDataById } from "@lib/services/vendor.service";
 import { queryClient } from "@lib/settings/query-settings";
-import { MenuCart, UserCartNew } from "@lib/types/user-types";
+import { MenuCart, UserCart } from "@lib/types/user-types";
 import { Vendor } from "@lib/types/vendor-types";
 import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ export default function VendorDetailPage() {
   const [activeCategory, setActiveCategory] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
   const [vendorData, setVendorData] = useState<Vendor | null>(null);
-  const [userCart, setUserCart] = useState<UserCartNew | null>(null);
+  const [userCart, setUserCart] = useState<UserCart | null>(null);
   const [pendingMenu, setPendingMenu] = useState<{
     vendorId: string;
     menuId: string;
@@ -63,7 +63,7 @@ export default function VendorDetailPage() {
       }
     },
     {
-      onSuccess: (data: UserCartNew) => {
+      onSuccess: (data: UserCart) => {
         console.log(data);
         setUserCart(data);
       },
@@ -162,7 +162,7 @@ export default function VendorDetailPage() {
         );
         if (currentUserDoc) {
           const data = currentUserDoc.data();
-          const updatedCart: UserCartNew = {
+          const updatedCart: UserCart = {
             vendorId: data.vendorId,
             menus: data.menus,
           };
