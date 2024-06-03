@@ -171,8 +171,11 @@ export const deleteMenu = async (
         (c: MenuCategory) => c.name === categoryName
       );
 
-      const updatedMenu = restaurantData.vendors[vendorIdx].categories[categoryIdx].menus.filter((m: any) => m.uid !== toDeleteMenu.uid);
-      restaurantData.vendors[vendorIdx].categories[categoryIdx].menus = updatedMenu;
+      const updatedMenu = restaurantData.vendors[vendorIdx].categories[
+        categoryIdx
+      ].menus.filter((m: any) => m.uid !== toDeleteMenu.uid);
+      restaurantData.vendors[vendorIdx].categories[categoryIdx].menus =
+        updatedMenu;
 
       await updateDoc(doc(db, "campus", campusId), {
         vendors: restaurantData.vendors,
@@ -191,11 +194,13 @@ export const addCart = async ({
   menuId,
   notes,
   add = null,
+  notesUpdated = null,
 }: {
   vendorId: string;
   menuId: string;
   notes: string;
   add?: boolean | null;
+  notesUpdated?: boolean | null;
 }) => {
   const cartCollection = await getDocs(collection(db, "carts"));
   if (cartCollection && cartCollection.empty) {
@@ -228,6 +233,14 @@ export const addCart = async ({
                     updatedMenus.splice(existingMenuItemIndex, 1);
                   }
                 }
+                await updateDoc(userCartRef, { menus: updatedMenus });
+              }
+
+              if (notesUpdated) {
+                console.log("masuk sini ga sih");
+                const updatedMenus = [...userCart.data().menus];
+                updatedMenus[existingMenuItemIndex].notes = notes;
+                console.log(updatedMenus);
                 await updateDoc(userCartRef, { menus: updatedMenus });
               }
             } else {
@@ -273,4 +286,4 @@ export const fetchCart = async () => {
   } else {
     throw new Error("No user");
   }
-}
+};

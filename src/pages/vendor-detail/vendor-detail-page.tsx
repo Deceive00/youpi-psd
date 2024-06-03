@@ -4,7 +4,7 @@ import { formatPrice } from "@lib/services/price.service";
 import { addCart, fetchVendorDataById } from "@lib/services/vendor.service";
 import { queryClient } from "@lib/settings/query-settings";
 import { MenuCart, UserCart } from "@lib/types/user-types";
-import { Vendor } from "@lib/types/vendor-types";
+import { Menu, Vendor } from "@lib/types/vendor-types";
 import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { GrRestaurant } from "react-icons/gr";
@@ -15,6 +15,7 @@ import { auth, db } from "src/firebase/firebase-config";
 import MainLayout from "src/layout/main-layout";
 import SwitchVendor from "./switch-vendor-popup";
 import MenuCard from "./menu-card";
+import NotesPopup from "./notes-popup";
 
 export default function VendorDetailPage() {
   const { campusId, vendorId } = useParams();
@@ -27,6 +28,14 @@ export default function VendorDetailPage() {
     menuId: string;
     notes: string;
   } | null>(null);
+  const [notesMenu, setNotesMenu] = useState<{
+    vendorId: string | undefined;
+    menuId: string;
+    notes: string;
+    name: string;
+  } | null>(null);
+  const [notesPopupOpen, setNotesPopupOpen] = useState(false);
+
   if (!campusId || !vendorId) {
     return <div>404 Not Found</div>;
   }
@@ -79,13 +88,15 @@ export default function VendorDetailPage() {
       menuId,
       notes,
       add = null,
+      notesUpdated = null,
     }: {
       vendorId: string;
       menuId: string;
       notes: string;
       add?: boolean | null;
+      notesUpdated?: boolean | null;
     }) => {
-      addCart({ vendorId, menuId, notes, add });
+      addCart({ vendorId, menuId, notes, add, notesUpdated });
     },
     {
       onSuccess: () => {
@@ -122,6 +133,35 @@ export default function VendorDetailPage() {
     }
   };
 
+  const getMenuData = (itemm: Menu) => {
+    if (vendorData?.id == userCart?.vendorId) {
+      if (userCart) {
+        if (userCart?.menus.length > 0) {
+          const itemExist = userCart.menus.find(
+            (item: MenuCart) => item.menuId === itemm.uid
+          );
+          console.log(itemExist?.notes);
+          if (itemExist) {
+            return {
+              vendorId: vendorData?.id,
+              menuId: itemm.uid,
+              notes: itemExist.notes,
+              name: itemm.name,
+            };
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  };
+
   const handleAddToCart = async ({
     vendorId,
     menuId,
@@ -151,12 +191,34 @@ export default function VendorDetailPage() {
     setPendingMenu(null);
   };
 
+  const handleDialogResponseNotes = async (
+    response: boolean,
+    newNote: string
+  ) => {
+    setNotesPopupOpen(false);
+    if (response && notesMenu) {
+      if (notesMenu.vendorId) {
+        await addToCart({
+          vendorId: notesMenu.vendorId,
+          menuId: notesMenu.menuId,
+          notes: newNote,
+          notesUpdated: true,
+        });
+      }
+    }
+    setNotesMenu(null);
+  };
+
+  const handleAddNotes = (data: Menu) => {
+    setNotesMenu(getMenuData(data));
+    setNotesPopupOpen(true);
+  };
+
   useEffect(() => {
     let unsubscribe = () => {};
     if (auth.currentUser && auth.currentUser.uid) {
       const userCartRef = collection(db, "carts");
       unsubscribe = onSnapshot(userCartRef, (snapshot) => {
-        console.log("kepanggil");
         const currentUserDoc = snapshot.docs.find(
           (doc) => doc.id === auth.currentUser?.uid
         );
@@ -225,7 +287,7 @@ export default function VendorDetailPage() {
                 </div>
               </div>
             </div>
-            <div className="mt-24 sm:mt-16 w-full h-auto px-3 sm:px-10 xl:px-20 flex flex-col md:flex-row font-nunito text-base">
+            <div className="mt-24 sm:mt-16 w-full h-auto px-3 sm:px-10 xl:px-20 pb-20 flex flex-col md:flex-row font-nunito text-base">
               <div className="shadow-lg rounded-lg w-full md:w-1/4 p-3 md:p-7 h-fit mt-5 bg-white md:sticky top-20 flex flex-col">
                 <div className="p-2 font-bold">Categories</div>
                 <div className="flex flex-col gap-1">
@@ -266,6 +328,7 @@ export default function VendorDetailPage() {
                         vendorData={vendorData}
                         addToCart={addToCart}
                         handleAddToCart={handleAddToCart}
+                        handleAddNotes={handleAddNotes}
                         formatPrice={formatPrice}
                         checkQuantity={checkQuantity}
                       />
@@ -281,6 +344,12 @@ export default function VendorDetailPage() {
         showDialog={showDialog}
         setShowDialog={setShowDialog}
         handleDialogResponse={handleDialogResponse}
+      />
+      <NotesPopup
+        open={notesPopupOpen}
+        onOpenChange={setNotesPopupOpen}
+        notesMenu={notesMenu}
+        handleDialogResponseNotes={handleDialogResponseNotes}
       />
     </MainLayout>
   );
