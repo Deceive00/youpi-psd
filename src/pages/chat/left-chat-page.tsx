@@ -76,7 +76,7 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo}) => {
     }
   };
 
-  const buttons = ["All", "Friends", "Officials"];
+  const buttons = ["All", "Vendor", "Sender"];
 
   React.useEffect(() => {
     fetchUserChats();
