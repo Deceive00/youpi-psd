@@ -4,14 +4,13 @@ import CartPage from "@pages/cart/cart-page";
 import ChatPage from "@pages/chat/chat-page";
 import LandingPage from "@pages/landing/landing-page";
 import Order from "@pages/order/order-page";
-import SenderRegisterPage from '@pages/sender/register-sender';
+import SenderRegisterPage from "@pages/sender/register-sender";
 import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
 import ManageMenuPage from "@pages/vendor/manage-menu-page";
 import VendorRegisterPage from "@pages/vendor/register-vendor";
-import { createBrowserRouter } from "react-router-dom";
 import VendorLayout from "src/layout/vendor-layout";
 
-export const router = createBrowserRouter([
+export const router = [
   {
     path: "/",
     element: <LandingPage />,
@@ -37,7 +36,7 @@ export const router = createBrowserRouter([
     element: <VendorRegisterPage />,
   },
   {
-    path: "/cart", // mungkin nanti kasih :transactionId? buat id penanda datanya
+    path: "/cart",
     element: <CartPage />,
   },
   {
@@ -46,14 +45,25 @@ export const router = createBrowserRouter([
   },
   {
     path: "/vendor/",
-    element: <VendorLayout children={<></>} menuName="Vendor Dashboard" menuDescription="Here you can manage your vendor account"/>,
+    element: (
+      <VendorLayout
+        children={<></>}
+        menuName="Vendor Dashboard"
+        menuDescription="Here you can manage your vendor account"
+      />
+    ),
   },
   {
-    path: '/auth/sender',
-    element: <SenderRegisterPage/>
+    path: "/auth/sender",
+    element: <SenderRegisterPage />,
   },
   {
+<<<<<<< HEAD
     path: '/chat', //nanti tambahin user id nya
     element: <ChatPage/>
+=======
+    path: "/chat", //nanti tambahin user id nya
+    element: <ChatPage />,
+>>>>>>> 723c5de2367f97c421a6463345a41a3512c73d6f
   },
-]);
+];

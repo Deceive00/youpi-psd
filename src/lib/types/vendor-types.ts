@@ -4,7 +4,9 @@ export interface Menu{
   description: string;
   image: string;
   price: Number;
+  notes: string;
 }
+
 export interface MenuCategory {
   name: string;
   menus: Menu[];
@@ -33,4 +35,4 @@ export interface VendorRegis {
   coverImage: string;
   password: string;
   confirmationPassword: string;
-}
+} 

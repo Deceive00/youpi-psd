@@ -7,6 +7,8 @@ import { useAuth } from "@lib/hooks/useAuth";
 import { SeedVendor } from "src/seeder/vendor-seeder";
 import { useEffect, useState } from "react";
 import { useToast } from "@components/ui/use-toast";
+import { useMutation } from "react-query";
+import LoadingCircle from "@components/ui/loading-circle";
 
 interface LoginSubPageProps {
   changeMode: any;
@@ -48,10 +50,11 @@ export default function LoginSubPage({ changeMode }: LoginSubPageProps) {
       password: data.password,
     });
   };
+  const { status, mutate: submitMutate } = useMutation(submitLogin);
 
   return (
     <form
-      onSubmit={handleSubmit(submitLogin)}
+      onSubmit={handleSubmit((data)=>{submitMutate(data)})}
       className="mx-auto grid w-[350px] gap-6"
     >
       <div className="grid gap-2">
@@ -110,8 +113,8 @@ export default function LoginSubPage({ changeMode }: LoginSubPageProps) {
         >
           Forgot password?
         </a>
-        <Button type="submit" className="w-full font-bold h-12" onClick={() => setErrorMsg(null)}>
-          Log In
+        <Button type="submit" className="w-full font-bold h-12" onClick={() => setErrorMsg(null)} disabled={status === 'loading'}>
+          {status === 'loading' ? <LoadingCircle/> : "Log In"}
         </Button>
         <div className="flex flex-row items-center justify-between">
           <div className="bg-muted-foreground h-[1px] w-[30%]"></div>
