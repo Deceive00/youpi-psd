@@ -7,12 +7,14 @@ export default function MenuCard({
   vendorData,
   addToCart,
   handleAddToCart,
+  handleAddNotes,
   formatPrice,
   checkQuantity,
 }: {
   menuItem: Menu;
   vendorData: Vendor;
   addToCart: any;
+  handleAddNotes: any;
   handleAddToCart: any;
   formatPrice: any;
   checkQuantity: any;
@@ -54,11 +56,17 @@ export default function MenuCard({
             </div>
           ) : (
             <div className="flex gap-5 text-sm font-nunito justify-between w-full xl:justify-end items-center">
-              <div className="hidden font-bold border p-2 px-4 rounded-lg xl:flex justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out">
+              <div
+                className="hidden font-bold border p-2 px-4 rounded-lg xl:flex justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out"
+                onClick={() => handleAddNotes(menuItem)}
+              >
                 <CgNotes />
                 <p>Notes</p>
               </div>
-              <div className="flex xl:hidden font-bold border p-2 px-4 rounded-lg justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out">
+              <div
+                className="flex xl:hidden font-bold border p-2 px-4 rounded-lg justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out"
+                onClick={() => handleAddNotes(menuItem)}
+              >
                 <CgNotes />
               </div>
               <div className="flex gap-2 justify-center items-center">
