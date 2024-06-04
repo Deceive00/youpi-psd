@@ -29,9 +29,10 @@ interface UserChats {
 interface Props {
   setOtherId: (uid: string) => void
   setUserInfo: (userInfo: UserInfo) => void
-}
+  onUserChatClick: () => void
+ }
 
-const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo}) => {
+const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClick}) => {
   const navigate = useNavigate();
   // State
   const userId = auth.currentUser?.uid;
@@ -83,7 +84,7 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo}) => {
   }, []);
 
   return (
-    <div className={`w-2/6 flex flex-col gap-y-4 pt-4 pt-12 shadow-r-[3px]`}>
+    <div className={`lg:w-2/6 w-full flex flex-col mx-2 lg:gap-y-4 gap-y-6 pt-4 mt-8 shadow-r-[3px]`}>
       <div className={`flex flex-row gap-x-2`}>
         <img src={logo} className="h-6" alt="" onClick={() => navigate("/")} />
         <h1 className={`text-xl font-bold text-slate-600`}>Messages</h1>
@@ -93,6 +94,7 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo}) => {
       {/* All | Team | Friends */}
       <div className="w-full flex justify-start">
         <ButtonGroup 
+          onUserBackClick={onUserChatClick}
           buttons={buttons} 
           widthX={12} 
           onSelect={(button) => setSelectedButton(button)}
@@ -107,6 +109,7 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo}) => {
             {
               setOtherId(chat.userInfo.uid);
               setUserInfo(chat.userInfo);
+              onUserChatClick()
             }
           }
           key={combinedId}

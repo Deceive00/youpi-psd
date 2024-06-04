@@ -41,12 +41,6 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
       },
     };
 
-    // Profile and Name
-    const variant1 = {
-        hidden: { opacity: 0, x : 100 },
-        show: { opacity: 1, x : 0 }
-    }
-
     // Fetched chats from firestore
     const fetchChats = async () => {
         console.log("Fetching");
@@ -130,7 +124,7 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
     }, [chats]);
   
     return (
-    <motion.div className={`w-4/6 flex flex-col font-nunito`}>
+    <motion.div className={`lg:w-4/6 w-screen flex flex-col px-4 lg:px-0 font-nunito`}>
         {/* Top */}
         <div className={`w-full h-1/6 bg-white flex flex-row justify-between items-center`}>
             <div className={`flex flex-row items-center gap-x-4` }>
@@ -159,7 +153,7 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
 
         {/* Middle */}
         <div 
-            className={`w-full h-full rounded-r-lg rounded-l-lg box-content overflow-y-auto px-3 pt-3`
+            className={`w-full h-full rounded-r-lg rounded-l-lg box-content overflow-y-auto lg:px-3 lg:pt-3 mt-4 lg:mt-0`
         }>
             {/* Mapping from chats database */}
             {

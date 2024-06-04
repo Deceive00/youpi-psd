@@ -34,7 +34,7 @@ const UserChat: React.FC<UserChatCardProps> = ({
   const formattedDate = date ? format(new Date(date.seconds * 1000), "hh:mm a") : "";
 
   const outerDivClass =
-    isHovered || isFocused ? "bg-yellow-100 rounded-lg" : "";
+    isHovered || isFocused ? "lg:bg-yellow-100 rounded-lg" : "";
   const unreadDivClass =
     isHovered || isFocused
       ? "bg-red-400 text-yellow-100"
