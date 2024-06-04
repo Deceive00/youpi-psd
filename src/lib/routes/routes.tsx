@@ -58,12 +58,7 @@ export const router = [
     element: <SenderRegisterPage />,
   },
   {
-<<<<<<< HEAD
-    path: '/chat', //nanti tambahin user id nya
-    element: <ChatPage/>
-=======
     path: "/chat", //nanti tambahin user id nya
     element: <ChatPage />,
->>>>>>> 723c5de2367f97c421a6463345a41a3512c73d6f
   },
 ];
