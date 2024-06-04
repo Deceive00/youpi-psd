@@ -25,8 +25,8 @@ function RouterComponent() {
 
   return (
     <Routes>
-      {router.map((route: any) => {
-        return <Route path={route.path} element={route.element} />;
+      {router.map((route: any, index : number) => {
+        return <Route key={index} path={route.path} element={route.element} />;
       })}
     </Routes>
   );

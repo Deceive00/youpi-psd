@@ -1,5 +1,8 @@
-import { Campus, Menu, MenuCategory } from "@lib/types/vendor-types";
+import { MenuCart, UserCart, UserCartFE } from "@lib/types/user-types";
+import { Campus, Menu, MenuCategory, Vendor } from "@lib/types/vendor-types";
 import {
+  QueryDocumentSnapshot,
+  QuerySnapshot,
   collection,
   doc,
   getDoc,
@@ -10,7 +13,7 @@ import {
 import { auth, db } from "src/firebase/firebase-config";
 import { v4 as uuidv4 } from "uuid";
 export const fetchRestaurantData = async () => {
-  const restaurantDoc = await getDocs(collection(db, "campus"));
+  const restaurantDoc : QuerySnapshot = await getDocs(collection(db, "campus"));
   return restaurantDoc;
 };
 
@@ -260,17 +263,76 @@ export const addCart = async ({
   }
 };
 
+export const fetchVendorDataByVendorId = async (vendorId: string) => {
+  const allCampus = await fetchRestaurantData();
+  let found = false;
+  let selectedVendor : Vendor | null = null;
+  allCampus.forEach((doc: QueryDocumentSnapshot) => {
+    const data = doc.data() as Campus;
+
+    if(data){
+      data.vendors.map((vendor : Vendor) => {
+        if(vendor.id === vendorId && !found){
+          selectedVendor = vendor;
+          found = true;
+        }
+      })
+    }
+  })
+
+  if(selectedVendor != null){
+    
+    return selectedVendor;
+  }else{
+    throw new Error('Vendor Not Found');
+  }
+}
 export const fetchCart = async () => {
   if (auth.currentUser && auth.currentUser.uid) {
     const userCartRef = doc(db, "carts", auth.currentUser.uid);
     const userCart = await getDoc(userCartRef);
 
     if (userCart.exists()) {
-      return userCart.data();
+      return userCart.data() as UserCart;
     } else {
       throw new Error("Cart still null");
     }
   } else {
     throw new Error("No user");
+  }
+}
+
+export const fetchMenuById = () => {
+  
+}
+export const fetchUserCartFE = async () => {
+  const dataBE : UserCart = await fetchCart();
+  if(dataBE) {
+    const vendor : Vendor | null = await fetchVendorDataByVendorId(dataBE.vendorId);
+    if(vendor){
+      const menuIds : string[] = [];
+      dataBE.menus.map((menu : MenuCart) => {
+        menuIds.push(menu.menuId);
+      });
+      let menus : Menu[] = [];
+
+      (vendor as Vendor).categories.map((category : MenuCategory) => {
+        category.menus.map((menu : Menu) => {
+          if(menuIds.includes(menu.uid)){
+            menu.notes = dataBE.menus.find((m : MenuCart) => m.menuId === menu.uid)?.notes || '';
+            menus.push(menu);
+          }
+        })
+      })
+
+      return {
+        vendor: vendor,
+        menus: menus
+      } as UserCartFE;
+    } else{
+      throw new Error("Vendor not found");
+    }
+  } else {
+    throw new Error("User Cart Is Empty")
   }
 }

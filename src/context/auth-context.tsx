@@ -180,7 +180,6 @@ export default function AuthContextProvider({
         let data = regisData as UserRegis;
         const { password, confirmationPassword, ...dataWithoutPasswords } = data;
         const userRef = doc(db, "users", userCredential.user.uid);
-        console.log(dataWithoutPasswords);
         await setDoc(userRef, {
           isSender: false,
           ...dataWithoutPasswords,
