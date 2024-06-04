@@ -28,19 +28,21 @@ export type AuthContextType = {
     password: string;
   }) => any;
   logout: () => Promise<void>;
-  register: ({regisData, userType} : {regisData: UserRegis | VendorRegis, userType: UserType}) => any;
+  register: ({ regisData, userType }: { regisData: UserRegis | VendorRegis, userType: UserType }) => any;
   isLoading: boolean;
   userType: UserType;
+  getUserId: () => string | null;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   authState: AuthState.NotAuthenticated,
-  login: async () => {},
-  logout: async () => {},
-  register: async () => {},
+  login: async () => { },
+  logout: async () => { },
+  register: async () => { },
   isLoading: false,
   userType: UserType.USER,
+  getUserId: () => null, 
 });
 
 export default function AuthContextProvider({
@@ -65,7 +67,6 @@ export default function AuthContextProvider({
         setUserType(UserType.USER);
         return;
       } else {
-        
         const campusQuerySnapshot = await getDocs(collection(db, "campus"));
         let matchingVendorFound = false;
         campusQuerySnapshot.forEach((campusDoc) => {
@@ -77,13 +78,13 @@ export default function AuthContextProvider({
               setAuthState(AuthState.Authenticated);
               setUserType(UserType.VENDOR);
               break;
-            } 
+            }
           }
-          
+
           if (!matchingVendorFound) {
             console.error("No matching vendor found in campus");
             throw new Error("Vendor not found");
-          } else{
+          } else {
             return;
           }
         });
@@ -93,7 +94,7 @@ export default function AuthContextProvider({
       setUser(null);
       setAuthState(AuthState.NotAuthenticated);
     } finally {
-      setIsLoading(false);  
+      setIsLoading(false);
     }
   };
 
@@ -170,13 +171,13 @@ export default function AuthContextProvider({
   const {
     mutate: register,
   } = useMutation(
-    async ({regisData, userType} : {regisData: UserRegis | VendorRegis, userType: UserType}) => {
+    async ({ regisData, userType }: { regisData: UserRegis | VendorRegis, userType: UserType }) => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         regisData.email,
         regisData.password
       );
-      if(userType === UserType.USER){
+      if (userType === UserType.USER) {
         let data = regisData as UserRegis;
         const { password, confirmationPassword, ...dataWithoutPasswords } = data;
         const userRef = doc(db, "users", userCredential.user.uid);
@@ -186,7 +187,7 @@ export default function AuthContextProvider({
         });
         return;
       }
-      else if(userType === UserType.VENDOR){
+      else if (userType === UserType.VENDOR) {
         let data = regisData as VendorRegis;
         const { password, confirmationPassword, ...dataWithoutPasswords } = data;
         const campusDocRef = doc(db, "campus", data.campusName);
@@ -200,11 +201,11 @@ export default function AuthContextProvider({
             categories: [],
             ...dataWithoutPasswords
           };
-  
+
           await updateDoc(campusDocRef, {
             vendors: arrayUnion(newVendorData),
           });
-  
+
           return;
         } else {
           throw new Error("Campus document not found");
@@ -213,12 +214,12 @@ export default function AuthContextProvider({
     },
     {
       onSuccess: () => {
-          toast({
-            title: "Register Successful!",
-            description: "Your account has been created",
-            variant: "success",
-          })
-        ;
+        toast({
+          title: "Register Successful!",
+          description: "Your account has been created",
+          variant: "success",
+        })
+          ;
       },
       onError: (error: any) => {
         console.error("Error creating user:", error.message);
@@ -232,6 +233,10 @@ export default function AuthContextProvider({
     }
   );
 
+  const getUserId = (): string | null => {
+    return auth.currentUser ? auth.currentUser.uid : null;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -242,6 +247,7 @@ export default function AuthContextProvider({
         userType,
         logout,
         register,
+        getUserId,
       }}
     >
       {children}
