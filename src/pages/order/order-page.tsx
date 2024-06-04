@@ -39,7 +39,6 @@ export default function Order() {
       onSuccess: (data) => {
         setRestaurantData(
           data.docs.map((doc) => {
-            console.log(doc.data());
             return doc.data();
           })
         );
@@ -116,7 +115,6 @@ export default function Order() {
             ></div>
           </div>
         </div>
-        <div className="h-screen"></div>
         <LuChevronDown
           className={`md:block hidden w-14 h-14 bottom-[2vh] right-4 fixed animate-bounce transition-all duration-1000 ${
             isIntersecting ? "opacity-0" : "opacity-100"

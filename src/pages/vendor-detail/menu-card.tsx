@@ -1,7 +1,11 @@
+import { Skeleton } from "@components/ui/skeleton";
 import { Menu, Vendor } from "@lib/types/vendor-types";
 import { CgNotes } from "react-icons/cg";
 import { LuMinusCircle, LuPlusCircle } from "react-icons/lu";
 
+export const MenuCardSkeleton = () => {
+  return <Skeleton className="shadow-md h-40 w-full bg-gray-200"></Skeleton>;
+};
 export default function MenuCard({
   menuItem,
   vendorData,
@@ -10,6 +14,7 @@ export default function MenuCard({
   handleAddNotes,
   formatPrice,
   checkQuantity,
+  isLoading,
 }: {
   menuItem: Menu;
   vendorData: Vendor;
@@ -18,7 +23,74 @@ export default function MenuCard({
   handleAddToCart: any;
   formatPrice: any;
   checkQuantity: any;
+  isLoading: boolean;
 }) {
+
+  const renderQuantity = () => {
+    if (isLoading) {
+      return <Skeleton className="bg-gray-200 w-30 h-4"/>
+    } else {
+      return checkQuantity(menuItem.uid) === -1 ? (
+        <div
+          className="p-2 border w-20 flex justify-center rounded-3xl px-5 text-sm font-bold bg-orange-400 text-white hover:cursor-pointer hover:bg-orange-300 transition-all duration-300"
+          onClick={async () =>
+            handleAddToCart({
+              vendorId: vendorData.id,
+              menuId: menuItem.uid,
+              notes: "",
+            })
+          }
+        >
+          Add
+        </div>
+      ) : (
+        <div className="flex gap-5 text-sm font-nunito justify-between w-full xl:justify-end items-center">
+          <div
+            className="hidden font-bold border p-2 px-4 rounded-lg xl:flex justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out"
+            onClick={() => handleAddNotes(menuItem)}
+          >
+            <CgNotes />
+            <p>Notes</p>
+          </div>
+          <div
+            className="flex xl:hidden font-bold border p-2 px-4 rounded-lg justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out"
+            onClick={() => handleAddNotes(menuItem)}
+          >
+            <CgNotes />
+          </div>
+          <div className="flex gap-2 justify-center items-center">
+            <div className="p-2 rounded-3xl hover:cursor-pointer hover:bg-slate-100 transition-all duration-300 ease-in-out">
+              <LuMinusCircle
+                className="w-6 h-6"
+                onClick={async () =>
+                  await addToCart({
+                    vendorId: vendorData.id,
+                    menuId: menuItem.uid,
+                    notes: "",
+                    add: false,
+                  })
+                }
+              />
+            </div>
+            <p className="font-bold">{checkQuantity(menuItem.uid) as number}</p>
+            <div className="p-2 rounded-3xl hover:cursor-pointer hover:bg-slate-100 transition-all duration-300 ease-in-out">
+              <LuPlusCircle
+                className="w-6 h-6"
+                onClick={async () =>
+                  await addToCart({
+                    vendorId: vendorData.id,
+                    menuId: menuItem.uid,
+                    notes: "",
+                    add: true,
+                  })
+                }
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
   return (
     <div
       className="shadow-md h-fit w-full border rounded-lg bg-white flex justify-between items-center p-3 gap-2"
@@ -40,69 +112,7 @@ export default function MenuCard({
             {formatPrice(menuItem.price)}
           </div>
         </div>
-        <div className="flex justify-end items-center">
-          {checkQuantity(menuItem.uid) === -1 ? (
-            <div
-              className="p-2 border w-20 flex justify-center rounded-3xl px-5 text-sm font-bold bg-orange-400 text-white hover:cursor-pointer hover:bg-orange-300 transition-all duration-300"
-              onClick={async () =>
-                handleAddToCart({
-                  vendorId: vendorData.id,
-                  menuId: menuItem.uid,
-                  notes: "",
-                })
-              }
-            >
-              Add
-            </div>
-          ) : (
-            <div className="flex gap-5 text-sm font-nunito justify-between w-full xl:justify-end items-center">
-              <div
-                className="hidden font-bold border p-2 px-4 rounded-lg xl:flex justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out"
-                onClick={() => handleAddNotes(menuItem)}
-              >
-                <CgNotes />
-                <p>Notes</p>
-              </div>
-              <div
-                className="flex xl:hidden font-bold border p-2 px-4 rounded-lg justify-center items-center gap-2 hover:cursor-pointer hover:bg-slate-50 transition-all duration-300 ease-in-out"
-                onClick={() => handleAddNotes(menuItem)}
-              >
-                <CgNotes />
-              </div>
-              <div className="flex gap-2 justify-center items-center">
-                <div className="p-2 rounded-3xl hover:cursor-pointer hover:bg-slate-100 transition-all duration-300 ease-in-out">
-                  <LuMinusCircle
-                    className="w-6 h-6"
-                    onClick={async () =>
-                      await addToCart({
-                        vendorId: vendorData.id,
-                        menuId: menuItem.uid,
-                        notes: "",
-                        add: false,
-                      })
-                    }
-                  />
-                </div>
-                <p className="font-bold">
-                  {checkQuantity(menuItem.uid) as number}
-                </p>
-                <div className="p-2 rounded-3xl hover:cursor-pointer hover:bg-slate-100 transition-all duration-300 ease-in-out">
-                  <LuPlusCircle
-                    className="w-6 h-6"
-                    onClick={async () =>
-                      await addToCart({
-                        vendorId: vendorData.id,
-                        menuId: menuItem.uid,
-                        notes: "",
-                        add: true,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        <div className="flex justify-end items-center">{renderQuantity()}</div>
       </div>
     </div>
   );

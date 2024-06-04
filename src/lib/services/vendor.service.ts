@@ -333,6 +333,7 @@ export const fetchUserCartFE = async () => {
         category.menus.map((menu : Menu) => {
           if(menuIds.includes(menu.uid)){
             menu.notes = dataBE.menus.find((m : MenuCart) => m.menuId === menu.uid)?.notes || '';
+            menu.quantity = dataBE.menus.find((m : MenuCart) => m.menuId === menu.uid)?.menuQuantity as number || 0;
             menus.push(menu);
           }
         })
