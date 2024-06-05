@@ -5,6 +5,7 @@ import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "src/firebase/firebase-config";
+import { motion } from "framer-motion"
 
 interface UserInfo {
   uid: string;
@@ -84,7 +85,13 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClic
   }, []);
 
   return (
-    <div className={`lg:w-2/6 w-full flex flex-col mx-2 lg:gap-y-4 gap-y-6 pt-4 mt-8 shadow-r-[3px]`}>
+    <motion.div 
+      key={userId}
+      transition={{delay:0.1}}
+      animate={{scale:1, x:0}}
+      initial={{scale:1, x:1000}}
+      className={`lg:w-2/6 w-full flex flex-col mx-2 lg:gap-y-4 gap-y-6 pt-4 mt-8 shadow-r-[3px]`}
+    >
       <div className={`flex flex-row gap-x-2`}>
         <img src={logo} className="h-6" alt="" onClick={() => navigate("/")} />
         <h1 className={`text-xl font-bold text-slate-600`}>Messages</h1>
@@ -120,7 +127,7 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClic
           unread=""
         />
       ))}
-    </div>
+    </motion.div>
   );
 };
 

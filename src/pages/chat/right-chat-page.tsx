@@ -15,6 +15,7 @@ interface Props {
     combinedId : string
     displayName : string
     photoUrl: string
+    onHandleBackClick: () => void
 }
 
 interface Message {
@@ -27,7 +28,7 @@ interface Message {
     };
   }
 
-const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayName,photoUrl}) => {
+const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayName,photoUrl, onHandleBackClick}) => {
     const [ text, setText ] = React.useState("");
     const [ chats, setChats ] = React.useState<Message[]>([]);
     const endMessageRef = React.useRef<HTMLDivElement>(null);
@@ -146,7 +147,7 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
             <div className="flex flex-row text-xl gap-x-4">
                 <FaVideo/>
                 <IoCall/>
-                <BsThreeDotsVertical/>
+                <BsThreeDotsVertical onClick={onHandleBackClick}/>
             </div>
         </div>
         <Separator className={`border-[1px] shadow-xl mx-2`} />
@@ -164,8 +165,8 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
                     >
                         <div className={`chat ${chat.senderId === currId ? "chat-end" : "chat-start"}`}>
                             <div className="chat-bubble" style={{
-                                backgroundColor: chat.senderId == currId ? '#FFBF78' : '#EEEEEE',
-                                color: chat.senderId == currId ? '#2e2e2e' : '#060e16',
+                                backgroundColor: chat.senderId == currId ? '#e78c38' : '#EEEEEE',
+                                color: chat.senderId == currId ? '#ffedd6' : '#060e16',
                                 boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px',
                             }}>
                                 {chat.message}

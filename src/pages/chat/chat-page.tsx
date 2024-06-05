@@ -68,6 +68,7 @@ const ChatPage = () => {
             className="border-[1.5px] shadow-xl mx-2"
           />
           <RightChatPage
+            onHandleBackClick={handleBackClick}
             photoUrl={userInfo?.photoUrl || ""}
             displayName={userInfo?.displayName || "Anonymous"}
             combinedId={combinedId}
@@ -83,6 +84,7 @@ const ChatPage = () => {
 
           {isDetailOpen && (
             <RightChatPage
+              onHandleBackClick={handleBackClick}
               photoUrl={userInfo?.photoUrl || ""}
               displayName={userInfo?.displayName || "Anonymous"}
               combinedId={combinedId}
