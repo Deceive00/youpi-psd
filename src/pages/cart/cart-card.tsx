@@ -1,8 +1,8 @@
+import { Skeleton } from "@components/ui/skeleton";
 import {
   calculateFakeDiscount,
   formatPrice,
 } from "@lib/services/price.service";
-import { UserCart } from "@lib/types/user-types";
 import { Menu, Vendor } from "@lib/types/vendor-types";
 import { FiPlusCircle } from "react-icons/fi";
 import { FiMinusCircle } from "react-icons/fi";
@@ -11,7 +11,12 @@ interface CartCardProps {
   vendor: Vendor;
   menu: Menu;
 }
-
+export const CartCardSkeleton = () =>{
+  return(
+      <Skeleton className='h-[250px] md:h-[275px] w-full bg-gray-200'>
+      </Skeleton>
+  );
+}
 export default function CartCard({ vendor, menu }: CartCardProps) {
   return (
     <div className="w-full sm:shadow-md h-auto border flex justify-between p-5 pb-3">
@@ -46,7 +51,7 @@ export default function CartCard({ vendor, menu }: CartCardProps) {
         />
         <div className="flex w-full justify-between items-center ">
           <FiMinusCircle className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-          <p className="font-bold">{1}</p>
+          <p className="font-bold">{menu.quantity}</p>
           <FiPlusCircle className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
         </div>
       </div>

@@ -97,15 +97,16 @@ export default function MenuTable({ menu, categoryName }: props) {
           imageUrl = (await uploadPhoto(data.image, fileName)) as string;
           console.log(imageUrl);
         }
-  
+
         const updatedData: Menu = {
           name: data.name,
           description: data.description,
           price: data.price,
           uid: chosenMenu?.uid,
           image: imageUrl,
+          quantity:0,
+          notes:''
         };
-        console.log(updatedData)
         if (user) {
           return await updateMenu(
             (user as Vendor).campusName,
@@ -171,7 +172,7 @@ export default function MenuTable({ menu, categoryName }: props) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-1">No.</TableHead>
+            {/* <TableHead className="w-1">No.</TableHead> */}
             <TableHead>Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Description</TableHead>
@@ -189,7 +190,7 @@ export default function MenuTable({ menu, categoryName }: props) {
               {menu.map((menu, i) => {
                 return (
                   <TableRow key={i}>
-                    <TableCell className="w-1">{i + 1}</TableCell>
+                    {/* <TableCell className="w-1">{i + 1}</TableCell> */}
                     <TableCell>
                       <img
                         src={menu.image}
