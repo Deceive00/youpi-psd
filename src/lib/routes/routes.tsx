@@ -3,6 +3,7 @@ import AuthPage from "@pages/auth/auth-page";
 import CartPage from "@pages/cart/cart-page";
 import ChatPage from "@pages/chat/chat-page";
 import LandingPage from "@pages/landing/landing-page";
+import ManageOrderVendorPage from "@pages/manage-order/manage-order-vendor-page";
 import Order from "@pages/order/order-page";
 import SenderRegisterPage from "@pages/sender/register-sender";
 import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
@@ -42,6 +43,10 @@ export const router = [
   {
     path: "/vendor/manage/menu",
     element: <ManageMenuPage />,
+  },
+  {
+    path: "/vendor/manage/order",
+    element: <ManageOrderVendorPage />,
   },
   {
     path: "/vendor/",

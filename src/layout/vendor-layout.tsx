@@ -31,7 +31,7 @@ export default function VendorLayout({
   useEffect(() => {
     (async () => {
       await new Promise((resolve) => setTimeout(resolve, 150));
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 3; i++) {
         await new Promise((resolve) => setTimeout(resolve, 100));
         if (isMobileMenuOpen) {
           functionArrs[i]({ opacity: "100%", transform: "translateY(0%)" });

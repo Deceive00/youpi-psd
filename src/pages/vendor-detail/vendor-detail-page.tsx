@@ -1,5 +1,4 @@
 import { Button } from "@components/ui/button";
-import { formatPrice } from "@lib/services/price.service";
 import { addCart, fetchVendorDataById } from "@lib/services/vendor.service";
 import { MenuCart, UserCart } from "@lib/types/user-types";
 import { Menu, Vendor } from "@lib/types/vendor-types";
@@ -358,7 +357,6 @@ export default function VendorDetailPage() {
                           addToCart={addToCart}
                           handleAddToCart={handleAddToCart}
                           handleAddNotes={handleAddNotes}
-                          formatPrice={formatPrice}
                           checkQuantity={checkQuantity}
                           isLoading={isLoadingUserCart}
                         />

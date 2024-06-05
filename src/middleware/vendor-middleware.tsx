@@ -20,7 +20,6 @@ export default function VendorMiddleware({ children }: VendorMiddlewareProps) {
   }, [userType, isLoading]);
 
   if (isLoading) {
-    console.log(isLoading);
     return (
       <div className="w-[100vw] h-[100vh] flex justify-center items-center">
         <Loader/>

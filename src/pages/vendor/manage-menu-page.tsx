@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import AdminLayout from "src/layout/vendor-layout";
+import VendorLayout from "src/layout/vendor-layout";
 import { Vendor } from "@lib/types/vendor-types";
 import { useAuth } from "@lib/hooks/useAuth";
 import CategoryCard from "./category-card";
@@ -19,19 +19,19 @@ export default function ManageMenuPage() {
   }, [user]);
 
   return (
-    <AdminLayout
+    <VendorLayout
       menuDescription={`Manage ${vendor?.name} Menus`}
       menuName="Manage Menu"
     >
       <div className="font-nunito ">
         <AddCategoryPopup vendor={vendor} />
-        <Accordion type="single" collapsible className="mt-4">
+        <Accordion type="single" collapsible className="mt-4 max-h-[67vh] overflow-y-scroll">
           {vendor?.categories.map((category, index) => {
             return <CategoryCard category={category} key={index} />;
           })}
         </Accordion>
       </div>
       <Toaster/>
-    </AdminLayout>
+    </VendorLayout>
   );
 }

@@ -1,4 +1,5 @@
 import { Skeleton } from "@components/ui/skeleton";
+import { formatPrice } from "@lib/services/price.service";
 import { Menu, Vendor } from "@lib/types/vendor-types";
 import { CgNotes } from "react-icons/cg";
 import { LuMinusCircle, LuPlusCircle } from "react-icons/lu";
@@ -12,22 +13,22 @@ export default function MenuCard({
   addToCart,
   handleAddToCart,
   handleAddNotes,
-  formatPrice,
   checkQuantity,
   isLoading,
 }: {
   menuItem: Menu;
   vendorData: Vendor;
-  addToCart: any;
-  handleAddNotes: any;
-  handleAddToCart: any;
-  formatPrice: any;
-  checkQuantity: any;
-  isLoading: boolean;
+  addToCart?: any;
+  handleAddNotes?: any;
+  handleAddToCart?: any;
+  checkQuantity?: any;
+  isLoading?: boolean;
 }) {
 
   const renderQuantity = () => {
-    console.log(isLoading)
+    if(!checkQuantity){
+      return;
+    }
     if (isLoading && checkQuantity(menuItem.uid) !== -1) {
       return <Skeleton className="bg-gray-200 w-30 h-4"/>
     } else {
@@ -104,7 +105,7 @@ export default function MenuCard({
       <div className="flex w-full pl-2 flex-col justify-between h-full gap-3">
         <div className="w-full h-full">
           <div className="font-bold text-base lg:text-lg line-clamp-1">
-            {menuItem.name}
+            {!checkQuantity ? <span className="font-bold">{menuItem.quantity} x </span> : <></>}{menuItem.name}
           </div>
           <div className="line-clamp-1 text-sm lg:text-base opacity-70">
             {menuItem.description}
