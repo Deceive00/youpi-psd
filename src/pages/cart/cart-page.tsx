@@ -3,7 +3,7 @@ import MainLayout from "src/layout/main-layout";
 import CartCard, { CartCardSkeleton } from "./cart-card";
 import { useMutation, useQuery } from "react-query";
 import {fetchUserCartFE } from "@lib/services/vendor.service";
-import { UserCartFE } from "@lib/types/user-types";
+import { UserCartFE, UserType } from "@lib/types/user-types";
 import { useEffect, useState } from "react";
 import { Input } from "@components/ui/input";
 import { addOrder } from "@lib/services/order.service";
@@ -12,6 +12,7 @@ import { useToast } from "@components/ui/use-toast";
 import { Toaster } from "@components/ui/toaster";
 import { useNavigate } from "react-router-dom";
 import { getTotalPriceMenu } from "@lib/services/price.service";
+import { useAuth } from "@lib/hooks/useAuth";
 
 
 export default function CartPage() {
@@ -19,6 +20,7 @@ export default function CartPage() {
   const [userCart, setUserCart] = useState<UserCartFE | null>(null);
   const [address, setAddress] =  useState('');
   const {toast} = useToast();
+  const {userType} = useAuth()
   const { isLoading: cartLoading } = useQuery(['fetchUserCart'], fetchUserCartFE, {
     onSuccess: (data : UserCartFE) => {
       setUserCart(data);
@@ -32,13 +34,18 @@ export default function CartPage() {
         navigate('/order');
       }
     }
-  })
+  });
+  useEffect(() => {
+    if(userType === UserType.VENDOR){
+      navigate('/');
+    }
+  }, [userType])
   const navigate = useNavigate();
   const { mutate: handleOrder } = useMutation(async () => {
     if(type === 'delivery' && address.length <= 0){
       throw new Error("Please insert your delivery address details")
     }
-    
+
     return addOrder({
       campusName: userCart?.vendor.campusName,
       menus: userCart?.menus,
