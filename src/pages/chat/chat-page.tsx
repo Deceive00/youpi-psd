@@ -9,24 +9,44 @@ import { auth } from "src/firebase/firebase-config";
 const ChatPage = () => {
   // Hooks user, dapetim userId supaya bisa passing ke sub-page
   const { isLoading } = useAuth();
+  const [isDetailOpen, setIsDetailOpen] = React.useState(false);
+
+      // Handler
+      const handleUserChatClick = () => {
+        setIsDetailOpen(true);
+      }
+
+      const handleBackClick = () => {
+        setIsDetailOpen(false)
+      }
+
 
   // State
-  const [currId , setCurrId ] = React.useState(auth.currentUser?.uid || "")
-  const [otherId, setOtherId] = React.useState("")
-  const [userInfo, setUserInfo] = React.useState<{displayName : string; uid: string; photoUrl : string} | null>()
+  const [currId, setCurrId] = React.useState(auth.currentUser?.uid || "");
+  const [otherId, setOtherId] = React.useState("");
+  const [userInfo, setUserInfo] = React.useState<{
+    displayName: string;
+    uid: string;
+    photoUrl: string;
+  } | null>();
 
   //Change User
   React.useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if(user) {
-        setCurrId(user.uid)
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrId(user.uid);
       }
-    })
-    return () => unsubscribe()
-  }, [])
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Combining ID with validations
-  const combinedId = currId && otherId ? (currId > otherId ? currId + otherId : otherId + currId) : "";
+  const combinedId =
+    currId && otherId
+      ? currId > otherId
+        ? currId + otherId
+        : otherId + currId
+      : "";
 
   // HandleOtherID
 
@@ -35,14 +55,45 @@ const ChatPage = () => {
   }
 
   return (
-    <div className={`w-screen h-screen flex flex-row px-20 font-nunito`}>
-      {/* Left */}
-      <LeftChatPage setUserInfo={setUserInfo} setOtherId={setOtherId}/>
-      {/* Separator */}
-      <Separator aria-orientation="vertical" className="border-[1.5px] shadow-xl mx-2"/>
+    <div className={`w-screen h-screen flex flex-row lg:px-20 font-nunito`}>
+      {window.innerWidth >= 640 ? (
+        <>
+          <LeftChatPage
+            setUserInfo={setUserInfo}
+            setOtherId={setOtherId}
+            onUserChatClick={handleUserChatClick}
+          />
+          <Separator
+            aria-orientation="vertical"
+            className="border-[1.5px] shadow-xl mx-2"
+          />
+          <RightChatPage
+            onHandleBackClick={handleBackClick}
+            photoUrl={userInfo?.photoUrl || ""}
+            displayName={userInfo?.displayName || "Anonymous"}
+            combinedId={combinedId}
+            currId={currId}
+            otherId={otherId}
+          />
+        </>
+      ) : (
+        <>
+          {!isDetailOpen && (
+            <LeftChatPage setUserInfo={setUserInfo} setOtherId={setOtherId} onUserChatClick={handleUserChatClick}/>
+          )}
 
-      {/* Right */}
-      <RightChatPage photoUrl={userInfo?.photoUrl || ""} displayName={userInfo?.displayName || "Anonymous"} combinedId={combinedId} currId={currId} otherId={otherId}/>
+          {isDetailOpen && (
+            <RightChatPage
+              onHandleBackClick={handleBackClick}
+              photoUrl={userInfo?.photoUrl || ""}
+              displayName={userInfo?.displayName || "Anonymous"}
+              combinedId={combinedId}
+              currId={currId}
+              otherId={otherId}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };
