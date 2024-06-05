@@ -60,7 +60,7 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
         <div className="hidden md:flex gap-8 font-bold">
           <Link to="/order">Order</Link>
           <Link to="/about">About</Link>
-          <Link to="">History</Link>
+          <Link to="/history">History</Link>
         </div>
       </div>
       <div className="gap-8 items-center justify-center h-full md:flex hidden">
