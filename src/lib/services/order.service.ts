@@ -7,17 +7,19 @@ export const addOrder = async (order: Order) => {
   if(id){
     const userRef = doc(db, "orders", id);
     const userDoc = await getDoc(userRef);
+    console.log(order);
+    // return;
     if(userDoc.exists()){
       await updateDoc(userRef, {
         ongoing: order
       })
-      await removeCart();
     } else { 
       await setDoc(userRef, {
         ongoing: order,
         history: [],
       });
     }
+    await removeCart();
   }else{
     throw new Error('User ID not found')
   }

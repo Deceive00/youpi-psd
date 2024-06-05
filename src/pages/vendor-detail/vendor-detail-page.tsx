@@ -79,7 +79,6 @@ export default function VendorDetailPage() {
       },
     }
   );
-  console.log(isLoadingUserCart);
   const { mutate: addToCart } = useMutation(
     async ({
       vendorId,

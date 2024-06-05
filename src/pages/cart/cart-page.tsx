@@ -38,7 +38,7 @@ export default function CartPage() {
     if(type === 'delivery' && address.length <= 0){
       throw new Error("Please insert your delivery address details")
     }
-
+    
     return addOrder({
       campusName: userCart?.vendor.campusName,
       menus: userCart?.menus,

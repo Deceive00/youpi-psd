@@ -27,7 +27,8 @@ export default function MenuCard({
 }) {
 
   const renderQuantity = () => {
-    if (isLoading) {
+    console.log(isLoading)
+    if (isLoading && checkQuantity(menuItem.uid) !== -1) {
       return <Skeleton className="bg-gray-200 w-30 h-4"/>
     } else {
       return checkQuantity(menuItem.uid) === -1 ? (
