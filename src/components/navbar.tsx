@@ -53,7 +53,7 @@ const Navbar = ({ className = "bg-transparent" }: Props) => {
         <div className="hidden md:flex gap-8 font-bold">
           <Link to="/order">Order</Link>
           <Link to="/about">About</Link>
-          <Link to="">History</Link>
+          <Link to="/history">History</Link>
         </div>
       </div>
       <div className="gap-8 items-center justify-center h-full md:flex hidden">
@@ -103,7 +103,7 @@ const Navbar = ({ className = "bg-transparent" }: Props) => {
           <Link to="/about" className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl" style={navStyles3}>
             About
           </Link>
-          <Link to="" className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl" style={navStyles4}>
+          <Link to="/history" className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl" style={navStyles4}>
             History
           </Link>
           {user ? (
