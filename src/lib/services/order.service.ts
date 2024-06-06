@@ -47,7 +47,7 @@ export const getVendorIncomingOrder = (callback: (orders: Order[]) => void) => {
       const updatedOrders: Order[] = [];
       orderSnapshot.docs.forEach((d) => {
         const data = d.data().ongoing as Order;
-        if (data.vendorId === id) {
+        if (data.vendorId === id && data.status === DELIVERY_STATUS.WAITING_CONFIRMATION) {
           updatedOrders.push(data);
         }
       });
@@ -59,6 +59,7 @@ export const getVendorIncomingOrder = (callback: (orders: Order[]) => void) => {
     throw new Error('User ID not found');
   }
 }
+
 export const getVendorOrderHistory = (callback: (orders: Order[]) => void) => {
   const id = auth.currentUser?.uid;
   if (id) {
@@ -69,6 +70,27 @@ export const getVendorOrderHistory = (callback: (orders: Order[]) => void) => {
           callback(data);
         }
       });
+    });
+
+    return unsubscribe;
+  } else {
+    throw new Error('User ID not found');
+  }
+}
+
+export const getVendorOngoingOrder = (callback: (orders: Order[]) => void) => {
+  const id = auth.currentUser?.uid;
+  if (id) {
+    const unsubscribe = onSnapshot(collection(db, "orders"), (orderSnapshot) => {
+      const updatedOrders: Order[] = [];
+      orderSnapshot.docs.forEach((d) => {
+        const data = d.data().ongoing as Order;
+        console.log(data.status, " vendor id = ", data.vendorId)
+        if (data.vendorId === id && data.status !== DELIVERY_STATUS.WAITING_CONFIRMATION) {
+          updatedOrders.push(data);
+        }
+      });
+      callback(updatedOrders);
     });
 
     return unsubscribe;

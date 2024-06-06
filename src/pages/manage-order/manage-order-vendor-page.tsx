@@ -4,6 +4,7 @@ import { useToast } from "@components/ui/use-toast";
 import { useAuth } from "@lib/hooks/useAuth";
 import {
   getVendorIncomingOrder,
+  getVendorOngoingOrder,
   getVendorOrderHistory,
 } from "@lib/services/order.service";
 import { Order } from "@lib/types/order-types";
@@ -15,14 +16,14 @@ import VendorLayout from "src/layout/vendor-layout";
 import OrderCardAccordionItem from "./order-card-accordion-item";
 enum OrderTab {
   INCOMING = "incoming",
-  HISTORY = "history",
+  ONGOING = "ongoing",
 }
 export default function ManageOrderVendorPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [incomingOrderData, setIncomingOrderData] = useState<Order[] | null>(
     null
   );
-  const [historyData, setHistoryData] = useState<Order[] | null>(null);
+  const [ongoingData, setOngoingData] = useState<Order[] | null>(null);
   const { user } = useAuth();
   const [tab, setTab] = useState<OrderTab>(OrderTab.INCOMING);
   const [transitioning, setTransitioning] = useState(false);
@@ -51,14 +52,15 @@ export default function ManageOrderVendorPage() {
 
   useEffect(() => {
     if (vendor) {
-      const unsubscribe = getVendorOrderHistory((orders: Order[]) => {
+      const unsubscribe = getVendorOngoingOrder((orders: Order[]) => {
         console.log(orders);
-        setHistoryData(orders);
+        setOngoingData(orders);
       });
 
       return () => unsubscribe();
     }
   }, [vendor]);
+
   return (
     <VendorLayout
       menuDescription={`Manage ${vendor?.name} Orders`}
@@ -85,18 +87,18 @@ export default function ManageOrderVendorPage() {
           </div>
           <div
             className="flex flex-col items-start cursor-pointer"
-            onClick={() => handleTabChange(OrderTab.HISTORY)}
+            onClick={() => handleTabChange(OrderTab.ONGOING)}
           >
             <div
               className={`px-10 py-2 transition-all duration-100 ${
-                tab === OrderTab.HISTORY ? "font-bold" : ""
+                tab === OrderTab.ONGOING ? "font-bold" : ""
               }`}
             >
-              History
+              Ongoing
             </div>
             <div
               className={`bg-primary h-[0.15rem] transition-all duration-300 ${
-                tab === OrderTab.HISTORY ? "w-full" : "w-0"
+                tab === OrderTab.ONGOING ? "w-full" : "w-0"
               }`}
             ></div>
           </div>
@@ -113,8 +115,10 @@ export default function ManageOrderVendorPage() {
                     return <OrderCardAccordionItem index={index} key={index} order={order} vendor={vendor}/>;
                   }
                 })
-              : historyData?.map((order: Order, index: number) => {
-                  return <p key={index}>{order.address}</p>;
+              : ongoingData?.map((order: Order, index: number) => {
+                  if(vendor){
+                    return <OrderCardAccordionItem index={index} key={index} order={order} vendor={vendor}/>;
+                  }
                 })}
           </Accordion>
         </div>
