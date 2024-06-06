@@ -10,10 +10,10 @@ interface Props {
 const OrderCard: React.FC<Props> = ({ imageUrl, title, campusName }) => {
   return (
     <div className="card w-96 h-96 shadow-xl">
-      <figure className="lg:h-1/3">
+      <figure className="lg:h-[40%]">
           <img src={imageUrl} alt="Card Image" className="h-max" />
         </figure>
-      <div className="card-body lg:h-2/3">
+      <div className="card-body lg:h-[60%]">
         <div>
           <h2 className="card-title font-semibold text-2xl">{title}</h2>
           <p>{campusName}</p>
@@ -27,7 +27,9 @@ const OrderCard: React.FC<Props> = ({ imageUrl, title, campusName }) => {
         </div>
         <Separator className="border-[1px]" />
         <div className={`flex flex-row justify-between items-end h-full`}>
-          <span className={`text-xl font-semibold`}>Rp 17,00.</span>
+          <div className="flex h-full w-full justify-start items-center">
+            <span className={`text-xl font-semibold`}>Rp 17,00.</span>
+          </div>
           <button className={`bg-red-100 py-3 px-12 bg-secondary rounded-lg text-primary font-semibold`}>Reorder</button>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import MainLayout from "src/layout/main-layout";
 import OrderCard from "./finished-order-card";
+import pickUpPng from "@assets/images/pick-up.jpg"
+import deliveryPng from "@assets/images/delivery.jpg"
 
 const HistoryPage = () => {
   // Fetch from firebase 'orders'
@@ -7,8 +9,8 @@ const HistoryPage = () => {
   // Use Effect 
 
   // Set Image berdasarkan Jenis Category Transaksinya, ambil dari static image krn cuman 2 gambar aja
-    // Pick Up = 
-    // Delivery = 
+    // Pick Up (Merah) = 
+    // Delivery (Orange) = 
 
   // Reorder Handler
 
@@ -17,45 +19,45 @@ const HistoryPage = () => {
   // Calculate Total Price for each Transaction
 
   return (
-    <MainLayout className={`py-16 overflow-x-hidden`}>
+    <MainLayout className={`lg:py-16 pt-20 pb-8 overflow-x-hidden`}>
       <div className={`w-screen h-max font-nunito box-border mx-auto flex justify-center`}>
-        <div className={`grid lg:grid-cols-3 lg:gap-12`}>
+        <div className={`grid lg:grid-cols-3 gap-12`}>
         <OrderCard
-            imageUrl="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+            imageUrl={deliveryPng}
             title="Shoes"
             campusName="Binus Alam Sutera"
           />
 
           {/* 2 */}
           <OrderCard
-            imageUrl="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+            imageUrl={pickUpPng}
             title="Ramen"
             campusName="Binus Alam Sutera"
           />
 
           {/* 3 */}
           <OrderCard
-            imageUrl="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+            imageUrl={deliveryPng}
             title="Shoes"
             campusName="Binus Alam Sutera"
           />
 
           <OrderCard
-            imageUrl="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+            imageUrl={pickUpPng}
             title="Shoes"
             campusName="Binus Alam Sutera"
           />
 
           {/* 2 */}
           <OrderCard
-            imageUrl="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+            imageUrl={deliveryPng}
             title="Shoes"
             campusName="Binus Alam Sutera"
           />
 
           {/* 3 */}
           <OrderCard
-            imageUrl="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+            imageUrl={pickUpPng}
             title="Shoes"
             campusName="Binus Alam Sutera"
           />
