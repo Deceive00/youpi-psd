@@ -4,20 +4,25 @@ import { UserType } from "@lib/types/user-types";
 import { ReactNode, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface VendorMiddlewareProps {
+interface SenderMiddlewareProps {
   children: ReactNode;
 }
-export default function VendorMiddleware({ children }: VendorMiddlewareProps) {
-  const { userType, isLoading } = useAuth();
+export default function SenderMiddleware({ children }: SenderMiddlewareProps) {
+  const { user, userType, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoading) {
-      if (userType !== UserType.VENDOR) {
+      if (!user || userType === UserType.VENDOR) {
         navigate("/");
+      } else if (userType === UserType.USER) {
+        if (user && "isSender" in user && !user.isSender) {
+          navigate("/");
+        }
       }
     }
-  }, [userType, isLoading]);
+    console.log(user);
+  }, [userType, isLoading, user]);
 
   if (isLoading) {
     return (

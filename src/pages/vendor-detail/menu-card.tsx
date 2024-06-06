@@ -17,20 +17,19 @@ export default function MenuCard({
   isLoading,
 }: {
   menuItem: Menu;
-  vendorData: Vendor;
+  vendorData?: Vendor;
   addToCart?: any;
   handleAddNotes?: any;
   handleAddToCart?: any;
   checkQuantity?: any;
   isLoading?: boolean;
 }) {
-
   const renderQuantity = () => {
-    if(!checkQuantity){
+    if (!checkQuantity || !vendorData) {
       return;
     }
     if (isLoading && checkQuantity(menuItem.uid) !== -1) {
-      return <Skeleton className="bg-gray-200 w-30 h-4"/>
+      return <Skeleton className="bg-gray-200 w-30 h-4" />;
     } else {
       return checkQuantity(menuItem.uid) === -1 ? (
         <div
@@ -92,7 +91,7 @@ export default function MenuCard({
         </div>
       );
     }
-  }
+  };
   return (
     <div
       className="shadow-md h-fit w-full border rounded-lg bg-white flex justify-between items-center p-3 gap-2"
@@ -105,7 +104,12 @@ export default function MenuCard({
       <div className="flex w-full pl-2 flex-col justify-between h-full gap-3">
         <div className="w-full h-full">
           <div className="font-bold text-base lg:text-lg line-clamp-1">
-            {!checkQuantity ? <span className="font-bold">{menuItem.quantity} x </span> : <></>}{menuItem.name}
+            {!checkQuantity ? (
+              <span className="font-bold">{menuItem.quantity} x </span>
+            ) : (
+              <></>
+            )}
+            {menuItem.name}
           </div>
           <div className="line-clamp-1 text-sm lg:text-base opacity-70">
             {menuItem.description}

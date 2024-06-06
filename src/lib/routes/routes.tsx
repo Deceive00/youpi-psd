@@ -6,10 +6,12 @@ import HistoryPage from "@pages/history/history-page";
 import LandingPage from "@pages/landing/landing-page";
 import ManageOrderVendorPage from "@pages/manage-order/manage-order-vendor-page";
 import Order from "@pages/order/order-page";
+import ManageOrderSenderPage from "@pages/sender/manage-order-sender-page";
 import SenderRegisterPage from "@pages/sender/register-sender";
 import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
 import ManageMenuPage from "@pages/vendor/manage-menu-page";
 import VendorRegisterPage from "@pages/vendor/register-vendor";
+import SenderLayout from "src/layout/sender-layout";
 import VendorLayout from "src/layout/vendor-layout";
 
 export const router = [
@@ -60,6 +62,20 @@ export const router = [
     ),
   },
   {
+    path: "/sender/manage/order",
+    element: <ManageOrderSenderPage />,
+  },
+  {
+    path: "/sender/",
+    element: (
+      <SenderLayout
+        children={<></>}
+        menuName="Sender Dashboard"
+        menuDescription="Here you can manage your sender account"
+      />
+    ),
+  },
+  {
     path: "/auth/sender",
     element: <SenderRegisterPage />,
   },
@@ -68,7 +84,7 @@ export const router = [
     element: <ChatPage />,
   },
   {
-    path: '/history',
-    element: <HistoryPage />
-  }
+    path: "/history",
+    element: <HistoryPage />,
+  },
 ];
