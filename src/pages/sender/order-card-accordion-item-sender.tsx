@@ -17,10 +17,17 @@ import { SiGooglemaps } from "react-icons/si";
 import {
   DELIVERY_STATUS,
   DELIVERY_STATUS_LIST,
-  updateOrderSender,
+  PICKUP_STATUS_LIST,
+  getNewStatus,
+  isAcceptOrder,
+  updateOrderStatus,
 } from "@lib/services/order.service";
 import { useState } from "react";
-import SwitchStatus from "./switch-status-popup";
+import SwitchStatus from "../../components/popup/switch-status-popup";
+import { UserType } from "@lib/types/user-types";
+import { useAuth } from "@lib/hooks/useAuth";
+import { useMutation } from "react-query";
+import { useToast } from "@components/ui/use-toast";
 
 interface props {
   index: number;
@@ -29,28 +36,39 @@ interface props {
 
 export default function OrderCardAccordionItemSender({ index, order }: props) {
   const [showDialog, setShowDialog] = useState(false);
-  const handleUpdateStatus = () => {
-    const statusIdx = DELIVERY_STATUS_LIST.findIndex(
-      (status: string) => status === order.status
-    );
-    updateOrderSender(order, statusIdx);
-  };
+  const {userType} = useAuth();
+  const {toast} = useToast();
 
   const getButtonText = () => {
-    if (order.status === DELIVERY_STATUS.PREPARING_ORDER) {
+    if (isAcceptOrder(order.type, order.status, userType)) {
       return "Accept Order";
     } else {
       return "Update Status";
     }
   };
 
-  const handleDialogResponse = async (response: boolean) => {
-    setShowDialog(false);
-    if (response) {
-      handleUpdateStatus();
+  const {mutate: handleUpdateStatus} = useMutation(async() => {
+    updateOrderStatus(order, userType)
+  },{
+    onSuccess:() => {
+      console.log("Sukses")
       setShowDialog(false);
+      const isAccept = isAcceptOrder(order.type,order.status, userType);
+      toast({
+        title: isAccept ? 'Succesfully Accepted Order' : 'Succesfully Changed Order Status',
+        description: isAccept ? '' : 'Order status changed to ' + getNewStatus(order.type,order.status),
+        variant:'success'
+      })
+    },
+    onError:(error: Error) => {
+      console.error(error.message)
+      toast({
+        title: 'Action Failed',
+        description: error.message,
+        variant:'error'
+      })
     }
-  };
+  })
 
   return (
     <>
@@ -92,7 +110,7 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
             </div>
             {!(
               order.senderId !== "" &&
-              order.status === DELIVERY_STATUS.PREPARING_ORDER
+              (order.status === DELIVERY_STATUS.PREPARING_ORDER || order.status === DELIVERY_STATUS.FINISHED)
             ) && (
               <Button
                 className="font-bold text-[0.8rem] md:text-sm"
@@ -112,8 +130,9 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
       <SwitchStatus
         showDialog={showDialog}
         setShowDialog={setShowDialog}
-        handleDialogResponse={handleDialogResponse}
-        accept={order.status === DELIVERY_STATUS.PREPARING_ORDER}
+        handleDialogResponse={handleUpdateStatus}
+        accept={isAcceptOrder(order.type, order.status, userType)}
+        newStatus={getNewStatus(order.type, order.status)}
       />
     </>
   );

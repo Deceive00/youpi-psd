@@ -13,6 +13,7 @@ import { Toaster } from "@components/ui/toaster";
 import { useNavigate } from "react-router-dom";
 import { getTotalPriceMenu } from "@lib/services/price.service";
 import { useAuth } from "@lib/hooks/useAuth";
+import LoadingCircle from "@components/ui/loading-circle";
 
 
 export default function CartPage() {
@@ -41,7 +42,7 @@ export default function CartPage() {
     }
   }, [userType])
   const navigate = useNavigate();
-  const { mutate: handleOrder } = useMutation(async () => {
+  const { mutate: handleOrder, isLoading } = useMutation(async () => {
     if(type === 'delivery' && address.length <= 0){
       throw new Error("Please insert your delivery address details")
     }
@@ -62,7 +63,7 @@ export default function CartPage() {
         description: "Your order has been placed",
         variant: "success",
       });
-      setUserCart(null);
+      navigate('/order')
     },
     onError: (error : Error) => {
       toast({
@@ -94,7 +95,7 @@ export default function CartPage() {
                 <Input onChange={(e) => setAddress(e.target.value)} placeholder="Delivery Address" className="transition-all duration-200"/>
               )
             }
-            <div className="flex flex-col sm:gap-5 justify-center mt-4">
+            <div className="flex flex-col gap-5 justify-center mt-4">
               {!cartLoading && userCart?.menus.map((menu) => (
                 <CartCard key={menu.uid} menu={menu} vendor={userCart.vendor} />
               ))}
@@ -127,7 +128,7 @@ export default function CartPage() {
                   <div>{getTotalPriceMenu(userCart?.menus || []) + 5000}</div>
                 </div>
               </div>
-              <Button onClick={() => handleOrder()} className="font-bold">Place Order</Button>
+              <Button disabled={isLoading} onClick={() => handleOrder()} className="font-bold">{isLoading ? <LoadingCircle/> : 'Place Order'}</Button>
             </div>
           </div>
         </div>

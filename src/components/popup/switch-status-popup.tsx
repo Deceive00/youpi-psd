@@ -12,21 +12,23 @@ export default function SwitchStatus({
   setShowDialog,
   handleDialogResponse,
   accept,
+  newStatus
 }: {
   showDialog: boolean;
   setShowDialog: any;
   handleDialogResponse: any;
   accept: boolean;
+  newStatus: any;
 }) {
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Change Status</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl">Change Status</DialogTitle>
+          <DialogDescription className="text-base">
             {accept
               ? "Are you sure you want to accept this order? "
-              : "Are you sure you want to update the status of this order?"}
+              : "Are you sure you want to update the status of this order to " + newStatus + "?"}
           </DialogDescription>
         </DialogHeader>
         <div className="flex justify-end gap-2">

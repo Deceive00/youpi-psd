@@ -92,7 +92,7 @@ export default function ManageOrderSenderPage() {
           <Accordion
             type="single"
             collapsible
-            className={`mt-4 max-h-[65vh] overflow-y-scroll transition-all duration-300 ${
+            className={`mt-4 h-[65vh] overflow-y-scroll transition-all duration-300 ${
               transitioning ? "opacity-0" : "opacity-100"
             }`}
           >

@@ -26,7 +26,7 @@ export default function SenderMiddleware({ children }: SenderMiddlewareProps) {
 
   if (isLoading) {
     return (
-      <div className="w-[100vw] h-[100vh] flex justify-center items-center">
+      <div className="w-[100vw] h-screen flex justify-center items-center">
         <Loader />
       </div>
     );
