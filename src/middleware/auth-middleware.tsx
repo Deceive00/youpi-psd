@@ -14,6 +14,7 @@ export default function AuthMiddleware({ children }: AuthMiddlewareProps) {
   useEffect(() => {
     if (!isLoading) {
       if(authState === AuthState.Authenticated || user){
+        console.log('pindahhhh')
         navigate('/');
       }
     }

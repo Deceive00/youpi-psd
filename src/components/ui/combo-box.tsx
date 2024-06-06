@@ -46,8 +46,8 @@ export function Combobox({value, onChange, placeholder, items, itemTitle}: Combo
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{itemTitle}</SelectLabel>
-          {items?.map((item) => (
-            <SelectItem value={item}>{item}</SelectItem>
+          {items?.map((item, index) => (
+            <SelectItem key={index} value={item}>{item}</SelectItem>
           ))}
           {/* <SelectItem value="apple">Apple</SelectItem>
           <SelectItem value="banana">Banana</SelectItem>

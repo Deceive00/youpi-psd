@@ -5,7 +5,6 @@ import { VendorRoutes } from "@lib/routes/vendor-routes";
 import { Button } from "@components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import VendorMiddleware from "src/middleware/vendor-middleware";
-import { BiChevronDown } from "react-icons/bi";
 import { RxCross2, RxHamburgerMenu } from "react-icons/rx";
 import { useAuth } from "@lib/hooks/useAuth";
 interface VendorLayoutProps {

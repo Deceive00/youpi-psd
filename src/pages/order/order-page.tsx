@@ -32,7 +32,7 @@ export default function Order() {
     };
   }, []);
 
-  const { isLoading } = useQuery(
+  const { isLoading, isFetching } = useQuery(
     ["fetchRestaurantData"],
     () => fetchRestaurantData(),
     {
@@ -90,7 +90,7 @@ export default function Order() {
             </div>
             <div className="w-full flex flex-col items-start md:items-center justify-start h-[300px] md:h-auto">
               <div className="flex w-[95%] md:w-auto h-full md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-center justify-start md:justify-center mt-2 md:mt-8 overflow-x-auto overflow-y-hidden py-4">
-                {isLoading && showSkeleton()}
+                {(isLoading || isFetching) && showSkeleton()}
                 {!isLoading && (
                   <>
                     {restaurantData.length > 0 &&
@@ -99,12 +99,7 @@ export default function Order() {
                         .map((vendor, index) => (
                           <RestaurantCard vendor={vendor} key={index} />
                         ))}
-                    {restaurantData.length > 0 &&
-                      restaurantData
-                        .flatMap((restaurant) => restaurant.vendors)
-                        .map((vendor, index) => (
-                          <RestaurantCard vendor={vendor} key={index} />
-                        ))}
+                    
                   </>
                 )}
               </div>

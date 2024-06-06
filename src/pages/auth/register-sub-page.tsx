@@ -212,7 +212,6 @@ export default function RegisterSubPage({ changeMode }: RegisterSubPageProps) {
           )}
         />
       </div>
-      {status}
       <Button
         type="submit"
         className="w-full font-bold h-12"

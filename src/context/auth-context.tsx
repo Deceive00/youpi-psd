@@ -59,6 +59,7 @@ export default function AuthContextProvider({
   const fetchUserData = async (uid?: string) => {
     if (!uid || user) return;
     try {
+      setIsLoading(true);
       const userDoc = await getDoc(doc(db, "users", uid));
       if (userDoc.exists()) {
         const userData = userDoc.data() as User;
@@ -80,14 +81,13 @@ export default function AuthContextProvider({
               break;
             }
           }
-
-          if (!matchingVendorFound) {
-            console.error("No matching vendor found in campus");
-            throw new Error("Vendor not found");
-          } else {
-            return;
-          }
         });
+        if (!matchingVendorFound) {
+          console.error("No matching vendor found in campus");
+          throw new Error("Vendor not found");
+        } else {
+          return;
+        }
       }
     } catch (error: any) {
       console.error("Error fetching user data:", error.message);
@@ -214,12 +214,8 @@ export default function AuthContextProvider({
     },
     {
       onSuccess: () => {
-        toast({
-          title: "Register Successful!",
-          description: "Your account has been created",
-          variant: "success",
-        })
-          ;
+        console.log("Register succesful");
+        
       },
       onError: (error: any) => {
         console.error("Error creating user:", error.message);
