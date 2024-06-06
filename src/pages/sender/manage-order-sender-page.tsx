@@ -109,7 +109,15 @@ export default function ManageOrderSenderPage() {
                   }
                 })
               : ongoingData?.map((order: Order, index: number) => {
-                  return <p key={index}>{order.orderId}</p>;
+                  if (user) {
+                    return (
+                      <OrderCardAccordionItemSender
+                        index={index}
+                        key={index}
+                        order={order}
+                      />
+                    );
+                  }
                 })}
           </Accordion>
         </div>

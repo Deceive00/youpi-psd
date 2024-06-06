@@ -41,9 +41,11 @@ export default function VendorLayout({
       }
     })();
   }, [isMobileMenuOpen]);
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+  
   const {logout} = useAuth();
   return (
     <VendorMiddleware>
