@@ -1,6 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "@components/ui/button";
-import { DatePicker } from "@components/ui/date-picker";
 import { Input } from "@components/ui/input";
 import { useToast } from "@components/ui/use-toast";
 import { useEffect, useState } from "react";
@@ -35,12 +34,12 @@ export default function VendorRegisterPage() {
     variant: string;
   }>(null);
   const password = watch("password");
-  const { getPhotoURL, uploadPhoto } = useUploadPhoto();
+  const { uploadPhoto } = useUploadPhoto();
+  
   const onSubmit = async (data: any) => {
     const defaultPhoto =
       "https://firebasestorage.googleapis.com/v0/b/youpi-92b43.appspot.com/o/default.png?alt=media&token=429db833-8c08-4045-8122-ad42130f2883";
     let coverImageUrl: string = defaultPhoto;
-    console.log(data);
     if (data.coverImage) {
       const ext = data.coverImage.name.split(".")[1];
       console.log(data.coverImage.name);
@@ -50,7 +49,6 @@ export default function VendorRegisterPage() {
       coverImageUrl =
         (await uploadPhoto(data.coverImage, fileName)) || defaultPhoto;
     }
-    console.log(coverImageUrl);
 
     register({
       regisData: {
@@ -64,7 +62,7 @@ export default function VendorRegisterPage() {
       userType: UserType.VENDOR,
     });
   };
-  const { status, mutate: submitMutate } = useMutation(onSubmit);
+  const { isLoading, mutate: submitMutate } = useMutation(onSubmit);
 
   if (Object.keys(errors).length > 0 && errorMsg === null) {
     Object.values(errors).forEach((error) => {
@@ -83,7 +81,6 @@ export default function VendorRegisterPage() {
     let campuses: string[] = [];
     if (!snapshot.empty) {
       snapshot.forEach((campus) => {
-        console.log(campus.data());
         campuses.push(campus.data().name);
       });
     }
@@ -240,9 +237,9 @@ export default function VendorRegisterPage() {
               type="submit"
               className="w-full font-bold h-12"
               onClick={() => setErrorMsg(null)}
-              disabled = {status === 'loading'}
+              disabled = {isLoading}
             >
-              {status === 'loading' ? <LoadingCircle/> : "Register as Vendor"}
+              {isLoading ? <LoadingCircle/> : "Register as Vendor"}
             </Button>
           </form>
         </div>

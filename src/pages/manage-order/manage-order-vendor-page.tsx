@@ -9,7 +9,6 @@ import {
 } from "@lib/services/order.service";
 import { Order } from "@lib/types/order-types";
 import { Vendor } from "@lib/types/vendor-types";
-import MenuCard from "@pages/vendor-detail/menu-card";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import VendorLayout from "src/layout/vendor-layout";
