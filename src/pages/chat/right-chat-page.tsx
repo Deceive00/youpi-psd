@@ -8,6 +8,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
 import { Separator } from "@radix-ui/react-select";
 import { motion } from "framer-motion"
+import { KeyObject } from "crypto";
 
 interface Props {
     currId : string
@@ -32,6 +33,16 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
     const [ text, setText ] = React.useState("");
     const [ chats, setChats ] = React.useState<Message[]>([]);
     const endMessageRef = React.useRef<HTMLDivElement>(null);
+
+    
+    // Keyboard Enter Handler
+    const keyboardListener = (e:KeyboardEvent) => {
+        console.log(e.keyCode);
+        
+        if(e.keyCode == 13){
+            handleText()
+        }
+    }
 
     // Animation Variants
     const userChat = {
@@ -116,6 +127,17 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
     React.useEffect(() => {
         fetchChats()
     }, [combinedId])
+
+    // KeyListener
+    React.useEffect(() =>{
+        console.log("Keyboard Listener added [!]");
+        
+        window.addEventListener('keydown', keyboardListener)
+
+        return () => {
+            window.removeEventListener("keydown", keyboardListener);
+          };
+    }, [])
 
     // Scroll to most bottom div
     React.useEffect(() => {

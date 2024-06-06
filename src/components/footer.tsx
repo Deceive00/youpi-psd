@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
       <div className="w-full grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
         <div className="flex flex-col sm:gap-y-2 items-start">
           {/* Company */}
-          <span className="font-bold lg:mb-6 sm:mb-2">Company</span>
+          <span className="font-bold mb-6">Company</span>
           <span className="font-light">About</span>
           <span className="font-light">Products</span>
           <span className="font-light">Blog</span>
@@ -48,14 +48,14 @@ const Footer: React.FC = () => {
           </div>
           {/* Download Now */}
           <span className="font-bold mb-1">Downloads</span>
-          <div className="flex lg:flex-row flex-col lg:gap-x-4 gap-y-4 mb-4">
-            <div className="bg-white gap-x-4 lg:gap-x-0 lg:bg-transparent text-black lg:text-white px-6 py-1.5 lg:px-0 rounded-md flex flex-row items-centers">
+          <div className="flex lg:flex-row flex-row lg:gap-x-4 gap-x-4 mb-4">
+            <div className="gap-x-2 lg:gap-x-0 lg:bg-transparent text-white lg:text-white lg:px-0 rounded-md flex flex-row items-center">
                 <IoLogoGooglePlaystore className="text-xl" />
-                <span className="lg:hidden">Google Play</span>
+                <span className="hidden">Google Play</span>
             </div>
-            <div className="bg-white gap-x-4 lg:gap-x-0 lg:bg-transparent text-black lg:text-white px-6 py-1.5 lg:px-0 rounded-md flex flex-row items-center">
+            <div className="gap-x-2 lg:gap-x-0 lg:bg-transparent text-white lg:text-white lg:px-0 rounded-md flex flex-row items-center">
                 <IoLogoAppleAppstore className="text-xl" />
-                <span className="lg:hidden">Apple Store</span>
+                <span className="hidden">Apple Store</span>
             </div>
           </div>
         </div>

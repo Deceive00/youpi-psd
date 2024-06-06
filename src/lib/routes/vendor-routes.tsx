@@ -16,5 +16,9 @@ export const VendorRoutes : VendorRoute[] = [
     description: 'This is a page for maning vendor order',
     path: '/vendor/manage/order'
   },
-
+  {
+    name: 'History',
+    description: 'This is a page for managing vendor order history',
+    path: '/vendor/history'
+  },
 ]
