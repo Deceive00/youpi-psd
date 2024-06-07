@@ -20,6 +20,7 @@ import SwitchStatus from "@components/popup/switch-status-popup";
 import { useMutation } from "react-query";
 import { useAuth } from "@lib/hooks/useAuth";
 import { useToast } from "@components/ui/use-toast";
+import { Skeleton } from "@components/ui/skeleton";
 
 interface props {
   index: number;
@@ -27,6 +28,10 @@ interface props {
   vendor: Vendor;
 }
 
+export const OrderCardAccordionSkeleton = () => {
+  return <Skeleton className='w-full h-40 bg-gray-200'>
+  </Skeleton>
+}
 export default function OrderCardAccordionItem({ index, order, vendor }: props) {
   const [showDialog, setShowDialog] = useState(false);
   const {userType, user} = useAuth();

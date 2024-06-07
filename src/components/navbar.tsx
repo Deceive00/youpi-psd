@@ -71,12 +71,12 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
               src={blank}
               alt=""
             />
-            {/* <Button
+            <Button
               className="rounded-md font-nunito font-bold"
               onClick={() => logout()}
             >
               Log Out
-            </Button> */}
+            </Button>
           </>
         ) : (
           <>

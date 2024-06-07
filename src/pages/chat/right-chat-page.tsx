@@ -1,7 +1,6 @@
-import { Timestamp, arrayUnion, doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import React from "react";
 import { db } from "src/firebase/firebase-config";
-import {v4 as uuidv4 } from "uuid"
 import { FaVideo } from "react-icons/fa6";
 import { IoCall } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -9,7 +8,8 @@ import { IoSend } from "react-icons/io5";
 import { Separator } from "@radix-ui/react-select";
 import { motion } from "framer-motion"
 import { Message } from "@lib/types/chat-types";
-import { fetchChats } from "@lib/services/chat.service";
+import { userChatVariant } from "@components/variants/user-chat";
+import { fetchChats, sendMessage, updateUserChats } from "@lib/services/chat.service";
 
 interface Props {
     currId : string
@@ -35,40 +35,6 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
         }
     }
 
-    // Animation Variants
-    const userChat = {
-      hidden: { y: 20, opacity: 0 },
-      visible: {
-        y: 0,
-        opacity: 1,
-      },
-    };
-
-    // Fetched chats from firestore
-    // const fetchChats = async () => {
-    //     console.log("Fetching");
-        
-    //     try{
-    //         const chatsCollectionRef = doc(db, "chats", combinedId);
-    //         const unsubscribe = onSnapshot(chatsCollectionRef, (snapshot) => {
-    //             if(snapshot.exists()){
-    //                 // Set chats
-    //                 setChats(snapshot.data().messages)
-
-    //                 console.log(chats);
-                    
-    //             }else{
-    //                 console.log("Chats not found!");
-    //                 setChats([])
-    //             }
-    //         })
-
-    //         return unsubscribe;
-    //     } catch(err){
-    //         console.log(err);
-    //     }
-    // }
-
     // Handle New Text
     const handleText = async () => {
         if(!text) return
@@ -81,32 +47,15 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
                 await setDoc(chatDocRef, {messages: []})
             }
 
-            await updateDoc(doc(db, 'chats', combinedId), {
-                messages: arrayUnion({
-                    id: uuidv4(),
-                    message: text,
-                    senderId : currId,
-                    date: Timestamp.now()
-                })
-            })
+            sendMessage(currId, combinedId, text)
             // Update UserChats pake lastMessage yang bener
             // Pastiin update 2x : buat sender dan receiver
 
             // 1. Update UserChats untuk currentUser
-            await updateDoc(doc(db, "userChats", currId) , {
-                [combinedId + ".lastMessage"] : {
-                    text
-                },
-                [combinedId+ ".date"] : serverTimestamp(),
-            })
+            updateUserChats(currId, text, combinedId)
 
             // 2. Update UserChats untuk otherUser
-            await updateDoc(doc(db, "userChats", otherId) , {
-                [combinedId + ".lastMessage"] : {
-                    text
-                },
-                [combinedId + ".date"] : serverTimestamp(),
-            })
+            updateUserChats(otherId, text, combinedId)
 
             setText("")
         }catch(err){
@@ -119,6 +68,10 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
         const unsubscribe = fetchChats(combinedId, (data) => {
             setChats(data)
         })
+
+        return () => {
+            unsubscribe();
+        }
     }, [combinedId])
 
     // KeyListener
@@ -176,7 +129,7 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
                 chats.map((chat) => (
                     <motion.div 
                         key={chat.id} 
-                        variants={userChat} initial="hidden" animate="visible"
+                        variants={userChatVariant} initial="hidden" animate="visible"
                     >
                         <div className={`chat ${chat.senderId === currId ? "chat-end" : "chat-start"}`}>
                             <div className="chat-bubble" style={{

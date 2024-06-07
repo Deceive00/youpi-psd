@@ -33,8 +33,8 @@ interface props {
 
 export default function OrderCardAccordionItemSender({ index, order }: props) {
   const [showDialog, setShowDialog] = useState(false);
-  const {userType} = useAuth();
-  const {toast} = useToast();
+  const { userType } = useAuth();
+  const { toast } = useToast();
 
   const getButtonText = () => {
     if (isAcceptOrder(order.type, order.status, userType, order.senderId)) {
@@ -44,29 +44,36 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
     }
   };
 
-  const {mutate: handleUpdateStatus} = useMutation(async() => {
-    await updateOrderStatus(order, userType)
-  },{
-    onSuccess:() => {
-      console.log("Sukses")
-      setShowDialog(false);
-      const isAccept = isAcceptOrder(order.type,order.status, userType);
-      toast({
-        title: isAccept ? 'Succesfully Accepted Order' : 'Succesfully Changed Order Status',
-        description: isAccept ? '' : 'Order status changed to ' + getNewStatus(order.type,order.status),
-        variant:'success'
-      })
+  const { mutate: handleUpdateStatus } = useMutation(
+    async () => {
+      await updateOrderStatus(order, userType);
     },
-    onError:(error: Error) => {
-      
-      toast({
-        title: 'Action Failed',
-        description: error.message,
-        variant:'error'
-      })
-      setShowDialog(false);
+    {
+      onSuccess: () => {
+        console.log("Sukses");
+        setShowDialog(false);
+        const isAccept = isAcceptOrder(order.type, order.status, userType);
+        toast({
+          title: isAccept
+            ? "Succesfully Accepted Order"
+            : "Succesfully Changed Order Status",
+          description: isAccept
+            ? ""
+            : "Order status changed to " +
+              getNewStatus(order.type, order.status),
+          variant: "success",
+        });
+      },
+      onError: (error: Error) => {
+        toast({
+          title: "Action Failed",
+          description: error.message,
+          variant: "error",
+        });
+        setShowDialog(false);
+      },
     }
-  })
+  );
 
   return (
     <>
@@ -108,7 +115,8 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
             </div>
             {!(
               order.senderId !== "" &&
-              (order.status === DELIVERY_STATUS.PREPARING_ORDER || order.status === DELIVERY_STATUS.FINISHED)
+              (order.status === DELIVERY_STATUS.PREPARING_ORDER ||
+                order.status === DELIVERY_STATUS.FINISHED)
             ) && (
               <Button
                 className="font-bold text-[0.8rem] md:text-sm"
@@ -129,7 +137,12 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
         showDialog={showDialog}
         setShowDialog={setShowDialog}
         handleDialogResponse={handleUpdateStatus}
-        accept={isAcceptOrder(order.type, order.status, userType, order.senderId)}
+        accept={isAcceptOrder(
+          order.type,
+          order.status,
+          userType,
+          order.senderId
+        )}
         newStatus={getNewStatus(order.type, order.status)}
       />
     </>
