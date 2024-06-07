@@ -65,11 +65,11 @@ export default function ManageOrderVendorPage() {
       <div className="font-nunito ">
         <div className="w-full flex">
           <div
-            className="flex flex-col items-end cursor-pointer"
+            className="flex flex-col items-end w-[50%] cursor-pointer md:w-auto"
             onClick={() => handleTabChange(OrderTab.INCOMING)}
           >
             <div
-              className={`px-10 py-2 transition-all duration-100 ${
+              className={`px-10 py-2 transition-all duration-100 text-center w-full md:w-auto ${
                 tab === OrderTab.INCOMING ? "font-bold" : ""
               }`}
             >
@@ -82,11 +82,11 @@ export default function ManageOrderVendorPage() {
             ></div>
           </div>
           <div
-            className="flex flex-col items-start cursor-pointer"
+            className="flex flex-col w-[50%] items-start cursor-pointer md:w-auto"
             onClick={() => handleTabChange(OrderTab.ONGOING)}
           >
             <div
-              className={`px-10 py-2 transition-all duration-100 ${
+              className={`px-10 py-2 transition-all duration-100 text-center w-full md:w-auto ${
                 tab === OrderTab.ONGOING ? "font-bold" : ""
               }`}
             >
@@ -103,19 +103,60 @@ export default function ManageOrderVendorPage() {
           <Accordion
             type="single"
             collapsible
-            className={`mt-4 max-h-[65vh] overflow-y-scroll transition-all duration-300 ${transitioning ? "opacity-0" : "opacity-100"}`}
+            className={`mt-4 max-h-[65vh] overflow-y-scroll transition-all duration-300 ${
+              transitioning ? "opacity-0" : "opacity-100"
+            }`}
           >
-            {tab === OrderTab.INCOMING
-              ? incomingOrderData?.map((order: Order, index: number) => {
-                  if(vendor){
-                    return <OrderCardAccordionItem index={index} key={index} order={order} vendor={vendor}/>;
-                  }
-                })
-              : ongoingData?.map((order: Order, index: number) => {
-                  if(vendor){
-                    return <OrderCardAccordionItem index={index} key={index} order={order} vendor={vendor}/>;
-                  }
-                })}
+            {tab === OrderTab.INCOMING ? (
+              <>
+                {incomingOrderData &&
+                  incomingOrderData?.length > 0 &&
+                  incomingOrderData?.map((order: Order, index: number) => {
+                    if (vendor) {
+                      return (
+                        <OrderCardAccordionItem
+                          index={index}
+                          key={index}
+                          order={order}
+                          vendor={vendor}
+                        />
+                      );
+                    }
+                  })}
+                {
+                  (!incomingOrderData || incomingOrderData.length <= 0) && (
+                    <div className="flex justify-center items-center h-[50vh]">
+                      <p>You got no incoming order</p>
+                    </div>
+                  )
+                }
+              </>
+            ) : (
+              <>
+                {
+                  ongoingData && ongoingData.length > 0 && 
+                  ongoingData?.map((order: Order, index: number) => {
+                    if (vendor) {
+                      return (
+                        <OrderCardAccordionItem
+                          index={index}
+                          key={index}
+                          order={order}
+                          vendor={vendor}
+                        />
+                      );
+                    }
+                  })
+                }
+                {
+                  (!ongoingData || ongoingData.length <= 0) && (
+                    <div className="flex justify-center items-center h-[50vh]">
+                      <p>You got no ongoing order</p>
+                    </div>
+                  )
+                }
+              </>
+            )}
           </Accordion>
         </div>
       </div>
