@@ -5,6 +5,7 @@ import ChatPage from "@pages/chat/chat-page";
 import HistoryPage from "@pages/history/history-page";
 import LandingPage from "@pages/landing/landing-page";
 import ManageOrderVendorPage from "@pages/manage-order/manage-order-vendor-page";
+import OrderDetail from "@pages/order/order-detail-page";
 import Order from "@pages/order/order-page";
 import ManageOrderSenderPage from "@pages/sender/manage-order-sender-page";
 import SenderRegisterPage from "@pages/sender/register-sender";
@@ -91,5 +92,9 @@ export const router = [
   {
     path: "/history",
     element: <HistoryPage />,
+  },
+  {
+    path: "/order/detail",
+    element: <OrderDetail />,
   },
 ];

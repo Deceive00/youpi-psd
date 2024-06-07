@@ -2,7 +2,7 @@ import { Button } from "@components/ui/button";
 import MainLayout from "src/layout/main-layout";
 import CartCard, { CartCardSkeleton } from "./cart-card";
 import { useMutation, useQuery } from "react-query";
-import {fetchUserCartFE } from "@lib/services/vendor.service";
+import { addCart, fetchUserCartFE } from "@lib/services/vendor.service";
 import { UserCartFE, UserType } from "@lib/types/user-types";
 import { useEffect, useState } from "react";
 import { Input } from "@components/ui/input";
@@ -15,65 +15,101 @@ import { getTotalPriceMenu } from "@lib/services/price.service";
 import { useAuth } from "@lib/hooks/useAuth";
 import LoadingCircle from "@components/ui/loading-circle";
 
-
 export default function CartPage() {
-  const [type, setType] = useState<'pick up'|'delivery'>('delivery');
+  const [type, setType] = useState<"pick up" | "delivery">("delivery");
   const [userCart, setUserCart] = useState<UserCartFE | null>(null);
-  const [address, setAddress] =  useState('');
-  const {toast} = useToast();
-  const {userType} = useAuth()
-  const { isLoading: cartLoading } = useQuery(['fetchUserCart'], fetchUserCartFE, {
-    onSuccess: (data : UserCartFE) => {
-      setUserCart(data);
-      if(!data){
-        navigate('/order');
-      }
-    },
-    onError: (error : Error) => {
-      console.log(error.message);
-      if(error.message === 'Cart still null'){
-        navigate('/order');
-      }
+  const [address, setAddress] = useState("");
+  const { toast } = useToast();
+  const { userType } = useAuth();
+  const { isLoading: cartLoading } = useQuery(
+    ["fetchUserCart"],
+    fetchUserCartFE,
+    {
+      onSuccess: (data: UserCartFE) => {
+        setUserCart(data);
+        if (!data) {
+          navigate("/order");
+        }
+      },
+      onError: (error: Error) => {
+        console.log(error.message);
+        if (error.message === "Cart still null") {
+          navigate("/order");
+        }
+      },
     }
-  });
+  );
+
   useEffect(() => {
-    if(userType === UserType.VENDOR){
-      navigate('/');
+    if (userType === UserType.VENDOR) {
+      navigate("/");
     }
-  }, [userType])
+  }, [userType]);
+
   const navigate = useNavigate();
-  const { mutate: handleOrder, isLoading } = useMutation(async () => {
-    if(type === 'delivery' && address.length <= 0){
-      throw new Error("Please insert your delivery address details")
-    }
 
-    return addOrder({
-      campusName: userCart?.vendor.campusName,
-      menus: userCart?.menus,
-      senderId:'',
-      status:'waiting confirmation',
-      type: type,
-      vendorId: userCart?.vendor.id,
-      address: address,
-    } as Order)
-  },{
-    onSuccess: () => {
-      toast({
-        title: "Order Placed",
-        description: "Your order has been placed",
-        variant: "success",
-      });
-      navigate('/order')
+  const { mutate: handleOrder, isLoading } = useMutation(
+    async () => {
+      if (type === "delivery" && address.length <= 0) {
+        throw new Error("Please insert your delivery address details");
+      }
+
+      return addOrder({
+        campusName: userCart?.vendor.campusName,
+        menus: userCart?.menus,
+        senderId: "",
+        status: "waiting confirmation",
+        type: type,
+        vendorId: userCart?.vendor.id,
+        address: address,
+      } as Order);
     },
-    onError: (error : Error) => {
-      toast({
-        title: "Place Order Failed",
-        description: error.message,
-        variant: "error",
-      })
+    {
+      onSuccess: () => {
+        toast({
+          title: "Order Placed",
+          description: "Your order has been placed",
+          variant: "success",
+        });
+        navigate("/order/detail");
+      },
+      onError: (error: Error) => {
+        toast({
+          title: "Place Order Failed",
+          description: error.message,
+          variant: "error",
+        });
+      },
     }
-  })
+  );
 
+  const { mutate: addToCart } = useMutation(
+    async ({
+      vendorId,
+      menuId,
+      notes,
+      add = null,
+      notesUpdated = null,
+    }: {
+      vendorId: string;
+      menuId: string;
+      notes: string;
+      add?: boolean | null;
+      notesUpdated?: boolean | null;
+    }) => {
+      addCart({ vendorId, menuId, notes, add, notesUpdated });
+    },
+    {
+      onSuccess: () => {
+        // queryClient.invalidateQueries(["fetchUserCart"]);
+        console.log("function success");
+      },
+      onError: (error: any) => {
+        console.error("Error bro");
+        throw error;
+      },
+    }
+  );
 
   return (
     <MainLayout className={`pt-14 `}>
@@ -82,30 +118,45 @@ export default function CartPage() {
           <div className="w-full lg:w-[70%] lg:pr-10 md:pt-0 flex flex-col gap-3 sm:mb-0">
             <div className="text-3xl font-bold py-5 pb-0 sm:p-0">Your Cart</div>
             <div className="flex flex-row gap-5 my-4 items-center">
-              {['Delivery', 'Pick Up'].map((t) => {
+              {["Delivery", "Pick Up"].map((t) => {
                 return (
-                  <div key={t} onClick={() => setType(t.toLowerCase() as 'pick up'|'delivery')} className={`${t.toLowerCase() === type.toLowerCase() ? 'border-2 border-primary text-primary font-bold' : ''} transition-all duration-300 font-nunito p-3 rounded-lg cursor-pointer`}>
+                  <div
+                    key={t}
+                    onClick={() =>
+                      setType(t.toLowerCase() as "pick up" | "delivery")
+                    }
+                    className={`${
+                      t.toLowerCase() === type.toLowerCase()
+                        ? "border-2 border-primary text-primary font-bold"
+                        : ""
+                    } transition-all duration-300 font-nunito p-3 rounded-lg cursor-pointer`}
+                  >
                     {t}
                   </div>
-                )
+                );
               })}
             </div>
-            {
-              type === 'delivery' && (
-                <Input onChange={(e) => setAddress(e.target.value)} placeholder="Delivery Address" className="transition-all duration-200"/>
-              )
-            }
+            {type === "delivery" && (
+              <Input
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Delivery Address"
+                className="transition-all duration-200"
+              />
+            )}
             <div className="flex flex-col gap-5 justify-center mt-4">
-              {!cartLoading && userCart?.menus.map((menu) => (
-                <CartCard key={menu.uid} menu={menu} vendor={userCart.vendor} />
-              ))}
-              {
-                cartLoading && ([1,2,3].map((index) => {
-                  return (
-                   <CartCardSkeleton key={index}/>
-                  )
-                }))
-              }
+              {!cartLoading &&
+                userCart?.menus.map((menu) => (
+                  <CartCard
+                    key={menu.uid}
+                    menu={menu}
+                    vendor={userCart.vendor}
+                    addToCart={addToCart}
+                  />
+                ))}
+              {cartLoading &&
+                [1, 2, 3].map((index) => {
+                  return <CartCardSkeleton key={index} />;
+                })}
             </div>
           </div>
           <div className="w-full lg:w-[30%] p-5 md:p-0 md:px-10 lg:px-0 mt-7 lg:mt-0">
@@ -128,12 +179,18 @@ export default function CartPage() {
                   <div>{getTotalPriceMenu(userCart?.menus || []) + 5000}</div>
                 </div>
               </div>
-              <Button disabled={isLoading} onClick={() => handleOrder()} className="font-bold">{isLoading ? <LoadingCircle/> : 'Place Order'}</Button>
+              <Button
+                disabled={isLoading}
+                onClick={() => handleOrder()}
+                className="font-bold"
+              >
+                {isLoading ? <LoadingCircle /> : "Place Order"}
+              </Button>
             </div>
           </div>
         </div>
       </div>
-      <Toaster/>
+      <Toaster />
     </MainLayout>
   );
 }
