@@ -8,6 +8,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
 import { Separator } from "@radix-ui/react-select";
 import { motion } from "framer-motion"
+import { Message } from "@lib/types/chat-types";
+import { fetchChats } from "@lib/services/chat.service";
 
 interface Props {
     currId : string
@@ -17,16 +19,6 @@ interface Props {
     photoUrl: string
     onHandleBackClick: () => void
 }
-
-interface Message {
-    senderId: string;
-    message: string;
-    id: string;
-    date: {
-      seconds: number;
-      nanoseconds: number;
-    };
-  }
 
 const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayName,photoUrl, onHandleBackClick}) => {
     const [ text, setText ] = React.useState("");
@@ -53,29 +45,29 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
     };
 
     // Fetched chats from firestore
-    const fetchChats = async () => {
-        console.log("Fetching");
+    // const fetchChats = async () => {
+    //     console.log("Fetching");
         
-        try{
-            const chatsCollectionRef = doc(db, "chats", combinedId);
-            const unsubscribe = onSnapshot(chatsCollectionRef, (snapshot) => {
-                if(snapshot.exists()){
-                    // Set chats
-                    setChats(snapshot.data().messages)
+    //     try{
+    //         const chatsCollectionRef = doc(db, "chats", combinedId);
+    //         const unsubscribe = onSnapshot(chatsCollectionRef, (snapshot) => {
+    //             if(snapshot.exists()){
+    //                 // Set chats
+    //                 setChats(snapshot.data().messages)
 
-                    console.log(chats);
+    //                 console.log(chats);
                     
-                }else{
-                    console.log("Chats not found!");
-                    setChats([])
-                }
-            })
+    //             }else{
+    //                 console.log("Chats not found!");
+    //                 setChats([])
+    //             }
+    //         })
 
-            return unsubscribe;
-        } catch(err){
-            console.log(err);
-        }
-    }
+    //         return unsubscribe;
+    //     } catch(err){
+    //         console.log(err);
+    //     }
+    // }
 
     // Handle New Text
     const handleText = async () => {
@@ -124,7 +116,9 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
 
     // UseEffect
     React.useEffect(() => {
-        fetchChats()
+        const unsubscribe = fetchChats(combinedId, (data) => {
+            setChats(data)
+        })
     }, [combinedId])
 
     // KeyListener
