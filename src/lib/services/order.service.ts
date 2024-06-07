@@ -211,7 +211,6 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
   if (order.orderId && id) {
     if (order.type === ORDER_TYPE.DELIVERY && id === order.orderId) {
       // Validasi sender gabisa ngambil orderannya sendiri
-      console.log('gaboleh nyed')
       throw new Error("You cannot take your own order!");
 
     }
@@ -254,7 +253,6 @@ const validateSenderOrderStatus = (
     updatedOrder.status === DELIVERY_STATUS.PICKING_UP_YOUR_ORDER ||
     updatedOrder.status === DELIVERY_STATUS.DELIVERING_YOUR_ORDER
   ) {
-    console.log('tes')
     updatedOrder.status = DELIVERY_STATUS_LIST[statusIdx + 1];
   }
   return updatedOrder;
