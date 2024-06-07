@@ -316,7 +316,7 @@ export const getNewStatus = (type: string, currentStatus: string) => {
       ];
 };
 
-export const isAcceptOrder = (type: string, status: string ,userType: UserType) => {
+export const isAcceptOrder = (type: string, status: string , userType: UserType, senderId?: string) => {
   if(userType === UserType.VENDOR){
     if(type === 'delivery'){
       return status === DELIVERY_STATUS.WAITING_CONFIRMATION;
@@ -324,7 +324,7 @@ export const isAcceptOrder = (type: string, status: string ,userType: UserType) 
       return status === PICKUP_STATUS.WAITING_CONFIRMATION
     }
   }else{
-    return status === DELIVERY_STATUS.PREPARING_ORDER;
+    return status === DELIVERY_STATUS.PREPARING_ORDER || (status === DELIVERY_STATUS.READY_FOR_PICKUP && senderId === "");
   }
 }
 export const hideUpdateButton = (status : string) => {

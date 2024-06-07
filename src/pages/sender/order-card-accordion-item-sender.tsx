@@ -40,7 +40,7 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
   const {toast} = useToast();
 
   const getButtonText = () => {
-    if (isAcceptOrder(order.type, order.status, userType)) {
+    if (isAcceptOrder(order.type, order.status, userType, order.senderId)) {
       return "Accept Order";
     } else {
       return "Update Status";
