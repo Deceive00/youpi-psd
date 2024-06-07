@@ -44,27 +44,34 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
     }
   };
 
-  const {mutate: handleUpdateStatus} = useMutation(async() => {
-    await updateOrderStatus(order, userType)
-  },{
-    onSuccess:() => {
-      console.log("Sukses")
-      setShowDialog(false);
-      const isAccept = isAcceptOrder(order.type,order.status, userType);
-      toast({
-        title: isAccept ? 'Succesfully Accepted Order' : 'Succesfully Changed Order Status',
-        description: isAccept ? '' : 'Order status changed to ' + getNewStatus(order.type,order.status),
-        variant:'success'
-      })
+  const { mutate: handleUpdateStatus } = useMutation(
+    async () => {
+      await updateOrderStatus(order, userType);
     },
-    onError:(error: Error) => {
-      
-      toast({
-        title: 'Action Failed',
-        description: error.message,
-        variant:'error'
-      })
-      setShowDialog(false);
+    {
+      onSuccess: () => {
+        console.log("Sukses");
+        setShowDialog(false);
+        const isAccept = isAcceptOrder(order.type, order.status, userType);
+        toast({
+          title: isAccept
+            ? "Succesfully Accepted Order"
+            : "Succesfully Changed Order Status",
+          description: isAccept
+            ? ""
+            : "Order status changed to " +
+              getNewStatus(order.type, order.status),
+          variant: "success",
+        });
+      },
+      onError: (error: Error) => {
+        toast({
+          title: "Action Failed",
+          description: error.message,
+          variant: "error",
+        });
+        setShowDialog(false);
+      },
     }
   );
 
@@ -130,7 +137,12 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
         showDialog={showDialog}
         setShowDialog={setShowDialog}
         handleDialogResponse={handleUpdateStatus}
-        accept={isAcceptOrder(order.type, order.status, userType, order.senderId)}
+        accept={isAcceptOrder(
+          order.type,
+          order.status,
+          userType,
+          order.senderId
+        )}
         newStatus={getNewStatus(order.type, order.status)}
       />
     </>
