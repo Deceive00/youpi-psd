@@ -16,15 +16,12 @@ import { IoFastFoodOutline } from "react-icons/io5";
 import { SiGooglemaps } from "react-icons/si";
 import {
   DELIVERY_STATUS,
-  DELIVERY_STATUS_LIST,
-  PICKUP_STATUS_LIST,
   getNewStatus,
   isAcceptOrder,
   updateOrderStatus,
 } from "@lib/services/order.service";
 import { useState } from "react";
 import SwitchStatus from "../../components/popup/switch-status-popup";
-import { UserType } from "@lib/types/user-types";
 import { useAuth } from "@lib/hooks/useAuth";
 import { useMutation } from "react-query";
 import { useToast } from "@components/ui/use-toast";
@@ -48,7 +45,7 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
   };
 
   const {mutate: handleUpdateStatus} = useMutation(async() => {
-    updateOrderStatus(order, userType)
+    await updateOrderStatus(order, userType)
   },{
     onSuccess:() => {
       console.log("Sukses")
@@ -61,12 +58,13 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
       })
     },
     onError:(error: Error) => {
-      console.error(error.message)
+      
       toast({
         title: 'Action Failed',
         description: error.message,
         variant:'error'
       })
+      setShowDialog(false);
     }
   })
 
@@ -131,7 +129,7 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
         showDialog={showDialog}
         setShowDialog={setShowDialog}
         handleDialogResponse={handleUpdateStatus}
-        accept={isAcceptOrder(order.type, order.status, userType)}
+        accept={isAcceptOrder(order.type, order.status, userType, order.senderId)}
         newStatus={getNewStatus(order.type, order.status)}
       />
     </>

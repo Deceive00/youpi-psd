@@ -41,7 +41,6 @@ export default function ManageOrderSenderPage() {
   useEffect(() => {
     if (user) {
       const unsubscribe = getSenderOngoingOrder((orders: Order[]) => {
-        console.log(orders);
         setOngoingData(orders);
       });
 

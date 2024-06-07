@@ -58,7 +58,7 @@ export default function OrderCardAccordionItem({ index, order, vendor }: props) 
 
 
   const {mutate: handleUpdateStatus} = useMutation(async() => {
-    updateOrderStatus(order, userType)
+    await updateOrderStatus(order, userType)
   },{
     onSuccess:() => {
       console.log("Sukses")
