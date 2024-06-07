@@ -26,7 +26,7 @@ export const fetchVendorDataById = async (
   if (campusDoc.exists()) {
     const campusData = campusDoc.data();
     const vendor = campusData.vendors.find((v: any) => v.id === vendorId);
-
+    
     if (vendor) {
       return vendor;
     } else {

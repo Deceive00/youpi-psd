@@ -59,7 +59,8 @@ export const getVendorIncomingOrder = (callback: (orders: Order[]) => void) => {
         orderSnapshot.docs.forEach((d) => {
           const data = d.data().ongoing as Order;
           if (
-            data && data.vendorId === id &&
+            data &&
+            data.vendorId === id &&
             data.status === DELIVERY_STATUS.WAITING_CONFIRMATION
           ) {
             data.orderId = d.id;
@@ -84,7 +85,7 @@ export const getVendorOrderHistory = (callback: (orders: Order[]) => void) => {
         const updatedOrders: Order[] = [];
         orderSnapshot.docs.forEach((d) => {
           const data = d.data().ongoing as Order;
-          if(data){
+          if (data) {
             data.orderId = d.id;
             updatedOrders.push(data);
           }
@@ -110,9 +111,12 @@ export const getSenderIncomingOrder = (callback: (orders: Order[]) => void) => {
         for (const d of orderSnapshot.docs) {
           const data = d.data().ongoing as Order;
           if (
-            data && data.type === ORDER_TYPE.DELIVERY && data.status !== DELIVERY_STATUS.FINISHED && 
-            (data.status === DELIVERY_STATUS.READY_FOR_PICKUP || data.status === DELIVERY_STATUS.PREPARING_ORDER) &&
-            data.senderId === "" 
+            data &&
+            data.type === ORDER_TYPE.DELIVERY &&
+            data.status !== DELIVERY_STATUS.FINISHED &&
+            (data.status === DELIVERY_STATUS.READY_FOR_PICKUP ||
+              data.status === DELIVERY_STATUS.PREPARING_ORDER) &&
+            data.senderId === ""
           ) {
             const vendorDoc = await getDoc(doc(db, "campus", data.campusName));
             if (vendorDoc.exists()) {
@@ -147,7 +151,12 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
 
         for (const d of orderSnapshot.docs) {
           const data = d.data().ongoing as Order;
-          if (data && data.type === ORDER_TYPE.DELIVERY && data.senderId === id && data.status !== DELIVERY_STATUS.FINISHED) {
+          if (
+            data &&
+            data.type === ORDER_TYPE.DELIVERY &&
+            data.senderId === id &&
+            data.status !== DELIVERY_STATUS.FINISHED
+          ) {
             const vendorDoc = await getDoc(doc(db, "campus", data.campusName));
             if (vendorDoc.exists()) {
               const vendors = vendorDoc.data().vendors;
@@ -169,32 +178,48 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
     throw new Error("User ID not found");
   }
 };
-export const addHistory = async (updatedOrder : Order, id : string) =>{
+
+export const getUserOngoingOrder = async () => {
+  const id = auth.currentUser?.uid;
+  if (id) {
+    const orderRef = doc(db, "orders", id);
+    const orderDoc = await getDoc(orderRef);
+    if (orderDoc.exists()) {
+      const ongoing = orderDoc.data();
+      console.log(ongoing);
+    } else {
+      throw new Error("Order Not Found");
+    }
+  } else {
+    throw new Error("User ID not found");
+  }
+};
+
+export const addHistory = async (updatedOrder: Order, id: string) => {
   const historyRef = doc(db, "history", id);
   const historyDoc = await getDoc(historyRef);
   if (historyDoc.exists()) {
     await updateDoc(historyRef, {
-      data: arrayUnion(updatedOrder)
+      data: arrayUnion(updatedOrder),
     });
   } else {
     await setDoc(historyRef, {
-      data:[updatedOrder]
+      data: [updatedOrder],
     });
-
   }
-}
+};
 
-const addUserOrderHistory = async (updatedOrder : Order) => {
+const addUserOrderHistory = async (updatedOrder: Order) => {
   const historyRef = doc(db, "orders", updatedOrder.orderId);
   const historyDoc = await getDoc(historyRef);
   if (historyDoc.exists()) {
     await updateDoc(historyRef, {
-      history: arrayUnion(updatedOrder)
+      history: arrayUnion(updatedOrder),
     });
-  }else{
+  } else {
     throw new Error("User Not Found!");
   }
-}
+};
 
 export const updateOrderStatus = async (order: Order, userType: UserType) => {
   let statusIdx;
@@ -211,9 +236,8 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
   if (order.orderId && id) {
     if (order.type === ORDER_TYPE.DELIVERY && id === order.orderId) {
       // Validasi sender gabisa ngambil orderannya sendiri
-      console.log('gaboleh nyed')
+      console.log("gaboleh nyed");
       throw new Error("You cannot take your own order!");
-
     }
     const orderRef = doc(db, "orders", order.orderId);
     const orderDoc = await getDoc(orderRef);
@@ -223,17 +247,16 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
     } else {
       updatedOrder = validateVendorOrderStatus(order, statusIdx);
     }
-    if(updatedOrder.status === DELIVERY_STATUS.FINISHED){
+    if (updatedOrder.status === DELIVERY_STATUS.FINISHED) {
       await addHistory(updatedOrder, order.vendorId);
-      if(updatedOrder.senderId !== ''){
+      if (updatedOrder.senderId !== "") {
         await addHistory(updatedOrder, order.senderId);
       }
       await addUserOrderHistory(updatedOrder);
       await updateDoc(orderRef, {
-        ongoing:null,
+        ongoing: null,
       });
-    }
-    else if (orderDoc.exists()) {
+    } else if (orderDoc.exists()) {
       await updateDoc(orderRef, {
         ongoing: updatedOrder,
       });
@@ -246,7 +269,10 @@ const validateSenderOrderStatus = (
   senderId: string
 ) => {
   const updatedOrder = order;
-  if (updatedOrder.status === DELIVERY_STATUS.READY_FOR_PICKUP || updatedOrder.status === DELIVERY_STATUS.PREPARING_ORDER) {
+  if (
+    updatedOrder.status === DELIVERY_STATUS.READY_FOR_PICKUP ||
+    updatedOrder.status === DELIVERY_STATUS.PREPARING_ORDER
+  ) {
     updatedOrder.senderId = senderId;
   }
   if (
@@ -254,7 +280,7 @@ const validateSenderOrderStatus = (
     updatedOrder.status === DELIVERY_STATUS.PICKING_UP_YOUR_ORDER ||
     updatedOrder.status === DELIVERY_STATUS.DELIVERING_YOUR_ORDER
   ) {
-    console.log('tes')
+    console.log("tes");
     updatedOrder.status = DELIVERY_STATUS_LIST[statusIdx + 1];
   }
   return updatedOrder;
@@ -267,7 +293,8 @@ const validateVendorOrderStatus = (order: Order, statusIdx: number) => {
     status === DELIVERY_STATUS.PREPARING_ORDER ||
     status === PICKUP_STATUS.WAITING_CONFIRMATION ||
     status === PICKUP_STATUS.PREPARING_ORDER ||
-    (status === PICKUP_STATUS.READY_FOR_PICKUP && order.type === ORDER_TYPE.PICK_UP)
+    (status === PICKUP_STATUS.READY_FOR_PICKUP &&
+      order.type === ORDER_TYPE.PICK_UP)
   ) {
     if (order.type === ORDER_TYPE.DELIVERY) {
       updatedOrder.status = DELIVERY_STATUS_LIST[statusIdx + 1];
@@ -289,8 +316,10 @@ export const getVendorOngoingOrder = (callback: (orders: Order[]) => void) => {
         orderSnapshot.docs.forEach((d) => {
           const data = d.data().ongoing as Order;
           if (
-            data && data.vendorId === id &&
-            data.status !== DELIVERY_STATUS.WAITING_CONFIRMATION && data.status !== DELIVERY_STATUS.FINISHED
+            data &&
+            data.vendorId === id &&
+            data.status !== DELIVERY_STATUS.WAITING_CONFIRMATION &&
+            data.status !== DELIVERY_STATUS.FINISHED
           ) {
             updatedOrders.push(data);
           }
@@ -319,21 +348,33 @@ export const getNewStatus = (type: string, currentStatus: string) => {
       ];
 };
 
-export const isAcceptOrder = (type: string, status: string , userType: UserType, senderId?: string) => {
-  if(userType === UserType.VENDOR){
-    if(type === 'delivery'){
+export const isAcceptOrder = (
+  type: string,
+  status: string,
+  userType: UserType,
+  senderId?: string
+) => {
+  if (userType === UserType.VENDOR) {
+    if (type === "delivery") {
       return status === DELIVERY_STATUS.WAITING_CONFIRMATION;
-    }else{
-      return status === PICKUP_STATUS.WAITING_CONFIRMATION
+    } else {
+      return status === PICKUP_STATUS.WAITING_CONFIRMATION;
     }
-  }else{
-    return status === DELIVERY_STATUS.PREPARING_ORDER || (status === DELIVERY_STATUS.READY_FOR_PICKUP && senderId === "");
+  } else {
+    return (
+      status === DELIVERY_STATUS.PREPARING_ORDER ||
+      (status === DELIVERY_STATUS.READY_FOR_PICKUP && senderId === "")
+    );
   }
-}
-export const hideUpdateButton = (status : string) => {
-  return status === DELIVERY_STATUS.READY_FOR_PICKUP || status === DELIVERY_STATUS.PICKING_UP_YOUR_ORDER || status === DELIVERY_STATUS.DELIVERING_YOUR_ORDER || status === DELIVERY_STATUS.FINISHED;
-
-}
+};
+export const hideUpdateButton = (status: string) => {
+  return (
+    status === DELIVERY_STATUS.READY_FOR_PICKUP ||
+    status === DELIVERY_STATUS.PICKING_UP_YOUR_ORDER ||
+    status === DELIVERY_STATUS.DELIVERING_YOUR_ORDER ||
+    status === DELIVERY_STATUS.FINISHED
+  );
+};
 export enum PICKUP_STATUS {
   WAITING_CONFIRMATION = "waiting confirmation",
   PREPARING_ORDER = "preparing order",
@@ -366,5 +407,5 @@ export const DELIVERY_STATUS_LIST = [
 
 export enum ORDER_TYPE {
   DELIVERY = "delivery",
-  PICK_UP = "pick up"
+  PICK_UP = "pick up",
 }

@@ -5,19 +5,19 @@ import {
 } from "@lib/services/price.service";
 import { Menu, Vendor } from "@lib/types/vendor-types";
 import { FiPlusCircle } from "react-icons/fi";
-import { FiMinusCircle } from "react-icons/fi";
+import { LuMinusCircle, LuPlusCircle } from "react-icons/lu";
 
 interface CartCardProps {
   vendor: Vendor;
   menu: Menu;
+  addToCart: any;
 }
-export const CartCardSkeleton = () =>{
-  return(
-      <Skeleton className='h-[250px] md:h-[275px] w-full bg-gray-200'>
-      </Skeleton>
+export const CartCardSkeleton = () => {
+  return (
+    <Skeleton className="h-[250px] md:h-[275px] w-full bg-gray-200"></Skeleton>
   );
-}
-export default function CartCard({ vendor, menu }: CartCardProps) {
+};
+export default function CartCard({ vendor, menu, addToCart }: CartCardProps) {
   return (
     <div className="w-full sm:shadow-md h-auto border flex justify-between p-5 pb-3">
       <div className="flex flex-col w-3/4 md:w-4/5 pr-5">
@@ -50,9 +50,33 @@ export default function CartCard({ vendor, menu }: CartCardProps) {
           src={menu.image}
         />
         <div className="flex w-full justify-between items-center ">
-          <FiMinusCircle className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+          <div className="sm:p-2 rounded-3xl hover:cursor-pointer hover:bg-slate-100 transition-all duration-300 ease-in-out">
+            <LuMinusCircle
+              className="w-6 h-6"
+              onClick={async () =>
+                await addToCart({
+                  vendorId: vendor.id,
+                  menuId: menu.uid,
+                  notes: "",
+                  add: false,
+                })
+              }
+            />
+          </div>  
           <p className="font-bold">{menu.quantity}</p>
-          <FiPlusCircle className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+          <div className="sm:p-2 rounded-3xl hover:cursor-pointer hover:bg-slate-100 transition-all duration-300 ease-in-out">
+            <LuPlusCircle
+              className="w-6 h-6"
+              onClick={async () =>
+                await addToCart({
+                  vendorId: vendor.id,
+                  menuId: menu.uid,
+                  notes: "",
+                  add: true,
+                })
+              }
+            />
+          </div>
         </div>
       </div>
     </div>
