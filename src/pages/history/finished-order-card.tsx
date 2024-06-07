@@ -5,11 +5,15 @@ interface Props {
   imageUrl: string;
   title: string;
   campusName: string;
-}
+  onClick: () => void;
+ }
 
-const OrderCard: React.FC<Props> = ({ imageUrl, title, campusName }) => {
+const OrderCard: React.FC<Props> = ({ imageUrl, title, campusName, onClick}) => {
   return (
-    <div className="card w-96 h-96 shadow-xl">
+    <div 
+      className="card w-96 h-96 shadow-xl cursor-pointer"
+      onClick={onClick}
+    >
       <figure className="lg:h-[40%]">
           <img src={imageUrl} alt="Card Image" className="h-max" />
         </figure>
