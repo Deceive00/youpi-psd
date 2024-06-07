@@ -8,7 +8,6 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
 import { Separator } from "@radix-ui/react-select";
 import { motion } from "framer-motion"
-import { KeyObject } from "crypto";
 
 interface Props {
     currId : string

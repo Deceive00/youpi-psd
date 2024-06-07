@@ -11,14 +11,14 @@ const ChatPage = () => {
   const { isLoading } = useAuth();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
 
-      // Handler
-      const handleUserChatClick = () => {
-        setIsDetailOpen(true);
-      }
+  // Handler
+  const handleUserChatClick = () => {
+    setIsDetailOpen(true);
+  }
 
-      const handleBackClick = () => {
-        setIsDetailOpen(false)
-      }
+  const handleBackClick = () => {
+    setIsDetailOpen(false)
+  }
 
 
   // State
