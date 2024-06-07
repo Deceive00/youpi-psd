@@ -35,7 +35,7 @@ export default function SwitchStatus({
           <Button
             variant="outline"
             className="border-orange-300"
-            onClick={() => handleDialogResponse(false)}
+            onClick={() => setShowDialog(false)}
           >
             No
           </Button>

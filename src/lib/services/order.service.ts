@@ -17,6 +17,7 @@ export const addOrder = async (order: Order) => {
   if (id) {
     const userRef = doc(db, "orders", id);
     const userDoc = await getDoc(userRef);
+
     if (userDoc.exists()) {
       await updateDoc(userRef, {
         ongoing: order,
@@ -58,7 +59,7 @@ export const getVendorIncomingOrder = (callback: (orders: Order[]) => void) => {
         orderSnapshot.docs.forEach((d) => {
           const data = d.data().ongoing as Order;
           if (
-            data.vendorId === id &&
+            data && data.vendorId === id &&
             data.status === DELIVERY_STATUS.WAITING_CONFIRMATION
           ) {
             data.orderId = d.id;
@@ -83,8 +84,10 @@ export const getVendorOrderHistory = (callback: (orders: Order[]) => void) => {
         const updatedOrders: Order[] = [];
         orderSnapshot.docs.forEach((d) => {
           const data = d.data().ongoing as Order;
-          data.orderId = d.id;
-          updatedOrders.push(data);
+          if(data){
+            data.orderId = d.id;
+            updatedOrders.push(data);
+          }
         });
         callback(updatedOrders);
       }
@@ -107,9 +110,9 @@ export const getSenderIncomingOrder = (callback: (orders: Order[]) => void) => {
         for (const d of orderSnapshot.docs) {
           const data = d.data().ongoing as Order;
           if (
-            data.type === "delivery" && data.status !== DELIVERY_STATUS.FINISHED && 
+            data && data.type === ORDER_TYPE.DELIVERY && data.status !== DELIVERY_STATUS.FINISHED && 
             (data.status === DELIVERY_STATUS.READY_FOR_PICKUP || data.status === DELIVERY_STATUS.PREPARING_ORDER) &&
-            data.senderId === ""
+            data.senderId === "" 
           ) {
             const vendorDoc = await getDoc(doc(db, "campus", data.campusName));
             if (vendorDoc.exists()) {
@@ -144,7 +147,7 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
 
         for (const d of orderSnapshot.docs) {
           const data = d.data().ongoing as Order;
-          if (data.type === "delivery" && data.senderId === id && data.status !== DELIVERY_STATUS.FINISHED) {
+          if (data && data.type === ORDER_TYPE.DELIVERY && data.senderId === id && data.status !== DELIVERY_STATUS.FINISHED) {
             const vendorDoc = await getDoc(doc(db, "campus", data.campusName));
             if (vendorDoc.exists()) {
               const vendors = vendorDoc.data().vendors;
@@ -166,8 +169,8 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
     throw new Error("User ID not found");
   }
 };
-export const addVendorHistory = async (updatedOrder : Order, vendorId : string) =>{
-  const historyRef = doc(db, "vendorHistory", vendorId);
+export const addHistory = async (updatedOrder : Order, id : string) =>{
+  const historyRef = doc(db, "history", id);
   const historyDoc = await getDoc(historyRef);
   if (historyDoc.exists()) {
     await updateDoc(historyRef, {
@@ -181,23 +184,21 @@ export const addVendorHistory = async (updatedOrder : Order, vendorId : string) 
   }
 }
 
-// const addUserOrderHistory = async (updatedOrder : Order) => {
-//   const historyRef = doc(db, "vendorHistory", updatedOrder);
-//   const historyDoc = await getDoc(historyRef);
-//   if (historyDoc.exists()) {
-//     await updateDoc(historyRef, {
-//       data: arrayUnion(updatedOrder)
-//     });
-//   } else {
-//     await setDoc(historyRef, {
-//       data:[updatedOrder]
-//     });
+const addUserOrderHistory = async (updatedOrder : Order) => {
+  const historyRef = doc(db, "orders", updatedOrder.orderId);
+  const historyDoc = await getDoc(historyRef);
+  if (historyDoc.exists()) {
+    await updateDoc(historyRef, {
+      history: arrayUnion(updatedOrder)
+    });
+  }else{
+    throw new Error("User Not Found!");
+  }
+}
 
-//   }
-// }
 export const updateOrderStatus = async (order: Order, userType: UserType) => {
   let statusIdx;
-  if (order.type === "delivery") {
+  if (order.type === ORDER_TYPE.DELIVERY) {
     statusIdx = DELIVERY_STATUS_LIST.findIndex(
       (status: string) => status === order.status
     );
@@ -208,7 +209,7 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
   }
   const id = auth.currentUser?.uid;
   if (order.orderId && id) {
-    if (order.type === "delivery" && id === order.orderId) {
+    if (order.type === ORDER_TYPE.DELIVERY && id === order.orderId) {
       // Validasi sender gabisa ngambil orderannya sendiri
       throw new Error("You cannot take your own order!");
     }
@@ -221,7 +222,14 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
       updatedOrder = validateVendorOrderStatus(order, statusIdx);
     }
     if(updatedOrder.status === DELIVERY_STATUS.FINISHED){
-      await addVendorHistory(updatedOrder, order.vendorId);
+      await addHistory(updatedOrder, order.vendorId);
+      if(updatedOrder.senderId !== ''){
+        await addHistory(updatedOrder, order.senderId);
+      }
+      await addUserOrderHistory(updatedOrder);
+      await updateDoc(orderRef, {
+        ongoing:null,
+      });
     }
     else if (orderDoc.exists()) {
       await updateDoc(orderRef, {
@@ -256,9 +264,9 @@ const validateVendorOrderStatus = (order: Order, statusIdx: number) => {
     status === DELIVERY_STATUS.PREPARING_ORDER ||
     status === PICKUP_STATUS.WAITING_CONFIRMATION ||
     status === PICKUP_STATUS.PREPARING_ORDER ||
-    (status === PICKUP_STATUS.READY_FOR_PICKUP && order.type === "pick up")
+    (status === PICKUP_STATUS.READY_FOR_PICKUP && order.type === ORDER_TYPE.PICK_UP)
   ) {
-    if (order.type === "delivery") {
+    if (order.type === ORDER_TYPE.DELIVERY) {
       updatedOrder.status = DELIVERY_STATUS_LIST[statusIdx + 1];
     } else {
       updatedOrder.status = PICKUP_STATUS_LIST[statusIdx + 1];
@@ -278,7 +286,7 @@ export const getVendorOngoingOrder = (callback: (orders: Order[]) => void) => {
         orderSnapshot.docs.forEach((d) => {
           const data = d.data().ongoing as Order;
           if (
-            data.vendorId === id &&
+            data && data.vendorId === id &&
             data.status !== DELIVERY_STATUS.WAITING_CONFIRMATION && data.status !== DELIVERY_STATUS.FINISHED
           ) {
             updatedOrders.push(data);
@@ -295,7 +303,7 @@ export const getVendorOngoingOrder = (callback: (orders: Order[]) => void) => {
 };
 
 export const getNewStatus = (type: string, currentStatus: string) => {
-  return type === "delivery"
+  return type === ORDER_TYPE.DELIVERY
     ? DELIVERY_STATUS_LIST[
         DELIVERY_STATUS_LIST.findIndex(
           (status: string) => status === currentStatus
@@ -352,3 +360,8 @@ export const DELIVERY_STATUS_LIST = [
   DELIVERY_STATUS.DELIVERING_YOUR_ORDER,
   DELIVERY_STATUS.FINISHED,
 ];
+
+export enum ORDER_TYPE {
+  DELIVERY = "delivery",
+  PICK_UP = "pick up"
+}

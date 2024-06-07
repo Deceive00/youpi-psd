@@ -1,16 +1,13 @@
 import { Accordion } from "@components/ui/accordion";
 import { Toaster } from "@components/ui/toaster";
-import { useToast } from "@components/ui/use-toast";
 import { useAuth } from "@lib/hooks/useAuth";
 import {
   getVendorIncomingOrder,
   getVendorOngoingOrder,
-  getVendorOrderHistory,
 } from "@lib/services/order.service";
 import { Order } from "@lib/types/order-types";
 import { Vendor } from "@lib/types/vendor-types";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import VendorLayout from "src/layout/vendor-layout";
 import OrderCardAccordionItem from "./order-card-accordion-item";
 enum OrderTab {
