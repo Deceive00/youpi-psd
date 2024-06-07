@@ -12,7 +12,7 @@ import { container, item } from "@components/variants/staggered-children";
 import ModalHistory from "./modal-history";
 
 const HistoryPage = () => {
-  // [] Fetch from firebase 'orders'
+  // [V] Fetch from firebase 'orders'
   const [history, setHistory] = useState<UserHistory[] | null>(null);
   const {isLoading} = useQuery(['fetchUserHistory'], async() => await getAllUserHistory(), {
     retry:false,
@@ -24,6 +24,7 @@ const HistoryPage = () => {
       console.log(error);
     }
   })
+  
   // [] Use Effect 
 
   // [V] Set Image berdasarkan Jenis Category Transaksinya, ambil dari static image krn cuman 2 gambar aja
