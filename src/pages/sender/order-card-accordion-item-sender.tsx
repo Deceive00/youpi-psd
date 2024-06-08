@@ -20,11 +20,12 @@ import {
   isAcceptOrder,
   updateOrderStatus,
 } from "@lib/services/order.service";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SwitchStatus from "../../components/popup/switch-status-popup";
 import { useAuth } from "@lib/hooks/useAuth";
 import { useMutation } from "react-query";
 import { useToast } from "@components/ui/use-toast";
+import LoadingCircle from "@components/ui/loading-circle";
 
 interface props {
   index: number;
@@ -32,25 +33,17 @@ interface props {
 }
 
 export default function OrderCardAccordionItemSender({ index, order }: props) {
+  console.log(order)
   const [showDialog, setShowDialog] = useState(false);
   const { userType } = useAuth();
   const { toast } = useToast();
-
-  const getButtonText = () => {
-    if (isAcceptOrder(order.type, order.status, userType, order.senderId)) {
-      return "Accept Order";
-    } else {
-      return "Update Status";
-    }
-  };
-
-  const { mutate: handleUpdateStatus } = useMutation(
+  const { mutate: handleUpdateStatus, isLoading } = useMutation(
     async () => {
       await updateOrderStatus(order, userType);
     },
     {
       onSuccess: () => {
-        console.log("Sukses");
+        console.log(order);
         setShowDialog(false);
         const isAccept = isAcceptOrder(order.type, order.status, userType);
         toast({
@@ -74,7 +67,13 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
       },
     }
   );
-
+  const getButtonText = () => {
+    if (isAcceptOrder(order.type, order.status, userType, order.senderId)) {
+      return "Accept Order";
+    } else {
+      return "Update Status";
+    }
+  };
   return (
     <>
       <AccordionItem
@@ -119,6 +118,7 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
                 order.status === DELIVERY_STATUS.FINISHED)
             ) && (
               <Button
+                disabled={isLoading}
                 className="font-bold text-[0.8rem] md:text-sm"
                 onClick={() => setShowDialog(true)}
               >
@@ -143,6 +143,7 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
           userType,
           order.senderId
         )}
+        isLoading={isLoading}
         newStatus={getNewStatus(order.type, order.status)}
       />
     </>

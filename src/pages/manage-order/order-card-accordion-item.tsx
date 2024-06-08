@@ -29,7 +29,7 @@ interface props {
 }
 
 export const OrderCardAccordionSkeleton = () => {
-  return <Skeleton className='w-full h-40 bg-gray-200'>
+  return <Skeleton className='mt-4 w-full h-40 bg-gray-200'>
   </Skeleton>
 }
 export default function OrderCardAccordionItem({ index, order, vendor }: props) {
@@ -62,11 +62,10 @@ export default function OrderCardAccordionItem({ index, order, vendor }: props) 
   }
 
 
-  const {mutate: handleUpdateStatus} = useMutation(async() => {
+  const {mutate: handleUpdateStatus, isLoading} = useMutation(async() => {
     await updateOrderStatus(order, userType)
   },{
     onSuccess:() => {
-      console.log("Sukses")
       setShowDialog(false);
       const isAccept = isAcceptOrder(order.type,order.status, userType);
       toast({
@@ -89,7 +88,7 @@ export default function OrderCardAccordionItem({ index, order, vendor }: props) 
     <AccordionItem value={index.toString()} className="mb-4 hover:translate-y-[1px] transition-all duration-200 z-10">
       <AccordionTrigger className="border rounded-md p-4 hover:no-underline">
         <div className="text-left flex gap-4 flex-col">
-          <h4 className="font-bold md:text-lg text-base">{order.campusName} - {user?.name}</h4>
+          <h4 className="font-bold md:text-lg text-base">{order.campusName} - {(user as Vendor).name}</h4>
           <p className="text-sm md:text-base flex items-center gap-2"><GrStatusInfo className="w-5 h-5"/> {capitalizeFirstChar(order.status)}</p>
           <p className="text-sm md:text-base flex items-center gap-2"><IoFastFoodOutline className="w-5 h-5"/> {order.menus.length} Menus</p>
           <div className="text-sm d:text-base flex items-center gap-2"><MdOutlinePriceChange className="w-5 h-5"/> {getTotalPriceMenu(order.menus)}</div>
@@ -111,6 +110,7 @@ export default function OrderCardAccordionItem({ index, order, vendor }: props) 
         handleDialogResponse={handleUpdateStatus}
         accept={isAcceptOrder(order.type, order.status, userType)}
         newStatus={getNewStatus(order.type, order.status)}
+        isLoading={isLoading}
       />
     </AccordionItem>
   );

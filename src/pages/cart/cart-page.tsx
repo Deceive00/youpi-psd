@@ -41,7 +41,7 @@ export default function CartPage() {
   );
 
   useEffect(() => {
-    if (userType === UserType.VENDOR) {
+    if (userType == UserType.VENDOR) {
       navigate("/");
     }
   }, [userType]);
@@ -62,6 +62,7 @@ export default function CartPage() {
         type: type,
         vendorId: userCart?.vendor.id,
         address: address,
+        timeAdded: new Date(),
       } as Order);
     },
     {
@@ -101,7 +102,6 @@ export default function CartPage() {
     },
     {
       onSuccess: () => {
-        // queryClient.invalidateQueries(["fetchUserCart"]);
         console.log("function success");
       },
       onError: (error: any) => {

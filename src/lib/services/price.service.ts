@@ -9,10 +9,14 @@ export const calculateFakeDiscount = (amount: Number) => {
   return formatPrice(fakeAmount);
 };
 
-export const getTotalPriceMenu = (menus : Menu[]) => {
-  let price : number = 0;
-  menus.forEach((menu : Menu) => {
-    price += Number(menu.price);
-  })
+export const getTotalPriceMenu = (menus: Menu[]) => {
+  let price: number = 0;
+  menus.forEach((menu: Menu) => {
+    price += Number(menu.price) * Number(menu.quantity);
+  });
   return price;
-} 
+};
+
+export const getPricePerMenu = (menu: Menu) => {
+  return Number(menu.price) * Number(menu.quantity);
+};

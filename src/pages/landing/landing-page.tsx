@@ -13,7 +13,9 @@ export default function LandingPage() {
   const navigate = useNavigate();
   if(userType === UserType.VENDOR){
     navigate("/vendor/manage/menu");
+    return;
   };
+
   return (
     <MainLayout className={"bg-white pt-14"}>
       <div className="w-full md:h-[80vh] flex flex-col gap-5 justify-center items-center font-nunito">

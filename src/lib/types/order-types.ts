@@ -14,6 +14,7 @@ export interface Order {
   senderId: string;
   address?: string;
   vendorName: string;
+  timeAdded: Date;
 }
 
 export interface OrderBE {

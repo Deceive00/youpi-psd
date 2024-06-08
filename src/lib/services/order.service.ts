@@ -179,17 +179,65 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
   }
 };
 
-export const getUserOngoingOrder = async () => {
+// export const getUserOngoingOrder = async () => {
+//   const id = auth.currentUser?.uid;
+//   console.log("idnya = ", id);
+//   if (id) {
+//     const orderRef = doc(db, "orders", id);
+//     const orderDoc = await getDoc(orderRef);
+//     if (orderDoc.exists()) {
+//       const data = orderDoc.data().ongoing;
+
+//       const vendorDoc = await getDoc(doc(db, "campus", data.campusName));
+//       if (vendorDoc.exists()) {
+//         const vendors = vendorDoc.data().vendors;
+//         const vendor = vendors.find((v: any) => v.id === data.vendorId);
+//         if (vendor) {
+//           data.vendorName = vendor.name;
+//         }
+//       }
+
+//       return data;
+//     } else {
+//       throw new Error("Order Not Found");
+//     }
+//   } else {
+//     throw new Error("User ID not found");
+//   }
+// };
+
+export const onUserOngoingOrder = (callback: (order: Order | null) => void) => {
   const id = auth.currentUser?.uid;
+  console.log("idnya = ", id);
+
   if (id) {
     const orderRef = doc(db, "orders", id);
-    const orderDoc = await getDoc(orderRef);
-    if (orderDoc.exists()) {
-      const ongoing = orderDoc.data();
-      console.log(ongoing);
-    } else {
-      throw new Error("Order Not Found");
-    }
+
+    const unsubscribe = onSnapshot(orderRef, async (orderDoc) => {
+      if (orderDoc.exists()) {
+        const data = orderDoc.data().ongoing as Order;
+
+        if (data) {
+          const vendorDoc = await getDoc(doc(db, "campus", data.campusName));
+          if (vendorDoc.exists()) {
+            const vendors = vendorDoc.data().vendors;
+            const vendor = vendors.find((v: any) => v.id === data.vendorId);
+            if (vendor) {
+              data.vendorName = vendor.name;
+            }
+          }
+
+          callback(data);
+        } else {
+          callback(null);
+        }
+      } else {
+        console.error("Order Not Found");
+        callback(null);
+      }
+    });
+
+    return unsubscribe;
   } else {
     throw new Error("User ID not found");
   }
@@ -262,6 +310,27 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
     }
   }
 };
+
+export const updateUserPickupStatus = async (order: Order) => {
+  const statusIdx = PICKUP_STATUS_LIST.findIndex(
+    (status: string) => status === order.status
+  );
+
+  const id = auth.currentUser?.uid;
+  if (order.orderId && id) {
+    const orderRef = doc(db, "orders", order.orderId);
+    const updatedOrder = validateUserPickupStatus(order, statusIdx);
+
+    if (updatedOrder.status === PICKUP_STATUS.FINISHED) {
+      await addHistory(updatedOrder, order.vendorId);
+      await addUserOrderHistory(updatedOrder);
+      await updateDoc(orderRef, {
+        ongoing: null,
+      });
+    }
+  }
+};
+
 const validateSenderOrderStatus = (
   order: Order,
   statusIdx: number,
@@ -304,6 +373,16 @@ const validateVendorOrderStatus = (order: Order, statusIdx: number) => {
   return updatedOrder;
 };
 
+const validateUserPickupStatus = (order: Order, statusIdx: number) => {
+  const updatedOrder = order;
+  const status = order.status;
+  if (status === PICKUP_STATUS.READY_FOR_PICKUP) {
+    updatedOrder.status = PICKUP_STATUS_LIST[statusIdx + 1];
+  }
+
+  return updatedOrder;
+};
+
 export const getVendorOngoingOrder = (callback: (orders: Order[]) => void) => {
   const id = auth.currentUser?.uid;
   if (id) {
@@ -337,12 +416,12 @@ export const getNewStatus = (type: string, currentStatus: string) => {
     ? DELIVERY_STATUS_LIST[
         DELIVERY_STATUS_LIST.findIndex(
           (status: string) => status === currentStatus
-        ) + 1
+        )
       ]
     : PICKUP_STATUS_LIST[
         PICKUP_STATUS_LIST.findIndex(
           (status: string) => status === currentStatus
-        ) + 1
+        )
       ];
 };
 
@@ -352,6 +431,7 @@ export const isAcceptOrder = (
   userType: UserType,
   senderId?: string
 ) => {
+  console.log(status);
   if (userType === UserType.VENDOR) {
     if (type === "delivery") {
       return status === DELIVERY_STATUS.WAITING_CONFIRMATION;
@@ -365,6 +445,30 @@ export const isAcceptOrder = (
     );
   }
 };
+
+export const getEstimatedDeliveryTime = (
+  timestamp: any,
+  isDelivery: boolean
+) => {
+  const date = new Date(timestamp.seconds * 1000);
+
+  let deliveryTime;
+  if (isDelivery) {
+    deliveryTime = new Date(date.getTime() + 25 * 60000);
+  } else {
+    deliveryTime = new Date(date.getTime() + 15 * 60000);
+  }
+
+  const formattedTime =
+    (deliveryTime.getHours() < 10 ? "0" : "") +
+    deliveryTime.getHours() +
+    ":" +
+    (deliveryTime.getMinutes() < 10 ? "0" : "") +
+    deliveryTime.getMinutes();
+
+  return formattedTime;
+};
+
 export const hideUpdateButton = (status: string) => {
   return (
     status === DELIVERY_STATUS.READY_FOR_PICKUP ||
