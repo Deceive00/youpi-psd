@@ -62,6 +62,7 @@ export default function CartPage() {
         type: type,
         vendorId: userCart?.vendor.id,
         address: address,
+        timeAdded: new Date(),
       } as Order);
     },
     {

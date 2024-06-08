@@ -1,37 +1,18 @@
 import ButtonGroup from "@components/ui/button-group";
 import UserChat from "@components/ui/user-chat-card";
 import logo from "@assets/logo/default-logo.png";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "src/firebase/firebase-config";
+import { auth } from "src/firebase/firebase-config";
 import { motion } from "framer-motion"
-
-interface UserInfo {
-  uid: string;
-  displayName: string;
-  photoUrl: string;
-}
-interface Chat {
-  userInfo: UserInfo;
-  lastMessage: {
-    text: string
-  },
-  date: {
-    seconds: number;
-    nanoseconds: number;
-  } | null;
-}
-
-interface UserChats {
-  [combinedId: string]: Chat;
-}
+import { UserChats, UserInfo } from "@lib/types/chat-types";
+import { fetchUserChats } from "@lib/services/chat.service";
 
 interface Props {
-  setOtherId: (uid: string) => void
-  setUserInfo: (userInfo: UserInfo) => void
-  onUserChatClick: () => void
- }
+  setOtherId: (uid: string) => void;
+  setUserInfo: (userInfo: UserInfo) => void;
+  onUserChatClick: () => void;
+}
 
 const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClick}) => {
   const navigate = useNavigate();
@@ -40,49 +21,15 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClic
   const [userChats, setUserChats] = React.useState<UserChats>({});
   const [selectedButton, setSelectedButton] = React.useState<string>("All");
 
-  // Update Document
-  const updateUserChatsDoc = async () => {
-    if (!userId) return;
-
-    try {
-      await setDoc(doc(db, "userChats", userId), {});
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // Fetch userChats from firebases
-  const fetchUserChats = async () => {
-    try {
-      if (userId) {
-        console.log("User is not null");
-
-        // doc(db, nama_db, id_nya)s
-        const userChatsCollectionRef = doc(db, "userChats", userId);
-        const unsubscribe = onSnapshot(userChatsCollectionRef, (snapshot) => {
-          if (snapshot.exists()) {
-
-            const data = snapshot.data() as UserChats
-            setUserChats(data);
-          } else {
-            // Create new userChats document for this current user using updateDoc
-            updateUserChatsDoc();
-          }
-        });
-
-        console.log("userChats : ", userChats.combinedId.lastMessage);
-        return unsubscribe;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const buttons = ["All", "Vendor", "Sender"];
 
   React.useEffect(() => {
-    fetchUserChats();
-  }, []);
+    if (userId) {
+      fetchUserChats((data) => {
+        setUserChats(data);
+      });
+    }
+  }, [userId]);
 
   return (
     <motion.div 
@@ -122,7 +69,7 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClic
           key={combinedId}
           name={chat.userInfo.displayName}
           imageSrc={chat.userInfo.photoUrl}
-          lastText={chat.lastMessage.text}
+          lastText={chat.lastMessage?.text || "No messages yet"}
           date={chat.date}
           unread=""
         />
