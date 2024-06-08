@@ -13,12 +13,14 @@ import OrderCardAccordionItem, { OrderCardAccordionSkeleton } from "@pages/manag
 
 export default function VendorHistoryPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
-  const { user } = useAuth();
+  const { isLoading, user } = useAuth();
   const [history, setHistory] = useState<Order[] | null>(null);
-  const {isLoading} = useQuery(['fetchVendorHistory'], async() => await getAllVendorHistory(), {
-    retry:false,
-    staleTime:0,
+  const {isLoading : fetchLoading, isFetching} = useQuery(['fetchVendorHistory'], async() => await getAllVendorHistory(), {
+    enabled:!isLoading,
+    retry: false,
+    staleTime: 0,
     onSuccess:(data : Order[]) => {
+      console.log(data)
       setHistory(data);
     },
     onError:(error: Error) => {
@@ -43,13 +45,13 @@ export default function VendorHistoryPage() {
           className={`mt-4 max-h-[65vh] overflow-y-scroll transition-all duration-300`}
         >
           {
-            isLoading && (
-              Array.from({length: 4}).map((_,index) => {
+            (fetchLoading || isFetching) && (
+              Array.from({length: 2}).map((_,index) => {
                 return <OrderCardAccordionSkeleton key={index}/>
               })
             )
           }
-          {history &&
+          {history && !fetchLoading && !isFetching &&
             history?.length > 0 &&
             history?.map((order: Order, index: number) => {
               if (vendor) {
@@ -63,7 +65,7 @@ export default function VendorHistoryPage() {
                 );
               }
             })}
-          {((!history || history.length <= 0) && !isLoading) && (
+          {((!history || history.length <= 0) && !fetchLoading && !isFetching) && (
             <div className="flex justify-center items-center h-[50vh]">
               <p>You got no order history</p>
             </div>

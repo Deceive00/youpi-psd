@@ -101,7 +101,6 @@ export default function CartPage() {
     },
     {
       onSuccess: () => {
-        // queryClient.invalidateQueries(["fetchUserCart"]);
         console.log("function success");
       },
       onError: (error: any) => {

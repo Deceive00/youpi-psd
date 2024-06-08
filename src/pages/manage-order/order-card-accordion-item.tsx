@@ -29,7 +29,7 @@ interface props {
 }
 
 export const OrderCardAccordionSkeleton = () => {
-  return <Skeleton className='w-full h-40 bg-gray-200'>
+  return <Skeleton className='mt-4 w-full h-40 bg-gray-200'>
   </Skeleton>
 }
 export default function OrderCardAccordionItem({ index, order, vendor }: props) {

@@ -49,7 +49,6 @@ export default function ManageOrderVendorPage() {
   useEffect(() => {
     if (vendor) {
       const unsubscribe = getVendorOngoingOrder((orders: Order[]) => {
-        console.log(orders);
         setOngoingData(orders);
       });
 
