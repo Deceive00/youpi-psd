@@ -16,12 +16,12 @@ const MainLayout: React.FC<Props> = ({ children, className = "p-6" }) => {
   return (
     <>
       <div className={`fixed z-40 w-screen`}>
-        <Navbar className="bg-white" isLoading={isLoading}/>
+        <Navbar className="bg-white" isLoading={isLoading} />
       </div>
       <div className={`${className} w-full min-h-screen`}>{children}</div>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </>
   );
 };
