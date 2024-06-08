@@ -6,19 +6,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@components/ui/dialog";
+import LoadingCircle from "@components/ui/loading-circle";
 
 export default function SwitchStatus({
   showDialog,
   setShowDialog,
   handleDialogResponse,
   accept,
-  newStatus
+  newStatus,
+  isLoading
 }: {
   showDialog: boolean;
   setShowDialog: any;
   handleDialogResponse: any;
   accept: boolean;
   newStatus: any;
+  isLoading: boolean;
 }) {
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -39,7 +42,7 @@ export default function SwitchStatus({
           >
             No
           </Button>
-          <Button onClick={() => handleDialogResponse(true)}>Yes</Button>
+          <Button onClick={() => handleDialogResponse(true)}>{isLoading ? <LoadingCircle/> : 'Yes'}</Button>
         </div>
       </DialogContent>
     </Dialog>

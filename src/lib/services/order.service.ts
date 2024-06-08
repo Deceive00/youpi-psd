@@ -416,12 +416,12 @@ export const getNewStatus = (type: string, currentStatus: string) => {
     ? DELIVERY_STATUS_LIST[
         DELIVERY_STATUS_LIST.findIndex(
           (status: string) => status === currentStatus
-        ) + 1
+        )
       ]
     : PICKUP_STATUS_LIST[
         PICKUP_STATUS_LIST.findIndex(
           (status: string) => status === currentStatus
-        ) + 1
+        )
       ];
 };
 
@@ -431,6 +431,7 @@ export const isAcceptOrder = (
   userType: UserType,
   senderId?: string
 ) => {
+  console.log(status);
   if (userType === UserType.VENDOR) {
     if (type === "delivery") {
       return status === DELIVERY_STATUS.WAITING_CONFIRMATION;

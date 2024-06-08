@@ -41,6 +41,7 @@ export default function ManageOrderSenderPage() {
   useEffect(() => {
     if (user) {
       const unsubscribe = getSenderOngoingOrder((orders: Order[]) => {
+        console.log(orders)
         setOngoingData(orders);
       });
 
@@ -70,11 +71,11 @@ export default function ManageOrderSenderPage() {
             ></div>
           </div>
           <div
-            className="flex flex-col w-[50%] items-start cursor-pointer "
+            className="flex flex-col w-[50%] items-start cursor-pointer md:w-auto"
             onClick={() => handleTabChange(OrderTab.ONGOING)}
           >
             <div
-              className={`px-10 py-2 transition-all duration-100 ${
+              className={`px-10 py-2 transition-all duration-100 text-center w-full md:w-auto ${
                 tab === OrderTab.ONGOING ? "font-bold" : ""
               }`}
             >

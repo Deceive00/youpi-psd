@@ -41,7 +41,7 @@ export default function CartPage() {
   );
 
   useEffect(() => {
-    if (userType === UserType.VENDOR) {
+    if (userType == UserType.VENDOR) {
       navigate("/");
     }
   }, [userType]);
