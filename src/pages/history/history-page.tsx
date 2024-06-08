@@ -8,8 +8,9 @@ import { useQuery } from "react-query";
 import { getAllUserHistory } from "@lib/services/history.service";
 import Loader from "@components/loading/loader";
 import { motion } from "framer-motion";
-import { container, item } from "@components/variants/staggered-children";
+import { item, container } from "@components/variants/staggered-children";
 import ModalHistory from "./modal-history";
+import { Variable } from "lucide-react";
 
 const HistoryPage = () => {
   // [V] Fetch from firebase 'orders'
@@ -17,15 +18,13 @@ const HistoryPage = () => {
   const {isLoading} = useQuery(['fetchUserHistory'], async() => await getAllUserHistory(), {
     retry:false,
     staleTime:0,
-    onSuccess:(data : UserHistory[]) => {
+    onSuccess:(data : UserHistory[]) => {    
       setHistory(data);
     },
     onError:(error: Error) => {
       console.log(error);
     }
   })
-  
-  // [] Use Effect 
 
   // [V] Set Image berdasarkan Jenis Category Transaksinya, ambil dari static image krn cuman 2 gambar aja
     // Pick Up (Merah) = pickUpPng
@@ -68,73 +67,73 @@ const HistoryPage = () => {
         className={`w-screen h-max font-nunito box-border mx-auto flex justify-center`}
       >
         {/* Mapping from database */}
-        <motion.div
-          key={111}
-          variants={container}
-          initial="hidden"
-          animate="visible"
-          transition={{
-            delay: 0.5,
-          }}
-          className={`grid lg:grid-cols-3 gap-12`}
-        >
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={deliveryPng}
-              title="Shoes"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
-
-          {/* 2 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={pickUpPng}
-              title="Ramen"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
-
-          {/* 3 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={deliveryPng}
-              title="Shoes"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
+        <motion.div className={``} variants={container} initial="hidden" animate="visible">
+          <div className={`grid lg:grid-cols-3 grid-cols-1 lg:gap-12 gap-6`}>
 
           <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={pickUpPng}
-              title="Ramen"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
+                <OrderCard
+                  onClick={modalDetailHandler}
+                  imageUrl={pickUpPng}
+                  title="Ramen"
+                  campusName="Binus Alam Sutera"
+                />
+              </motion.div>
 
-          {/* 2 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={deliveryPng}
-              title="Shoes"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
+              <motion.div variants={item}>
+                <OrderCard
+                  onClick={modalDetailHandler}
+                  imageUrl={pickUpPng}
+                  title="Ramen"
+                  campusName="Binus Alam Sutera"
+                />
+              </motion.div>
 
-          {/* 3 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={pickUpPng}
-              title="Ramen"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
+              <motion.div variants={item}>
+                <OrderCard
+                  onClick={modalDetailHandler}
+                  imageUrl={pickUpPng}
+                  title="Ramen"
+                  campusName="Binus Alam Sutera"
+                />
+              </motion.div>
+
+              <motion.div variants={item}>
+                <OrderCard
+                  onClick={modalDetailHandler}
+                  imageUrl={pickUpPng}
+                  title="Ramen"
+                  campusName="Binus Alam Sutera"
+                />
+              </motion.div>
+
+              <motion.div variants={item}>
+                <OrderCard
+                  onClick={modalDetailHandler}
+                  imageUrl={pickUpPng}
+                  title="Ramen"
+                  campusName="Binus Alam Sutera"
+                />
+              </motion.div>
+
+              <motion.div variants={item}>
+                <OrderCard
+                  onClick={modalDetailHandler}
+                  imageUrl={pickUpPng}
+                  title="Ramen"
+                  campusName="Binus Alam Sutera"
+                />
+              </motion.div>
+            {/* {history?.map((order) => (
+              <motion.div variants={item}>
+                <OrderCard
+                  onClick={modalDetailHandler}
+                  imageUrl={pickUpPng}
+                  title="Ramen"
+                  campusName="Binus Alam Sutera"
+                />
+              </motion.div>
+            ))} */}
+          </div>
         </motion.div>
       </div>
 

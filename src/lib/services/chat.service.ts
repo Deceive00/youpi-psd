@@ -37,6 +37,9 @@ export const fetchUserChats = (onDataReceived: (data: UserChats) => void) => {
     const unsubscribe = onSnapshot(userChatsCollectionRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data() as UserChats;
+
+        console.log("Fetched User Chats : ", data);
+        
         onDataReceived(data);
       } else {
         // Create new userChats document for this current user using updateDoc

@@ -21,6 +21,9 @@ export const getAllUserHistory = async () => {
           order:h
         })
       })
+
+      console.log("Histories Found : " ,historiesFE);
+      
       return historiesFE
       
     }else{
