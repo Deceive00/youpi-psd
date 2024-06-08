@@ -20,7 +20,6 @@ const ChatPage = () => {
     setIsDetailOpen(false)
   }
 
-
   // State
   const [currId, setCurrId] = React.useState(auth.currentUser?.uid || "");
   const [otherId, setOtherId] = React.useState("");
@@ -54,6 +53,11 @@ const ChatPage = () => {
     return <Loader />;
   }
 
+  console.log("Current ID:", currId);
+  console.log("Other ID:", otherId);
+  console.log("User Info:", userInfo);
+  console.log("Combined ID:", combinedId);
+
   return (
     <div className={`w-screen h-screen flex flex-row lg:px-20 font-nunito`}>
       {window.innerWidth >= 640 ? (
@@ -67,14 +71,19 @@ const ChatPage = () => {
             aria-orientation="vertical"
             className="border-[1.5px] shadow-xl mx-2"
           />
-          <RightChatPage
+          {combinedId && currId && otherId && userInfo ? (
+            <RightChatPage
             onHandleBackClick={handleBackClick}
-            photoUrl={userInfo?.photoUrl || ""}
-            displayName={userInfo?.displayName || "Anonymous"}
+            photoUrl={userInfo?.photoUrl}
+            displayName={userInfo?.displayName}
             combinedId={combinedId}
             currId={currId}
             otherId={otherId}
           />
+          ) : (
+            <div>Please Select</div>
+          )}
+          
         </>
       ) : (
         <>

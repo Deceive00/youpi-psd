@@ -28,3 +28,19 @@ export const getAllUserHistory = async () => {
     }
   }
 }
+
+export const getAllVendorHistory = async () => {
+  const id = auth.currentUser?.uid;
+
+  if(id){
+    const orderRef = doc(db, "history", id);
+    const orderDoc = await getDoc(orderRef);
+    if(orderDoc.exists()){
+      const histories = orderDoc.data().data as Order[];
+      return histories;
+      
+    }else{
+      throw new Error("Order doesn't exists");
+    }
+  }
+}

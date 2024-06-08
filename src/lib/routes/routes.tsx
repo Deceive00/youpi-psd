@@ -10,6 +10,7 @@ import Order from "@pages/order/order-page";
 import ManageOrderSenderPage from "@pages/sender/manage-order-sender-page";
 import SenderRegisterPage from "@pages/sender/register-sender";
 import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
+import VendorHistoryPage from "@pages/vendor-history/vendor-history-page";
 import ManageMenuPage from "@pages/vendor/manage-menu-page";
 import VendorRegisterPage from "@pages/vendor/register-vendor";
 import SenderLayout from "src/layout/sender-layout";
@@ -51,6 +52,10 @@ export const router = [
   {
     path: "/vendor/manage/order",
     element: <ManageOrderVendorPage />,
+  },
+  {
+    path: "/vendor/history",
+    element: <VendorHistoryPage />,
   },
   {
     path: "/vendor/",
