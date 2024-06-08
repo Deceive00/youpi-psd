@@ -7,23 +7,22 @@ import { fetchVendorDataByVendorId } from "./vendor.service";
 export const getAllUserHistory = async () => {
   const id = auth.currentUser?.uid;
 
-  if(id){
+  if (id) {
     const orderRef = doc(db, "orders", id);
     const orderDoc = await getDoc(orderRef);
 
-    if(orderDoc.exists()){
+    if (orderDoc.exists()) {
       const histories = orderDoc.data().history as Order[];
-      const historiesFE : UserHistory[] = [];
-      histories.map(async(h : Order) => {
+      const historiesFE: UserHistory[] = await Promise.all(histories.map(async (h: Order) => {      
         const vendor = await fetchVendorDataByVendorId(h.vendorId);
-        historiesFE.push({
-          vendor:vendor,
-          order:h
-        })
-      })
+        return {
+          vendor: vendor,
+          order: h
+        };
+      }));
 
-      console.log("Histories Found : " ,historiesFE);
-      
+      console.log("Histories Found: ", historiesFE);
+
       return historiesFE
       
     }else{

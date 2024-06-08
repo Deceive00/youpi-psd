@@ -7,6 +7,10 @@ export interface Order {
   type: string;
   campusName: string;
   status: string;
+  timeAdded: {
+    seconds : number;
+    nanoseconds : number;
+  }
   senderId: string;
   address?: string;
   vendorName: string;

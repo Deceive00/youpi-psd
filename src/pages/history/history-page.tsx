@@ -10,16 +10,24 @@ import Loader from "@components/loading/loader";
 import { motion } from "framer-motion";
 import { item, container } from "@components/variants/staggered-children";
 import ModalHistory from "./modal-history";
-import { Variable } from "lucide-react";
+
+// [V] Function to capitalize the first letter
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
 
 const HistoryPage = () => {
   // [V] Fetch from firebase 'orders'
   const [history, setHistory] = useState<UserHistory[] | null>(null);
+
   const {isLoading} = useQuery(['fetchUserHistory'], async() => await getAllUserHistory(), {
     retry:false,
     staleTime:0,
     onSuccess:(data : UserHistory[]) => {    
       setHistory(data);
+
+      console.log(data);
+      
     },
     onError:(error: Error) => {
       console.log(error);
@@ -29,12 +37,14 @@ const HistoryPage = () => {
   // [V] Set Image berdasarkan Jenis Category Transaksinya, ambil dari static image krn cuman 2 gambar aja
     // Pick Up (Merah) = pickUpPng
     // Delivery (Orange) = deliveryPng
-  const getImage = (sßatus : string) => {
+  const getImage = (status : string) => {
     if(status === "delivery"){
       return deliveryPng
     }else if(status === "pick up"){
       return pickUpPng
     }
+
+    return ""
   }
 
   // Reorder Handler
@@ -55,9 +65,16 @@ const HistoryPage = () => {
     console.log(isDetailOpen);
   }
 
+  // [V] State for UserHistory
+  const [userHistory, setUserHistory] = React.useState<UserHistory>() 
+
+  const handleOrderCardClick = (order: UserHistory) => {
+    setUserHistory(order);
+    modalDetailHandler();
+  }
+
   // Calculate Total Price for each Transaction
 
-  // [ !! ] Make DUMMY DATA
   if(isLoading){
     return <Loader/>
   }
@@ -67,82 +84,37 @@ const HistoryPage = () => {
         className={`w-screen h-max font-nunito box-border mx-auto flex justify-center`}
       >
         {/* Mapping from database */}
-        <motion.div className={``} variants={container} initial="hidden" animate="visible">
+        <motion.div
+          className={``}
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
           <div className={`grid lg:grid-cols-3 grid-cols-1 lg:gap-12 gap-6`}>
-
-          <motion.div variants={item}>
+            {history?.map((order, key) => (
+              <motion.div variants={item} key={key}>
                 <OrderCard
-                  onClick={modalDetailHandler}
-                  imageUrl={pickUpPng}
-                  title="Ramen"
-                  campusName="Binus Alam Sutera"
+                  userHistory={order}
+                  onClick={handleOrderCardClick}
+                  imageUrl={getImage(order.order.type)}
+                  title={`${capitalizeFirstLetter(order.order.type)}`}
+                  campusName={`${order.order.campusName} - ${order.order.vendorName}`}
                 />
               </motion.div>
-
-              <motion.div variants={item}>
-                <OrderCard
-                  onClick={modalDetailHandler}
-                  imageUrl={pickUpPng}
-                  title="Ramen"
-                  campusName="Binus Alam Sutera"
-                />
-              </motion.div>
-
-              <motion.div variants={item}>
-                <OrderCard
-                  onClick={modalDetailHandler}
-                  imageUrl={pickUpPng}
-                  title="Ramen"
-                  campusName="Binus Alam Sutera"
-                />
-              </motion.div>
-
-              <motion.div variants={item}>
-                <OrderCard
-                  onClick={modalDetailHandler}
-                  imageUrl={pickUpPng}
-                  title="Ramen"
-                  campusName="Binus Alam Sutera"
-                />
-              </motion.div>
-
-              <motion.div variants={item}>
-                <OrderCard
-                  onClick={modalDetailHandler}
-                  imageUrl={pickUpPng}
-                  title="Ramen"
-                  campusName="Binus Alam Sutera"
-                />
-              </motion.div>
-
-              <motion.div variants={item}>
-                <OrderCard
-                  onClick={modalDetailHandler}
-                  imageUrl={pickUpPng}
-                  title="Ramen"
-                  campusName="Binus Alam Sutera"
-                />
-              </motion.div>
-            {/* {history?.map((order) => (
-              <motion.div variants={item}>
-                <OrderCard
-                  onClick={modalDetailHandler}
-                  imageUrl={pickUpPng}
-                  title="Ramen"
-                  campusName="Binus Alam Sutera"
-                />
-              </motion.div>
-            ))} */}
+            ))}
           </div>
         </motion.div>
       </div>
 
       {/* Modal Box */}
-      <ModalHistory
-        isDetailOpen={isDetailOpen}
-        modalDetailHandler={modalDetailHandler}
-        modalRef={modalRef}
-      />
+      {userHistory && (
+        <ModalHistory
+          userHistory={userHistory}
+          isDetailOpen={isDetailOpen}
+          modalDetailHandler={modalDetailHandler}
+          modalRef={modalRef}
+        />
+      )}
     </MainLayout>
   );
 };
