@@ -295,14 +295,14 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
       updatedOrder = validateVendorOrderStatus(order, statusIdx);
     }
     if (updatedOrder.status === DELIVERY_STATUS.FINISHED) {
+      await updateDoc(orderRef, {
+        ongoing: {},
+      });
       await addHistory(updatedOrder, order.vendorId);
       if (updatedOrder.senderId !== "") {
         await addHistory(updatedOrder, order.senderId);
       }
       await addUserOrderHistory(updatedOrder);
-      await updateDoc(orderRef, {
-        ongoing: {},
-      });
     } else if (orderDoc.exists()) {
       await updateDoc(orderRef, {
         ongoing: updatedOrder,
