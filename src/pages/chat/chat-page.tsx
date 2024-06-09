@@ -5,6 +5,8 @@ import { useAuth } from "@lib/hooks/useAuth";
 import Loader from "@components/loading/loader";
 import React from "react";
 import { auth } from "src/firebase/firebase-config";
+import { UserInfo } from "@lib/types/chat-types";
+import profilePng from "@assets/images/default.png"
 
 const ChatPage = () => {
   // Hooks user, dapetim userId supaya bisa passing ke sub-page
@@ -23,11 +25,7 @@ const ChatPage = () => {
   // State
   const [currId, setCurrId] = React.useState(auth.currentUser?.uid || "");
   const [otherId, setOtherId] = React.useState("");
-  const [userInfo, setUserInfo] = React.useState<{
-    displayName: string;
-    uid: string;
-    photoUrl: string;
-  } | null>();
+  const [userInfo, setUserInfo] = React.useState<UserInfo>();
 
   //Change User
   React.useEffect(() => {
@@ -74,8 +72,8 @@ const ChatPage = () => {
           {combinedId && currId && otherId && userInfo ? (
             <RightChatPage
             onHandleBackClick={handleBackClick}
-            photoUrl={userInfo?.photoUrl}
-            displayName={userInfo?.displayName}
+            photoUrl={userInfo.photoUrl || profilePng}
+            displayName={userInfo.displayName}
             combinedId={combinedId}
             currId={currId}
             otherId={otherId}
@@ -94,7 +92,7 @@ const ChatPage = () => {
           {isDetailOpen && (
             <RightChatPage
               onHandleBackClick={handleBackClick}
-              photoUrl={userInfo?.photoUrl || ""}
+              photoUrl={userInfo?.photoUrl || profilePng}
               displayName={userInfo?.displayName || "Anonymous"}
               combinedId={combinedId}
               currId={currId}

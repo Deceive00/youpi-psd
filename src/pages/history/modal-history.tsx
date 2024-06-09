@@ -3,18 +3,44 @@ import ModalBox from "./modal-box"
 import RatingStars from "./rating-stars"
 import { FaShop } from "react-icons/fa6"
 import { MdMyLocation } from "react-icons/md"
-import React from "react"
+import React, { useEffect } from "react"
 import dummyImg from "@assets/images/default.png"
+import { UserHistory } from "@lib/types/history-types"
+import { fetchUserByID } from "@lib/services/user.service"
+import { User } from "firebase/auth"
+import { Menu } from "@lib/types/vendor-types"
 
 interface Props {
     modalRef: React.RefObject<HTMLDialogElement>
     modalDetailHandler: () => void;
     isDetailOpen : boolean;
+    userHistory: UserHistory;
 }
 
-const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOpen}) => {
+export const calculateTotalPrice = (menus: Menu[]): number => {
+  return menus.reduce((total, menu) => {
+    return total + Number(menu.price) * menu.quantity;
+  }, 0);
+};
+
+    const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOpen,userHistory}) => {
+    // State
+    const fee = 15000
+    const [user, setUser] = React.useState<User | null>(null)
+
+    // useEffect(() => {
+    //   const fetchUser = async () => {
+    //     if(userHistory){
+    //       const fetchedUser = await fetchUserByID(userHistory.order.senderId)
+    //       setUser(fetchedUser || null)
+    //     }
+    //   }
+
+    //   fetchUser()
+    // }, [userHistory])
+
     return (
-        <ModalBox modalRef={modalRef} title="Order Summary" onClose={modalDetailHandler} isOpen={isDetailOpen}>
+        <ModalBox userHistory={userHistory} modalRef={modalRef} title="Order Summary" onClose={modalDetailHandler} isOpen={isDetailOpen}>
         {/* 1. Rating for Both Vendor and Sender*/}
         <div className={`flex flex-col gap-y-6 py-4`}>
           {/* Vendor */}
@@ -37,10 +63,10 @@ const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOp
           <div className={`w-full flex flex-row gap-x-2 items-center text-sm`}>
             <img 
             className="w-8 h-8 rounded-full"
-            src={dummyImg} alt="" />
+            src={userHistory.vendor.coverImage} alt="" />
             <div className="text-slate-600">
-              <h1 className={`font-normal text-black`}>Soto Mie Bogor Pak Kadir Kosambi</h1>
-              <span>BINUS Alam Sutera</span>
+              <h1 className={`font-normal text-black`}>{userHistory.vendor.name}</h1>
+              <span>{userHistory.vendor.campusName}</span>
             </div>
           </div>
 
@@ -50,8 +76,8 @@ const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOp
             className="w-8 h-8 rounded-full"
             src={dummyImg} alt="" />
             <div className="text-slate-600">
-              <h1 className={`font-normal text-black`}>Soto Mie Bogor Pak Kadir Kosambi</h1>
-              <span>BINUS Alam Sutera</span>
+              <h1 className={`font-normal text-black`}>{userHistory.order.senderId}</h1>
+              <span>{userHistory.order.campusName}</span>
             </div>
           </div>
         </div>
@@ -66,7 +92,7 @@ const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOp
             <FaShop className={`text-2xl text-[#e71b1c]`}/>
             <div className={`flex flex-col`}>
               <span className={`text-sm`}>Restaurant location</span>
-              <h2 className={`font-bold text-black`}>Soto Mie Bogor Pak Kadir Kosambi</h2>
+              <h2 className={`font-bold text-black`}>{userHistory.order.vendorName}</h2>
             </div>
           </div>
 
@@ -74,7 +100,7 @@ const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOp
             <MdMyLocation className={`text-2xl text-primary`}/>
             <div className={`flex flex-col  text-sm`}>
               <span className={`text-sm`}>Delivery location</span>
-              <h2 className={`font-bold text-black`}>A1305</h2>
+              <h2 className={`font-bold text-black`}>{userHistory.order.address}</h2>
             </div>
           </div>
         </div>
@@ -85,15 +111,14 @@ const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOp
           <p className={`font-semibold`}>Purchase Details</p>
           <div className={`flex flex-col text-sm`}>
             {/* Map from menus that been ordered */}
-            <div className="flex flex-row w-full justify-between">
-              <h6>Soto Mie Special</h6>
-              <span>3</span>
-            </div>
-
-            <div className="flex flex-row w-full justify-between">
-              <h6>Risol</h6>
-              <span>6</span>
-            </div>
+            {
+              userHistory.order.menus.map((menu : Menu) => (
+                <div className="flex flex-row w-full justify-between">
+                  <h6>{menu.name}</h6>
+                  <span>{menu.quantity}</span>
+                </div>
+              ))
+            }
           </div>
         </div>
 
@@ -106,12 +131,12 @@ const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOp
             {/* Map from menus that been ordered */}
             <div className="flex flex-row w-full justify-between">
               <h6>Price</h6>
-              <span>141.000</span>
+              <span>{calculateTotalPrice(userHistory.order.menus)}</span>
             </div>
 
             <div className="flex flex-row w-full justify-between">
               <h6>Handling and delivery fee</h6>
-              <span>15.000</span>
+              <span>{fee}</span>
             </div>
 
             <div className="flex flex-row w-full justify-between">
@@ -125,7 +150,7 @@ const ModalHistory : React.FC<Props>= ({modalRef, modalDetailHandler, isDetailOp
         <div className={`py-4 text-sm font-bold text-slate-600`}>
           <div className="flex flex-row w-full justify-between">
               <h6>Total Payment</h6>
-              <span>156.000</span>
+              <span>{calculateTotalPrice(userHistory.order.menus) - fee}</span>
             </div>
         </div>
       </ModalBox>

@@ -4,6 +4,8 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import logo from "@assets/logo/default-logo.png";
 import "./modal-history.css";
 import { motion } from "framer-motion";
+import { UserHistory } from "@lib/types/history-types";
+import { format } from "date-fns";
 
 interface Props {
   isOpen: boolean;
@@ -11,27 +13,15 @@ interface Props {
   title: string;
   children: React.ReactNode;
   modalRef: React.RefObject<HTMLDialogElement>;
+  userHistory: UserHistory;
 }
 
-// const containerVariants = {
-//   hidden: { y: 50, opacity: 0 },
-//   visible: { y: 0, opacity: 1, transition: { duration: 1, ease: "easeOut" } },
-//   exit: { y: 50, opacity: 0, transition: { duration: 1, ease: "easeIn" } },
-// };
+const ModalBox: React.FC<Props> = ({onClose,title,children,modalRef,userHistory}) => {
+  const formattedDate = userHistory.order.timeAdded ? format(new Date(userHistory.order.timeAdded.seconds * 1000), "dd MMMM yyyy") : "";
 
-const ModalBox: React.FC<Props> = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  modalRef,
-}) => {
   return (
     <dialog className="modal" ref={modalRef}>
       <motion.div
-        // variants={containerVariants}
-        // initial="hidden"
-        // animate="visible"
         exit="exit"
         className="modal-box flex flex-col bg-white text-black h-full"
       >
@@ -46,16 +36,16 @@ const ModalBox: React.FC<Props> = ({
         <div className="flex flex-row justify-between text-nunito py-4">
           {/* Header */}
           <div
-            className={`w-[50%] text-left flex flex-col justify-center`}
+            className={`w-[30%] text-left flex flex-col justify-center`}
           >
             <img src={logo} alt="" className={`h-1/3 w-fit mb-2 `} />
             <h3 className={`font-bold text-black`}>Food Delivered</h3>
           </div>
           <div
-            className={`w-[50%] text-right text-slate-600 flex flex-col justify-center`}
+            className={`w-[70%] text-right text-slate-600 flex flex-col justify-center`}
           >
-            <p className={`mb-2 font-thin`}>Thursday, 13 June 2024</p>
-            <p className={`font-thin`}>Order-F1239548238 </p>
+            <p className={`mb-2 font-thin`}>{formattedDate}</p>
+            <p className={`font-thin text-sm`}>{`Order-${userHistory.order.orderId.toUpperCase()}`} </p>
           </div>
         </div>
         <Separator className="border-[0.5px] rounded-lg" />

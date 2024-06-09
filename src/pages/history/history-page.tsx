@@ -8,34 +8,43 @@ import { useQuery } from "react-query";
 import { getAllUserHistory } from "@lib/services/history.service";
 import Loader from "@components/loading/loader";
 import { motion } from "framer-motion";
-import { container, item } from "@components/variants/staggered-children";
+import { item, container } from "@components/variants/staggered-children";
 import ModalHistory from "./modal-history";
+
+// [V] Function to capitalize the first letter
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
 
 const HistoryPage = () => {
   // [V] Fetch from firebase 'orders'
   const [history, setHistory] = useState<UserHistory[] | null>(null);
+
   const {isLoading} = useQuery(['fetchUserHistory'], async() => await getAllUserHistory(), {
     retry:false,
     staleTime:0,
-    onSuccess:(data : UserHistory[]) => {
+    onSuccess:(data : UserHistory[]) => {    
       setHistory(data);
+
+      console.log(data);
+      
     },
     onError:(error: Error) => {
       console.log(error);
     }
   })
-  
-  // [] Use Effect 
 
   // [V] Set Image berdasarkan Jenis Category Transaksinya, ambil dari static image krn cuman 2 gambar aja
     // Pick Up (Merah) = pickUpPng
     // Delivery (Orange) = deliveryPng
-  const getImage = (sßatus : string) => {
+  const getImage = (status : string) => {
     if(status === "delivery"){
       return deliveryPng
     }else if(status === "pick up"){
       return pickUpPng
     }
+
+    return ""
   }
 
   // Reorder Handler
@@ -56,9 +65,16 @@ const HistoryPage = () => {
     console.log(isDetailOpen);
   }
 
+  // [V] State for UserHistory
+  const [userHistory, setUserHistory] = React.useState<UserHistory>() 
+
+  const handleOrderCardClick = (order: UserHistory) => {
+    setUserHistory(order);
+    modalDetailHandler();
+  }
+
   // Calculate Total Price for each Transaction
 
-  // [ !! ] Make DUMMY DATA
   if(isLoading){
     return <Loader/>
   }
@@ -69,81 +85,36 @@ const HistoryPage = () => {
       >
         {/* Mapping from database */}
         <motion.div
-          key={111}
+          className={``}
           variants={container}
           initial="hidden"
           animate="visible"
-          transition={{
-            delay: 0.5,
-          }}
-          className={`grid lg:grid-cols-3 gap-12`}
         >
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={deliveryPng}
-              title="Shoes"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
-
-          {/* 2 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={pickUpPng}
-              title="Ramen"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
-
-          {/* 3 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={deliveryPng}
-              title="Shoes"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
-
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={pickUpPng}
-              title="Ramen"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
-
-          {/* 2 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={deliveryPng}
-              title="Shoes"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
-
-          {/* 3 */}
-          <motion.div variants={item}>
-            <OrderCard
-              onClick={modalDetailHandler}
-              imageUrl={pickUpPng}
-              title="Ramen"
-              campusName="Binus Alam Sutera"
-            />
-          </motion.div>
+          <div className={`grid lg:grid-cols-3 grid-cols-1 lg:gap-12 gap-6`}>
+            {history?.map((order, key) => (
+              <motion.div variants={item} key={key}>
+                <OrderCard
+                  userHistory={order}
+                  onClick={handleOrderCardClick}
+                  imageUrl={getImage(order.order.type)}
+                  title={`${capitalizeFirstLetter(order.order.type)}`}
+                  campusName={`${order.order.campusName} - ${order.order.vendorName}`}
+                />
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
 
       {/* Modal Box */}
-      <ModalHistory
-        isDetailOpen={isDetailOpen}
-        modalDetailHandler={modalDetailHandler}
-        modalRef={modalRef}
-      />
+      {userHistory && (
+        <ModalHistory
+          userHistory={userHistory}
+          isDetailOpen={isDetailOpen}
+          modalDetailHandler={modalDetailHandler}
+          modalRef={modalRef}
+        />
+      )}
     </MainLayout>
   );
 };

@@ -24,12 +24,10 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClic
   const buttons = ["All", "Vendor", "Sender"];
 
   React.useEffect(() => {
-    if (userId) {
-      fetchUserChats((data) => {
-        setUserChats(data);
-      });
-    }
-  }, [userId]);
+    fetchUserChats((data) => {
+      setUserChats(data);
+    })
+  }, []);
 
   return (
     <motion.div 
