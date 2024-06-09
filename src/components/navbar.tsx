@@ -23,6 +23,7 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
   const [navStyles3, setNavStyles3] = useState(defaultStyles);
   const [navStyles4, setNavStyles4] = useState(defaultStyles);
   const [navStyles5, setNavStyles5] = useState(defaultStyles);
+  const [navStyles6, setNavStyles6] = useState(defaultStyles);
 
   const functionArrs = [
     setNavStyles0,
@@ -31,12 +32,13 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
     setNavStyles3,
     setNavStyles4,
     setNavStyles5,
+    setNavStyles6
   ];
 
   useEffect(() => {
     (async () => {
       await new Promise((resolve) => setTimeout(resolve, 150));
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 7; i++) {
         await new Promise((resolve) => setTimeout(resolve, 100));
         if (isMobileMenuOpen) {
           functionArrs[i]({ opacity: "100%", transform: "translateY(0%)" });
@@ -115,7 +117,7 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
         }}
       >
         <Link
-          to="/"
+          to="/profile"
           className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl"
           style={navStyles0}
         >
@@ -129,7 +131,7 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
           Order
         </Link>
         <Link
-          to="/"
+          to="/auth/sender"
           className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl flex items-center"
           style={navStyles2}
         >
@@ -143,16 +145,23 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
           About
         </Link>
         <Link
-          to=""
+          to="/history"
           className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl"
           style={navStyles4}
         >
           History
         </Link>
+        <Link
+          to="/cart"
+          className="p-5 w-full text-left transition-all duration-300 font-bold text-2xl"
+          style={navStyles5}
+        >
+          Cart
+        </Link>
         {user ? (
           <div
             className="p-5 w-full text-left transition-all duration-300"
-            style={navStyles5}
+            style={navStyles6}
           >
             <div
               onClick={() => logout()}
@@ -164,7 +173,7 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
         ) : (
           <div
             className="p-5 w-full text-left transition-all duration-300"
-            style={navStyles5}
+            style={navStyles6}
           >
             <Link
               to={"/auth"}

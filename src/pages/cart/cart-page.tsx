@@ -21,7 +21,7 @@ export default function CartPage() {
   const [address, setAddress] = useState("");
   const { toast } = useToast();
   const { userType } = useAuth();
-  const { isLoading: cartLoading } = useQuery(
+  const { isLoading: cartLoading, isFetching } = useQuery(
     ["fetchUserCart"],
     fetchUserCartFE,
     {
@@ -144,7 +144,7 @@ export default function CartPage() {
               />
             )}
             <div className="flex flex-col gap-5 justify-center mt-4">
-              {!cartLoading &&
+              {!cartLoading && !isFetching &&
                 userCart?.menus.map((menu) => (
                   <CartCard
                     key={menu.uid}
@@ -153,7 +153,7 @@ export default function CartPage() {
                     addToCart={addToCart}
                   />
                 ))}
-              {cartLoading &&
+              {(cartLoading || isFetching) &&
                 [1, 2, 3].map((index) => {
                   return <CartCardSkeleton key={index} />;
                 })}

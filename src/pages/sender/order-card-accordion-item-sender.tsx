@@ -17,6 +17,7 @@ import { SiGooglemaps } from "react-icons/si";
 import {
   DELIVERY_STATUS,
   getNewStatus,
+  getStatusPopup,
   isAcceptOrder,
   updateOrderStatus,
 } from "@lib/services/order.service";
@@ -25,7 +26,6 @@ import SwitchStatus from "../../components/popup/switch-status-popup";
 import { useAuth } from "@lib/hooks/useAuth";
 import { useMutation } from "react-query";
 import { useToast } from "@components/ui/use-toast";
-import LoadingCircle from "@components/ui/loading-circle";
 
 interface props {
   index: number;
@@ -33,19 +33,21 @@ interface props {
 }
 
 export default function OrderCardAccordionItemSender({ index, order }: props) {
-  console.log(order)
   const [showDialog, setShowDialog] = useState(false);
   const { userType } = useAuth();
   const { toast } = useToast();
+  const [orderStatus, setOrderStatus] = useState(order.status);
   const { mutate: handleUpdateStatus, isLoading } = useMutation(
     async () => {
+      const status = order.status;
       await updateOrderStatus(order, userType);
+      return status;
     },
     {
-      onSuccess: () => {
-        console.log(order);
+      onSuccess: (status : string) => {
         setShowDialog(false);
-        const isAccept = isAcceptOrder(order.type, order.status, userType);
+        setOrderStatus(status);
+        const isAccept = isAcceptOrder(order.type, status, userType, order.senderId);
         toast({
           title: isAccept
             ? "Succesfully Accepted Order"
@@ -139,12 +141,12 @@ export default function OrderCardAccordionItemSender({ index, order }: props) {
         handleDialogResponse={handleUpdateStatus}
         accept={isAcceptOrder(
           order.type,
-          order.status,
+          orderStatus,
           userType,
           order.senderId
         )}
         isLoading={isLoading}
-        newStatus={getNewStatus(order.type, order.status)}
+        newStatus={getStatusPopup(order.type, order.status)}
       />
     </>
   );

@@ -35,7 +35,7 @@ export default function OrderDetail() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const { mutate: handleUpdateStatus } = useMutation(
+  const { mutate: handleUpdateStatus, isLoading } = useMutation(
     async () => {
       if (order) {
         await updateUserPickupStatus(order);
@@ -216,6 +216,7 @@ export default function OrderDetail() {
             setShowDialog={setShowDialog}
             handleDialogResponse={handleUpdateStatus}
             accept={false}
+            isLoading={isLoading}
             newStatus={"Finished"}
           />
           <Toaster />

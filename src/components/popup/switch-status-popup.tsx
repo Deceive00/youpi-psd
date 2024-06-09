@@ -42,7 +42,7 @@ export default function SwitchStatus({
           >
             No
           </Button>
-          <Button onClick={() => handleDialogResponse(true)}>{isLoading ? <LoadingCircle/> : 'Yes'}</Button>
+          <Button disabled={isLoading} onClick={() => handleDialogResponse(true)}>{isLoading ? <LoadingCircle/> : 'Yes'}</Button>
         </div>
       </DialogContent>
     </Dialog>

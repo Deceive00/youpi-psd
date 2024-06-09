@@ -7,6 +7,7 @@ import SenderMiddleware from "src/middleware/sender-middleware";
 import { RxCross2, RxHamburgerMenu } from "react-icons/rx";
 import { useAuth } from "@lib/hooks/useAuth";
 import { SenderRoutes } from "@lib/routes/sender-routes";
+import { Toaster } from "@components/ui/toaster";
 interface SenderLayoutProps {
   children: ReactNode;
   menuName?: string;
@@ -46,7 +47,7 @@ export default function SenderLayout({
   const { logout } = useAuth();
   return (
     <SenderMiddleware>
-      <div className="font-nunito bg-white w-full h-screen flex-col flex overflow-x-hidden">
+      <div className="font-nunito bg-white w-full h-screen flex-col flex overflow-x-hidden overflow-y-hidden">
         <div className="w-full h-20 p-6 fixed">
           <div className="flex items-center justify-between gap-2 px-6 py-6 z-1000">
             <img src={logo} className="object-cover h-10 z-1000" alt="" />
@@ -146,6 +147,7 @@ export default function SenderLayout({
           </div>
         </div>
       </div>
+      <Toaster />
     </SenderMiddleware>
   );
 }

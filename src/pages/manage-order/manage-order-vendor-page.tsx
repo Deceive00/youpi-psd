@@ -23,6 +23,7 @@ export default function ManageOrderVendorPage() {
   const { user } = useAuth();
   const [tab, setTab] = useState<OrderTab>(OrderTab.INCOMING);
   const [transitioning, setTransitioning] = useState(false);
+  
   const handleTabChange = async (tab: OrderTab) => {
     setTransitioning(true);
     await new Promise((resolve) => setTimeout(resolve, 200));

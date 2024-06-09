@@ -1,12 +1,11 @@
 import { Accordion } from "@components/ui/accordion";
-import { Toaster } from "@components/ui/toaster";
 import { useAuth } from "@lib/hooks/useAuth";
 import {
   getSenderIncomingOrder,
   getSenderOngoingOrder,
 } from "@lib/services/order.service";
 import { Order } from "@lib/types/order-types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SenderLayout from "src/layout/sender-layout";
 import OrderCardAccordionItemSender from "./order-card-accordion-item-sender";
 enum OrderTab {
@@ -28,26 +27,25 @@ export default function ManageOrderSenderPage() {
     setTransitioning(false);
   };
 
-  useEffect(() => {
-    if (user) {
-      const unsubscribe = getSenderIncomingOrder((orders: Order[]) => {
-        setIncomingOrderData(orders);
-      });
+  const handleIncomingOrders = useCallback((orders: Order[]) => {
+    setIncomingOrderData(orders);
+  }, []);
 
-      return () => unsubscribe();
-    }
-  }, [user]);
+  const handleOngoingOrders = useCallback((orders: Order[]) => {
+    setOngoingData(orders.filter((order) => order.status !== "finished"));
+  }, []);
 
   useEffect(() => {
     if (user) {
-      const unsubscribe = getSenderOngoingOrder((orders: Order[]) => {
-        console.log(orders)
-        setOngoingData(orders);
-      });
+      const unsubscribeIncoming = getSenderIncomingOrder(handleIncomingOrders);
+      const unsubscribeOngoing = getSenderOngoingOrder(handleOngoingOrders);
 
-      return () => unsubscribe();
+      return () => {
+        unsubscribeIncoming();
+        unsubscribeOngoing();
+      };
     }
-  }, [user]);
+  }, [user, handleIncomingOrders, handleOngoingOrders]);
 
   return (
     <SenderLayout menuDescription="Manage Your Orders" menuName="Manage Order">
@@ -142,7 +140,7 @@ export default function ManageOrderSenderPage() {
           </Accordion>
         </div>
       </div>
-      <Toaster />
+      
     </SenderLayout>
   );
 }

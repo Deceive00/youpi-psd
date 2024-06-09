@@ -14,7 +14,7 @@ import { MdOutlineDeliveryDining } from "react-icons/md";
 import { MdOutlinePriceChange } from "react-icons/md";
 import { GrStatusInfo } from "react-icons/gr";
 import { IoFastFoodOutline } from "react-icons/io5";
-import { getNewStatus, hideUpdateButton, isAcceptOrder, updateOrderStatus } from "@lib/services/order.service";
+import { getNewStatus, getStatusPopup, hideUpdateButton, isAcceptOrder, updateOrderStatus } from "@lib/services/order.service";
 import { useState } from "react";
 import SwitchStatus from "@components/popup/switch-status-popup";
 import { useMutation } from "react-query";
@@ -36,6 +36,7 @@ export default function OrderCardAccordionItem({ index, order, vendor }: props) 
   const [showDialog, setShowDialog] = useState(false);
   const {userType, user} = useAuth();
   const {toast} = useToast();
+  const [orderStatus, setOrderStatus] = useState(order.status);
   const renderType = (type: string) => {
     const isDelivery = type === "delivery";
     return (
@@ -63,11 +64,14 @@ export default function OrderCardAccordionItem({ index, order, vendor }: props) 
 
 
   const {mutate: handleUpdateStatus, isLoading} = useMutation(async() => {
-    await updateOrderStatus(order, userType)
+    const status = order.status;
+    await updateOrderStatus(order, userType);
+    return status;
   },{
-    onSuccess:() => {
+    onSuccess:(status : string) => {
       setShowDialog(false);
-      const isAccept = isAcceptOrder(order.type,order.status, userType);
+      setOrderStatus(status);
+      const isAccept = isAcceptOrder(order.type, status, userType);
       toast({
         title: isAccept ? 'Succesfully Accepted Order' : 'Succesfully Changed Order Status',
         description: isAccept ? '' : 'Order status changed to ' + getNewStatus(order.type,order.status),
@@ -108,8 +112,8 @@ export default function OrderCardAccordionItem({ index, order, vendor }: props) 
         showDialog={showDialog}
         setShowDialog={setShowDialog}
         handleDialogResponse={handleUpdateStatus}
-        accept={isAcceptOrder(order.type, order.status, userType)}
-        newStatus={getNewStatus(order.type, order.status)}
+        accept={isAcceptOrder(order.type, orderStatus, userType)}
+        newStatus={getStatusPopup(order.type, orderStatus)}
         isLoading={isLoading}
       />
     </AccordionItem>

@@ -145,12 +145,13 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
   const id = auth.currentUser?.uid;
   if (id) {
     const unsubscribe = onSnapshot(
+
       collection(db, "orders"),
       async (orderSnapshot) => {
         const updatedOrders: Order[] = [];
-
         for (const d of orderSnapshot.docs) {
           const data = d.data().ongoing as Order;
+      
           if (
             data &&
             data.type === ORDER_TYPE.DELIVERY &&
@@ -168,7 +169,6 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
             updatedOrders.push(data);
           }
         }
-
         callback(updatedOrders);
       }
     );
@@ -301,7 +301,7 @@ export const updateOrderStatus = async (order: Order, userType: UserType) => {
       }
       await addUserOrderHistory(updatedOrder);
       await updateDoc(orderRef, {
-        ongoing: null,
+        ongoing: {},
       });
     } else if (orderDoc.exists()) {
       await updateDoc(orderRef, {
@@ -325,7 +325,7 @@ export const updateUserPickupStatus = async (order: Order) => {
       await addHistory(updatedOrder, order.vendorId);
       await addUserOrderHistory(updatedOrder);
       await updateDoc(orderRef, {
-        ongoing: null,
+        ongoing: {},
       });
     }
   }
@@ -401,6 +401,7 @@ export const getVendorOngoingOrder = (callback: (orders: Order[]) => void) => {
             updatedOrders.push(data);
           }
         });
+        console.log(updatedOrders)
         callback(updatedOrders);
       }
     );
@@ -424,14 +425,25 @@ export const getNewStatus = (type: string, currentStatus: string) => {
         )
       ];
 };
-
+export const getStatusPopup = (type: string, currentStatus: string) => {
+  return type === ORDER_TYPE.DELIVERY
+    ? DELIVERY_STATUS_LIST[
+        DELIVERY_STATUS_LIST.findIndex(
+          (status: string) => status === currentStatus
+        ) + 1
+      ]
+    : PICKUP_STATUS_LIST[
+        PICKUP_STATUS_LIST.findIndex(
+          (status: string) => status === currentStatus
+        ) + 1
+      ];
+};
 export const isAcceptOrder = (
   type: string,
   status: string,
   userType: UserType,
   senderId?: string
 ) => {
-  console.log(status);
   if (userType === UserType.VENDOR) {
     if (type === "delivery") {
       return status === DELIVERY_STATUS.WAITING_CONFIRMATION;
@@ -440,7 +452,7 @@ export const isAcceptOrder = (
     }
   } else {
     return (
-      status === DELIVERY_STATUS.PREPARING_ORDER ||
+      (status === DELIVERY_STATUS.PREPARING_ORDER && senderId === '') ||
       (status === DELIVERY_STATUS.READY_FOR_PICKUP && senderId === "")
     );
   }
