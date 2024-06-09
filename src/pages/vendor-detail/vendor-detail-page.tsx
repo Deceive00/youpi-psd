@@ -14,11 +14,14 @@ import SwitchVendor from "./switch-vendor-popup";
 import MenuCard, { MenuCardSkeleton } from "./menu-card";
 import NotesPopup from "./notes-popup";
 import { Skeleton } from "@components/ui/skeleton";
+import { FaCartShopping } from "react-icons/fa6";
+import CartButton from "./cart-button";
 
 export default function VendorDetailPage() {
   const { campusId, vendorId } = useParams();
   const [activeCategory, setActiveCategory] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
+  const [cartButton, setCartButton] = useState(false);
   const [vendorData, setVendorData] = useState<Vendor | null>(null);
   const [userCart, setUserCart] = useState<UserCart | null>(null);
   const [pendingMenu, setPendingMenu] = useState<{
@@ -210,6 +213,40 @@ export default function VendorDetailPage() {
     setNotesPopupOpen(true);
   };
 
+  const renderHeader = () => {
+    if (!isLoadingVendorData) {
+      return (
+        <p className="font-bold line-clamp-1 text-sm lg:text-base">
+          {vendorData?.name}, {vendorData?.campusName}
+        </p>
+      );
+    } else {
+      return <Skeleton className="h-4 w-full bg-gray-200" />;
+    }
+  };
+  const renderCategory = () => {
+    if (!isLoadingVendorData) {
+      return vendorData?.categories.map((category, index) => (
+        <Button
+          key={index}
+          variant={"secondary"}
+          className={
+            activeCategory == index + 1
+              ? "w-full justify-start hover:bg-orange-100"
+              : "w-full justify-start bg-white"
+          }
+          onClick={() => setActiveCategory(index + 1)}
+        >
+          {category.name}
+        </Button>
+      ));
+    } else {
+      return [1, 2, 3].map((index) => (
+        <Skeleton key={index} className="w-full h-10 bg-gray-200" />
+      ));
+    }
+  };
+
   useEffect(() => {
     let unsubscribe = () => {};
     if (auth.currentUser && auth.currentUser.uid) {
@@ -236,45 +273,20 @@ export default function VendorDetailPage() {
     };
   }, []);
 
-  const renderHeader = () => {
-    if (!isLoadingVendorData) {
-      return (
-        <p className="font-bold line-clamp-1 text-sm lg:text-base">
-          {vendorData?.name}, {vendorData?.campusName}
-        </p>
-      );
-    } else {
-      return <Skeleton className="h-4 w-full bg-gray-200" />;
-    }
-  };
-  const renderCategory = () => {
-    if(!isLoadingVendorData){
-      return (
-        vendorData?.categories.map((category, index) => (
-          <Button
-            key={index}
-            variant={"secondary"}
-            className={
-              activeCategory == index + 1
-                ? "w-full justify-start hover:bg-orange-100"
-                : "w-full justify-start bg-white"
-            }
-            onClick={() => setActiveCategory(index + 1)}
-          >
-            {category.name}
-          </Button>
-        ))
-      )
-    } else {
-      return (
-        [1,2,3].map((index) => (
-          <Skeleton key={index} className="w-full h-10 bg-gray-200"/>
-        ))
-      )
-    }
-  }
+  // useEffect(() => {
+  //   console.log("user cart = ", userCart);
+  //   if (userCart && userCart?.menus.length > 0) {
+  //     setCartButton(true);
+  //     console.log(cartButton);
+  //   } else {
+  //     setCartButton(false);
+  //     console.log(cartButton);
+  //   }
+  // }, [userCart]);
+
   return (
-    <MainLayout className={`pt-14 bg-slate-50`}>
+    <MainLayout className={`pt-14 bg-slate-50 relative`}>
+      <CartButton userCart={userCart} />
       <div className="w-full font-nunito ">
         <div className="px-0 md:px-6 sm:py-2 w-full flex justify-center items-center h-80 sm:h-[28rem]">
           {isLoadingVendorData ? (
