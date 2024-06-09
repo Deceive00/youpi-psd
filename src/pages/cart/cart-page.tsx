@@ -144,7 +144,8 @@ export default function CartPage() {
               />
             )}
             <div className="flex flex-col gap-5 justify-center mt-4">
-              {!cartLoading && !isFetching &&
+              {!cartLoading &&
+                !isFetching &&
                 userCart?.menus.map((menu) => (
                   <CartCard
                     key={menu.uid}

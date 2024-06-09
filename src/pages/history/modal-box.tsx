@@ -5,7 +5,7 @@ import logo from "@assets/logo/default-logo.png";
 import "./modal-history.css";
 import { motion } from "framer-motion";
 import { UserHistory } from "@lib/types/history-types";
-import { format } from "date-fns";
+import { getFormattedTime } from "@lib/services/formatter.service";
 
 interface Props {
   isOpen: boolean;
@@ -16,9 +16,13 @@ interface Props {
   userHistory: UserHistory;
 }
 
-const ModalBox: React.FC<Props> = ({onClose,title,children,modalRef,userHistory}) => {
-  const formattedDate = userHistory.order.timeAdded ? format(new Date(userHistory.order.timeAdded.seconds * 1000), "dd MMMM yyyy") : "";
-
+const ModalBox: React.FC<Props> = ({
+  onClose,
+  title,
+  children,
+  modalRef,
+  userHistory,
+}) => {
   return (
     <dialog className="modal" ref={modalRef}>
       <motion.div
@@ -35,17 +39,19 @@ const ModalBox: React.FC<Props> = ({onClose,title,children,modalRef,userHistory}
         <Separator className="border-[0.5px] rounded-lg" />
         <div className="flex flex-row justify-between text-nunito py-4">
           {/* Header */}
-          <div
-            className={`w-[30%] text-left flex flex-col justify-center`}
-          >
+          <div className={`w-[30%] text-left flex flex-col justify-center`}>
             <img src={logo} alt="" className={`h-1/3 w-fit mb-2 `} />
             <h3 className={`font-bold text-black`}>Food Delivered</h3>
           </div>
           <div
             className={`w-[70%] text-right text-slate-600 flex flex-col justify-center`}
           >
-            <p className={`mb-2 font-thin`}>{formattedDate}</p>
-            <p className={`font-thin text-sm`}>{`Order-${userHistory.order.orderId.toUpperCase()}`} </p>
+            <p className={`mb-2 font-thin`}>
+              {getFormattedTime(userHistory.order.timeAdded)}
+            </p>
+            <p className={`font-thin text-sm`}>
+              {`Order-${userHistory.order.orderId.toUpperCase()}`}{" "}
+            </p>
           </div>
         </div>
         <Separator className="border-[0.5px] rounded-lg" />

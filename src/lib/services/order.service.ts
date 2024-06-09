@@ -145,13 +145,12 @@ export const getSenderOngoingOrder = (callback: (orders: Order[]) => void) => {
   const id = auth.currentUser?.uid;
   if (id) {
     const unsubscribe = onSnapshot(
-
       collection(db, "orders"),
       async (orderSnapshot) => {
         const updatedOrders: Order[] = [];
         for (const d of orderSnapshot.docs) {
           const data = d.data().ongoing as Order;
-      
+
           if (
             data &&
             data.type === ORDER_TYPE.DELIVERY &&
@@ -212,9 +211,9 @@ export const onUserOngoingOrder = (callback: (order: Order | null) => void) => {
 
   if (id) {
     const orderRef = doc(db, "orders", id);
-
+    
     const unsubscribe = onSnapshot(orderRef, async (orderDoc) => {
-      if (orderDoc.exists()) {
+      if (orderDoc && orderDoc.exists()) {
         const data = orderDoc.data().ongoing as Order;
 
         if (data) {
@@ -229,10 +228,11 @@ export const onUserOngoingOrder = (callback: (order: Order | null) => void) => {
 
           callback(data);
         } else {
+          console.log("Gaada data");
           callback(null);
         }
       } else {
-        console.error("Order Not Found");
+        console.log("Order Not Found");
         callback(null);
       }
     });
@@ -401,7 +401,7 @@ export const getVendorOngoingOrder = (callback: (orders: Order[]) => void) => {
             updatedOrders.push(data);
           }
         });
-        console.log(updatedOrders)
+        console.log(updatedOrders);
         callback(updatedOrders);
       }
     );
@@ -452,7 +452,7 @@ export const isAcceptOrder = (
     }
   } else {
     return (
-      (status === DELIVERY_STATUS.PREPARING_ORDER && senderId === '') ||
+      (status === DELIVERY_STATUS.PREPARING_ORDER && senderId === "") ||
       (status === DELIVERY_STATUS.READY_FOR_PICKUP && senderId === "")
     );
   }
