@@ -20,20 +20,20 @@ const Footer: React.FC = () => {
         <div className="flex flex-col sm:gap-y-2 items-start">
           {/* Company */}
           <span className="font-bold mb-6">Company</span>
-          <span className="font-light">About</span>
-          <span className="font-light">Products</span>
-          <span className="font-light">Blog</span>
+          <span className="font-light"><a href="/order">Order</a></span>
+          <span className="font-light"><a href="/about">About</a></span>
+          <span className="font-light"><a href="/history">History</a></span>
         </div>
         <div className="flex flex-col sm:gap-y-2 items-start">
           {/* Join With Us */}
           <span className="font-bold mb-6">Join With Us</span>
-          <span className="font-light">Delivery Partners</span>
-          <span className="font-light">Merchant Partners</span>
+          <span className="font-light">As Delivery Partners</span>
+          <span className="font-light">As Merchant Partners</span>
         </div>
         <div className="flex flex-col sm:gap-y-2 items-start">
           {/* Contact Us */}
           <span className="font-bold mb-6">Contact Us</span>
-          <span className="font-light">Help</span>
+          <span className="font-light"><a href="/chat">Chat</a></span>
           <span className="font-light">Our Location</span>
           <span className="font-light">Send Newsletter</span>
         </div>

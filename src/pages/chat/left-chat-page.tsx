@@ -12,9 +12,10 @@ interface Props {
   setOtherId: (uid: string) => void;
   setUserInfo: (userInfo: UserInfo) => void;
   onUserChatClick: () => void;
+  initialOtherId? : string;
 }
 
-const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClick}) => {
+const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClick, initialOtherId}) => {
   const navigate = useNavigate();
   // State
   const userId = auth.currentUser?.uid;

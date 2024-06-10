@@ -7,8 +7,13 @@ import React from "react";
 import { auth } from "src/firebase/firebase-config";
 import { UserInfo } from "@lib/types/chat-types";
 import profilePng from "@assets/images/default.png"
+import { fetchUserByID } from "@lib/services/user.service";
 
-const ChatPage = () => {
+interface Props {
+  initialId? : string
+}
+
+const ChatPage : React.FC<Props> = ({initialId}) => {
   // Hooks user, dapetim userId supaya bisa passing ke sub-page
   const { isLoading } = useAuth();
   const [isDetailOpen, setIsDetailOpen] = React.useState(false);
@@ -26,6 +31,25 @@ const ChatPage = () => {
   const [currId, setCurrId] = React.useState(auth.currentUser?.uid || "");
   const [otherId, setOtherId] = React.useState("");
   const [userInfo, setUserInfo] = React.useState<UserInfo>();
+
+  // React.useEffect(() => {
+  //   if (initialId) {
+  //     setOtherId(initialId);
+  //     fetchUserByID(initialId).then((userInfo) => {
+  //       if (userInfo) {
+  //         setUserInfo({
+  //           uid: initialId,
+  //           displayName: `${userInfo.firstName} ${userInfo.lastName}`,
+  //           photoUrl: profilePng
+  //         });
+  //         setIsDetailOpen(true);
+  //       }
+
+  //       console.log("Detail after opened : ", userInfo);
+        
+  //     });
+  //   }
+  // }, [initialId]);
 
   //Change User
   React.useEffect(() => {

@@ -1,5 +1,4 @@
 import WaitingConfirmation from "@components/loading/waiting-confirmation";
-import LoadingCircle from "@components/ui/loading-circle";
 import { useAuth } from "@lib/hooks/useAuth";
 import {
   ORDER_TYPE,
