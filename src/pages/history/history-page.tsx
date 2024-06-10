@@ -35,7 +35,7 @@ const HistoryPage = () => {
       console.log(error);
     }
   })
-
+  console.log(isLoading)
   // [V] Set Image berdasarkan Jenis Category Transaksinya, ambil dari static image krn cuman 2 gambar aja
     // Pick Up (Merah) = pickUpPng
     // Delivery (Orange) = deliveryPng

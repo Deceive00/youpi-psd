@@ -1,19 +1,19 @@
 import { Toaster } from "@components/ui/toaster";
 import { useAuth } from "@lib/hooks/useAuth";
-import { Vendor } from "@lib/types/vendor-types";
+import SenderLayout from "src/layout/sender-layout";
 import { Accordion } from "@components/ui/accordion";
-import  { useEffect, useState } from "react";
-import VendorLayout from "src/layout/vendor-layout";
+import { useState } from "react";
 import { Order } from "@lib/types/order-types";
 import { useQuery } from "react-query";
-import { getAllVendorSenderHistory as getAllVendorHistory  } from "@lib/services/history.service";
-import OrderCardAccordionItem, { OrderCardAccordionSkeleton } from "@pages/manage-order/order-card-accordion-item";
+import { getAllVendorSenderHistory as getAllSenderHistory } from "@lib/services/history.service";
+import { OrderCardAccordionSkeleton } from "@pages/manage-order/order-card-accordion-item";
+import OrderCardAccordionItemSender from "@pages/sender/order-card-accordion-item-sender";
+import { User } from "@lib/types/user-types";
 
-export default function VendorHistoryPage() {
-  const [vendor, setVendor] = useState<Vendor | null>(null);
+export default function SenderHistoryPage() {
   const { isLoading, user } = useAuth();
   const [history, setHistory] = useState<Order[] | null>(null);
-  const {isLoading : fetchLoading, isFetching} = useQuery(['fetchVendorHistory'], async() => await getAllVendorHistory(), {
+  const {isLoading : fetchLoading, isFetching} = useQuery(['fetchSenderHistory'], async() => await getAllSenderHistory(), {
     enabled:!isLoading,
     retry: false,
     staleTime: 0,
@@ -25,16 +25,11 @@ export default function VendorHistoryPage() {
       console.log(error);
     }
   })
-  useEffect(() => {
-    if (user && (user as Vendor)?.categories !== undefined) {
-      setVendor(user as Vendor);
-    }
-  }, [user]);
 
   return (
-    <VendorLayout
-      menuDescription={`See ${vendor?.name} histories`}
-      menuName="Your History"
+    <SenderLayout
+      menuDescription={`Manage ${(user as User).firstName} ${(user as User).lastName}  Menus`}
+      menuName="Manage Menu"
     >
       <div className="mt-4">
         <Accordion
@@ -52,13 +47,13 @@ export default function VendorHistoryPage() {
           {history && !fetchLoading && !isFetching &&
             history?.length > 0 &&
             history?.map((order: Order, index: number) => {
-              if (vendor) {
+              if (user) {
                 return (
-                  <OrderCardAccordionItem
+                  <OrderCardAccordionItemSender
                     index={index}
                     key={index}
                     order={order}
-                    vendor={vendor}
+  
                   />
                 );
               }
@@ -71,6 +66,6 @@ export default function VendorHistoryPage() {
         </Accordion>
       </div>
       <Toaster />
-    </VendorLayout>
+    </SenderLayout>
   );
 }

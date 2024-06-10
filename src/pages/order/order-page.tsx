@@ -91,7 +91,7 @@ export default function Order() {
             <div className="w-full flex flex-col items-start md:items-center justify-start h-[300px] md:h-auto">
               <div className="flex w-[95%] md:w-auto h-full md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-center justify-start md:justify-center mt-2 md:mt-8 overflow-x-auto overflow-y-hidden py-4">
                 {(isLoading || isFetching) && showSkeleton()}
-                {!isLoading && (
+                {!isLoading && !isFetching && (
                   <>
                     {restaurantData.length > 0 &&
                       restaurantData
@@ -108,6 +108,7 @@ export default function Order() {
               ref={cardReferenceFade}
               className="bg-transparent h-1 w-full"
             ></div>
+            <div className="h-16"></div>
           </div>
         </div>
         <LuChevronDown

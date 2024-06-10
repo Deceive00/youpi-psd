@@ -21,7 +21,7 @@ import {
   isAcceptOrder,
   updateOrderStatus,
 } from "@lib/services/order.service";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SwitchStatus from "../../components/popup/switch-status-popup";
 import { useAuth } from "@lib/hooks/useAuth";
 import { useMutation } from "react-query";

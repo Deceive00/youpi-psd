@@ -20,6 +20,7 @@ export interface Vendor {
   rating: Number;
   review: Number;
   id: string;
+  description: string;
   campusName: string;
   categories: MenuCategory[];
 }
@@ -34,6 +35,7 @@ export interface VendorRegis {
   email: string;
   name: string;
   coverImage: string;
+  description: string;
   password: string;
   confirmationPassword: string;
 } 

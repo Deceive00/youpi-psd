@@ -7,6 +7,7 @@ import LandingPage from "@pages/landing/landing-page";
 import ManageOrderVendorPage from "@pages/manage-order/manage-order-vendor-page";
 import OrderDetail from "@pages/order/order-detail-page";
 import Order from "@pages/order/order-page";
+import SenderHistoryPage from "@pages/sender-history/sender-history-page";
 import ManageOrderSenderPage from "@pages/sender/manage-order-sender-page";
 import SenderRegisterPage from "@pages/sender/register-sender";
 import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
@@ -56,6 +57,10 @@ export const router = [
   {
     path: "/vendor/history",
     element: <VendorHistoryPage />,
+  },
+  {
+    path: "/sender/history",
+    element: <SenderHistoryPage />,
   },
   {
     path: "/vendor/",

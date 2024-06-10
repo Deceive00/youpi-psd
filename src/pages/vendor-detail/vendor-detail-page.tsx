@@ -14,12 +14,11 @@ import SwitchVendor from "./switch-vendor-popup";
 import MenuCard, { MenuCardSkeleton } from "./menu-card";
 import NotesPopup from "./notes-popup";
 import { Skeleton } from "@components/ui/skeleton";
-import { FaCartShopping } from "react-icons/fa6";
 import CartButton from "./cart-button";
 
 export default function VendorDetailPage() {
   const { campusId, vendorId } = useParams();
-  const [activeCategory, setActiveCategory] = useState(0);
+  const [activeCategory, setActiveCategory] = useState<number | null>(null); 
   const [showDialog, setShowDialog] = useState(false);
   const [cartButton, setCartButton] = useState(false);
   const [vendorData, setVendorData] = useState<Vendor | null>(null);
@@ -221,7 +220,20 @@ export default function VendorDetailPage() {
         </p>
       );
     } else {
-      return <Skeleton className="h-4 w-full bg-gray-200" />;
+
+      
+      return <Skeleton className="h-10 w-full bg-gray-200" />;
+    }
+  };
+  const renderDescription = () => {
+    if (!isLoadingVendorData) {
+      return (
+        <p className="text-sm">
+        {vendorData?.description}
+      </p>
+      );
+    } else {
+      return <Skeleton className="h-4 w-56 bg-gray-200" />;
     }
   };
   const renderCategory = () => {
@@ -231,11 +243,11 @@ export default function VendorDetailPage() {
           key={index}
           variant={"secondary"}
           className={
-            activeCategory == index + 1
+            activeCategory === index
               ? "w-full justify-start hover:bg-orange-100"
               : "w-full justify-start bg-white"
           }
-          onClick={() => setActiveCategory(index + 1)}
+          onClick={() => setActiveCategory(index)}
         >
           {category.name}
         </Button>
@@ -244,6 +256,32 @@ export default function VendorDetailPage() {
       return [1, 2, 3].map((index) => (
         <Skeleton key={index} className="w-full h-10 bg-gray-200" />
       ));
+    }
+  };
+
+  const renderMenus = () => {
+    if (isLoadingVendorData) {
+      return Array.from({ length: 8 }).map((_, index) => (
+        <MenuCardSkeleton key={index} />
+      ));
+    } else {
+      const filteredMenus = activeCategory === null
+        ? vendorData?.categories.flatMap((category) => category.menus)
+        : vendorData?.categories[activeCategory].menus;
+      
+      return filteredMenus?.map((menuItem) => {
+        if(vendorData === null) return;
+        return <MenuCard
+          key={menuItem.uid}
+          menuItem={menuItem}
+          vendorData={vendorData}
+          addToCart={addToCart}
+          handleAddToCart={handleAddToCart}
+          handleAddNotes={handleAddNotes}
+          checkQuantity={checkQuantity}
+          isLoading={isLoadingUserCart}
+        />
+      });
     }
   };
 
@@ -273,17 +311,6 @@ export default function VendorDetailPage() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log("user cart = ", userCart);
-  //   if (userCart && userCart?.menus.length > 0) {
-  //     setCartButton(true);
-  //     console.log(cartButton);
-  //   } else {
-  //     setCartButton(false);
-  //     console.log(cartButton);
-  //   }
-  // }, [userCart]);
-
   return (
     <MainLayout className={`pt-14 bg-slate-50 relative`}>
       <CartButton userCart={userCart} />
@@ -302,12 +329,9 @@ export default function VendorDetailPage() {
           <div className="absolute w-[95%] sm:w-[90%] -top-14 lg:w-[75%] h-auto lg:-top-14 shadow-md z-3 bg-white rounded-xl border p-5 transition-all ease-in-out duration-500 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
             <div className="flex justify-center items-center gap-3">
               <GrRestaurant className="w-10 h-10 mb-1 text-[#E81A1C]" />
-              <div>
+              <div className="flex flex-col gap-2">
                 {renderHeader()}
-                <p className="text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Adipisci, asperiores.
-                </p>
+                {renderDescription()}
               </div>
             </div>
             <div className="flex">
@@ -315,7 +339,13 @@ export default function VendorDetailPage() {
                 <div className="text-base flex justify-center items-center gap-2">
                   <IoIosStar className="w-4 h-4 lg:h-6 lg:w-6 text-yellow-400" />
                   <div className="font-bold">
-                    {vendorData?.rating as React.ReactNode}
+                    {
+                      !isLoadingVendorData ? (
+                        vendorData?.rating as React.ReactNode
+                      ) : (
+                        <Skeleton className="w-10 h-4 bg-gray-200"/>
+                      )
+                    }
                   </div>
                 </div>
                 <div className="text-xs">Rating & Reviews</div>
@@ -341,11 +371,11 @@ export default function VendorDetailPage() {
                 <Button
                   variant={"secondary"}
                   className={
-                    activeCategory == 0
+                    activeCategory === null
                       ? "w-full justify-start hover:bg-orange-100"
                       : "w-full justify-start bg-white"
                   }
-                  onClick={() => setActiveCategory(0)}
+                  onClick={() => setActiveCategory(null)}
                 >
                   All Menu
                 </Button>
@@ -354,28 +384,7 @@ export default function VendorDetailPage() {
             </div>
             <div className="w-full md:w-3/4 py-5 md:p-5">
               <div className="grid grid-cols-1 lg:grid-cols-2 justify-items-center gap-3 font-nunito transition-all duration-300 ease-in-out">
-                {isLoadingVendorData ? (
-                  Array.from({ length: 8 }).map((_, index) => (
-                    <MenuCardSkeleton key={index} />
-                  ))
-                ) : (
-                  <>
-                    {vendorData?.categories.flatMap((menu) =>
-                      menu.menus.map((menuItem) => (
-                        <MenuCard
-                          key={menuItem.uid}
-                          menuItem={menuItem}
-                          vendorData={vendorData}
-                          addToCart={addToCart}
-                          handleAddToCart={handleAddToCart}
-                          handleAddNotes={handleAddNotes}
-                          checkQuantity={checkQuantity}
-                          isLoading={isLoadingUserCart}
-                        />
-                      ))
-                    )}
-                  </>
-                )}
+                {renderMenus()}
               </div>
             </div>
           </div>

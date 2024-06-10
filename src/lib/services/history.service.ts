@@ -31,7 +31,7 @@ export const getAllUserHistory = async () => {
   }
 }
 
-export const getAllVendorHistory = async () => {
+export const getAllVendorSenderHistory = async () => {
   const id = auth.currentUser?.uid;
 
   if(id){

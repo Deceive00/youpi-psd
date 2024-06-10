@@ -55,6 +55,7 @@ export default function VendorRegisterPage() {
         campusName: data.campusName,
         email: data.email,
         name: data.vendorName,
+        description: data.vendorDescription,
         coverImage: coverImageUrl,
         confirmationPassword: data.confirmationPassword,
         password: data.password,
@@ -179,21 +180,38 @@ export default function VendorRegisterPage() {
                 )}
               />
             </div>
-            <Controller
-              name="vendorName"
-              control={control}
-              defaultValue=""
-              rules={{ required: "Vendor name is required" }}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  id="vendorName"
-                  type="text"
-                  required
-                  placeholder="Vendor Name"
-                />
-              )}
-            />
+            <div className="lg:grid gap-5 flex flex-col lg:grid-cols-2 lg:gap-4">
+              <Controller
+                name="vendorName"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Vendor name is required" }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="vendorName"
+                    type="text"
+                    required
+                    placeholder="Vendor Name"
+                  />
+                )}
+              />  
+              <Controller
+                name="vendorDescription"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Vendor description is required" }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="vendorDescription"
+                    type="text"
+                    required
+                    placeholder="Vendor Description"
+                  />
+                )}
+              />
+            </div>
             <div className="lg:grid gap-5 flex flex-col lg:grid-cols-2 lg:gap-4">
               <Controller
                 name="password"
