@@ -10,6 +10,7 @@ import Loader from "@components/loading/loader";
 import { motion } from "framer-motion";
 import { item, container } from "@components/variants/staggered-children";
 import ModalHistory from "./modal-history";
+import { useAuth } from "@lib/hooks/useAuth";
 
 // [V] Function to capitalize the first letter
 const capitalizeFirstLetter = (string: string) => {
@@ -19,8 +20,9 @@ const capitalizeFirstLetter = (string: string) => {
 const HistoryPage = () => {
   // [V] Fetch from firebase 'orders'
   const [history, setHistory] = useState<UserHistory[] | null>(null);
-
+  const {isLoading : userLoading} = useAuth();
   const {isLoading} = useQuery(['fetchUserHistory'], async() => await getAllUserHistory(), {
+    enabled:!userLoading,
     retry:true,
     staleTime:0,
     onSuccess:(data : UserHistory[]) => {    
@@ -75,7 +77,7 @@ const HistoryPage = () => {
 
   // Calculate Total Price for each Transaction
 
-  if(isLoading){
+  if(isLoading || userLoading){
     return <Loader/>
   }
   return (

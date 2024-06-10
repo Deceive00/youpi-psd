@@ -35,7 +35,7 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClic
       transition={{delay:0.1}}
       animate={{scale:1, x:0}}
       initial={{scale:1, x:1000}}
-      className={`lg:w-2/6 w-full flex flex-col mx-2 lg:gap-y-4 gap-y-6 pt-4 mt-8 shadow-r-[3px]`}
+      className={`lg:w-2/6 w-full box-content flex flex-col mx-4 lg:gap-y-4 gap-y-6 lg:pt-4 pt-2 mt-8 shadow-r-[3px]`}
     >
       <div className={`flex flex-row gap-x-2`}>
         <img src={logo} className="h-6" alt="" onClick={() => navigate("/")} />
@@ -44,11 +44,11 @@ const LeftChatPage : React.FC<Props> = ({setOtherId, setUserInfo, onUserChatClic
       </div>
 
       {/* All | Team | Friends */}
-      <div className="w-full flex justify-start">
+      <div className="w-full flex justify-center">
         <ButtonGroup 
           onUserBackClick={onUserChatClick}
           buttons={buttons} 
-          widthX={12} 
+          widthX={10} 
           onSelect={(button) => setSelectedButton(button)}
           selectedButton={selectedButton}  
         />

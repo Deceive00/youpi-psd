@@ -16,7 +16,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ buttons, widthX, onSelect, se
         <button
           key={index}
           type="button"
-          className={`px-${widthX} py-2.5 text-sm font-medium  text-primary ${
+          className={`px-${widthX+2} lg:px-16 py-2.5 text-sm font-medium  text-primary ${
             index === 0 ? 'rounded-l-lg' : index === buttons.length - 1 ? 'rounded-r-lg' : ''
           } 
           ${button === selectedButton ? 'bg-primary text-white rounded-lg z-10 ring-2 ring-primary' : 'bg-secondary'}

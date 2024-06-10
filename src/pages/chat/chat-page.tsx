@@ -45,8 +45,6 @@ const ChatPage = () => {
         : otherId + currId
       : "";
 
-  // HandleOtherID
-
   if (isLoading) {
     return <Loader />;
   }
@@ -57,7 +55,7 @@ const ChatPage = () => {
   console.log("Combined ID:", combinedId);
 
   return (
-    <div className={`w-screen h-screen flex flex-row lg:px-20 font-nunito`}>
+    <div className={`w-screen h-screen flex flex-row lg:px-4 font-nunito`}>
       {window.innerWidth >= 640 ? (
         <>
           <LeftChatPage
