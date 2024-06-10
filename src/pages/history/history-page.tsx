@@ -21,7 +21,7 @@ const HistoryPage = () => {
   const [history, setHistory] = useState<UserHistory[] | null>(null);
 
   const {isLoading} = useQuery(['fetchUserHistory'], async() => await getAllUserHistory(), {
-    retry:false,
+    retry:true,
     staleTime:0,
     onSuccess:(data : UserHistory[]) => {    
       setHistory(data);

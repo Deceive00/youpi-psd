@@ -3,12 +3,12 @@ import ModalBox from "./modal-box";
 import RatingStars from "./rating-stars";
 import { FaShop } from "react-icons/fa6";
 import { MdMyLocation } from "react-icons/md";
-import React, { useEffect } from "react";
+import React from "react";
 import dummyImg from "@assets/images/default.png";
 import { UserHistory } from "@lib/types/history-types";
 import { fetchUserByID } from "@lib/services/user.service";
-import { User } from "firebase/auth";
 import { Menu } from "@lib/types/vendor-types";
+import { User } from "@lib/types/user-types";
 
 interface Props {
   modalRef: React.RefObject<HTMLDialogElement>;
@@ -31,18 +31,18 @@ const ModalHistory: React.FC<Props> = ({
 }) => {
   // State
   const fee = 15000;
-  const [user, setUser] = React.useState<User | null>(null);
+  const [senderData, setSenderData] = React.useState<User | null>(null)
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     if(userHistory){
-  //       const fetchedUser = await fetchUserByID(userHistory.order.senderId)
-  //       setUser(fetchedUser || null)
-  //     }
-  //   }
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      if(userHistory){
+        const data = await fetchUserByID(userHistory.order.senderId)
+        setSenderData(data || null)
+      }
+    }
 
-  //   fetchUser()
-  // }, [userHistory])
+    fetchUserData()
+  }, [userHistory])
 
   return (
     <ModalBox
@@ -98,7 +98,7 @@ const ModalHistory: React.FC<Props> = ({
           <img className="w-8 h-8 rounded-full" src={dummyImg} alt="" />
           <div className="text-slate-600">
             <h1 className={`font-normal text-black`}>
-              {userHistory.order.senderId}
+              {senderData?.firstName} {senderData?.lastName}
             </h1>
             <span>{userHistory.order.campusName}</span>
           </div>

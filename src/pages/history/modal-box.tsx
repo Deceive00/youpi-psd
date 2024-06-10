@@ -6,6 +6,8 @@ import "./modal-history.css";
 import { motion } from "framer-motion";
 import { UserHistory } from "@lib/types/history-types";
 import { getFormattedTime } from "@lib/services/formatter.service";
+import { startMessaging } from "@lib/services/chat.service";
+import { auth } from "src/firebase/firebase-config";
 
 interface Props {
   isOpen: boolean;
@@ -23,6 +25,17 @@ const ModalBox: React.FC<Props> = ({
   modalRef,
   userHistory,
 }) => {
+
+  const uid = auth.currentUser?.uid
+
+  const handleReorderClick = () => {
+    if (uid) {
+      startMessaging(uid, userHistory.order.senderId, "Hello, have you seen the order");
+    } else {
+      console.error("User ID is undefined. Please log in.");
+    }
+  };
+
   return (
     <dialog className="modal" ref={modalRef}>
       <motion.div
@@ -64,6 +77,7 @@ const ModalBox: React.FC<Props> = ({
             Review
           </button>
           <button
+            onClick={handleReorderClick}
             className={`w-1/2 bg-primary text-secondary rounded-lg font-semibold`}
           >
             Reoder
