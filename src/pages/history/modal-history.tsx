@@ -30,7 +30,7 @@ const ModalHistory: React.FC<Props> = ({
   userHistory,
 }) => {
   // State
-  const fee = 15000;
+  const fee = 5000;
   const [senderData, setSenderData] = React.useState<User | null>(null)
 
   React.useEffect(() => {
