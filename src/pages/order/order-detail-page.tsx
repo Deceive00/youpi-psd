@@ -103,14 +103,14 @@ export default function OrderDetail() {
       return () => clearTimeout(timeout);
     }
   }, [loading, order, navigate]);
-  if (isLoading || userLoading) {
+  if (isLoading || userLoading || loading) {
     return <Loader />;
   }
   return (
     <UserMiddleware>
       <MainLayout className={`pt-14 bg-slate-50`}>
         <div className="p-5 w-full flex flex-col md:flex-row h-auto justify-center items-center font-nunito">
-          {order ? (
+          {order && !isLoading && !userLoading ? (
             <>
               <div className="w-full md:w-1/2 pt-3 pb-5 flex flex-col justify-center items-center">
                 <WaitingConfirmation />
