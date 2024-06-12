@@ -27,11 +27,11 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
 
     
     // Keyboard Enter Handler
-    const keyboardListener = (e:KeyboardEvent) => {
-        console.log(e.keyCode);
-        
-        if(e.keyCode == 13){
+    const keyboardListener = (e:KeyboardEvent) => {    
+        if(e.key === "Enter"){
             handleText()
+
+            console.log("Keyboard is entered : ", text);            
         }
     }
 
@@ -83,7 +83,7 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
         return () => {
             window.removeEventListener("keydown", keyboardListener);
           };
-    }, [])
+    }, [text])
 
     // Scroll to most bottom div
     React.useEffect(() => {
@@ -122,7 +122,7 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
 
         {/* Middle */}
         <div 
-            className={`w-full h-full rounded-r-lg rounded-l-lg box-content overflow-y-auto lg:px-3 lg:pt-3 mt-4 lg:mt-0`
+            className={`w-full h-full rounded-r-lg rounded-l-lg box-content overflow-y-auto lg:pt-3 mt-4 lg:mt-0`
         }>
             {/* Mapping from chats database */}
             {
@@ -157,7 +157,7 @@ const RightChatPage : React.FC<Props> = ({combinedId, currId, otherId, displayNa
                 placeholder="Text your message here...."
                 type="text" 
                 value={text} 
-                onChange={e => setText(e.target.value)}/>
+                onChange={(e) => setText(e.target.value)}/>
             {/* Ganti pake Icon */}
             <button 
                 className={`

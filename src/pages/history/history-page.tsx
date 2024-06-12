@@ -81,7 +81,7 @@ const HistoryPage = () => {
     return <Loader/>
   }
   return (
-    <MainLayout className={`lg:py-16 pt-20 pb-8 overflow-x-hidden`}>
+    <MainLayout className={`lg:py-20 pt-20 pb-8 overflow-x-hidden`}>
       <div
         className={`w-screen h-max font-nunito box-border mx-auto flex justify-center`}
       >

@@ -7,7 +7,10 @@ import React from "react";
 import { auth } from "src/firebase/firebase-config";
 import { UserInfo } from "@lib/types/chat-types";
 import profilePng from "@assets/images/default.png"
+import chatLogo from "@assets/images/chatLogoYoupi.png"
 import { fetchUserByID } from "@lib/services/user.service";
+import { motion } from "framer-motion"
+import { container, item } from "@components/variants/staggered-children";
 
 interface Props {
   initialId? : string
@@ -101,7 +104,19 @@ const ChatPage : React.FC<Props> = ({initialId}) => {
             otherId={otherId}
           />
           ) : (
-            <div>Please Select</div>
+            <motion.div 
+              variants={container}
+              initial="hidden"
+              animate="visible"
+              className={`flex flex-col justify-center items-center w-full gap-y-8`}
+            >
+              <motion.img 
+                variants={item}
+                src={chatLogo} alt="" className={`w-[25%] h-auto opacity-60`}/>
+              <motion.h1 
+              variants={item}
+                className="text-slate-500 text-base">Start a conversation now!</motion.h1>
+            </motion.div>
           )}
           
         </>
