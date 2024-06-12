@@ -17,11 +17,18 @@ export const addOrder = async (order: Order) => {
   if (id) {
     const userRef = doc(db, "orders", id);
     const userDoc = await getDoc(userRef);
-
+    
     if (userDoc.exists()) {
-      await updateDoc(userRef, {
-        ongoing: order,
-      });
+      const data = userDoc.data().ongoing as Order;
+      console.log(data);
+      if(data && Object.keys(data).length === 0 && data.constructor === Object){
+        await updateDoc(userRef, {
+          ongoing: order,
+        });
+      }else{
+        throw new Error("You have another ongoing order!")
+      }
+
     } else {
       await setDoc(userRef, {
         ongoing: order,

@@ -72,7 +72,6 @@ export default function VendorDetailPage() {
     {
       staleTime: 5,
       onSuccess: (data: UserCart) => {
-        console.log(data);
         setUserCart(data);
       },
       onError: (error: Error) => {
@@ -343,7 +342,7 @@ export default function VendorDetailPage() {
                       !isLoadingVendorData ? (
                         vendorData?.rating as React.ReactNode
                       ) : (
-                        <Skeleton className="w-10 h-4 bg-gray-200"/>
+                        <Skeleton className="w-4 h-4 bg-gray-200"/>
                       )
                     }
                   </div>
