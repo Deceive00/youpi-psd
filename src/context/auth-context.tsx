@@ -12,6 +12,7 @@ import { db, auth } from "../firebase/firebase-config";
 import { queryClient } from "@lib/settings/query-settings";
 import { useToast } from "@components/ui/use-toast";
 import { Vendor, VendorRegis } from "@lib/types/vendor-types";
+import { AuthController } from "@lib/controller/auth-controller";
 
 interface AuthContextProviderProps {
   children: ReactNode;
@@ -27,7 +28,7 @@ export type AuthContextType = {
     email: string;
     password: string;
   }) => any;
-  logout: () => Promise<void>;
+  logout: any;
   register: ({ regisData, userType }: { regisData: UserRegis | VendorRegis, userType: UserType }) => any;
   isLoading: boolean;
   userType: UserType;
@@ -112,23 +113,8 @@ export default function AuthContextProvider({
     return () => unsubscribe();
   }, []);
 
-  const logout = (): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      signOut(auth)
-        .then(() => {
-          console.log("Sign out successful");
-          setUser(null);
-          setAuthState(AuthState.NotAuthenticated);
-          setUserType(UserType.USER);
-          queryClient.invalidateQueries(["userData"]);
-          resolve();
-          window.location.reload();
-        })
-        .catch((logoutError) => {
-          console.log("Error logging out : ", logoutError);
-          reject(logoutError);
-        });
-    });
+  const logout = () => {
+    AuthController.logout()
   };
 
   const {
@@ -141,11 +127,7 @@ export default function AuthContextProvider({
       email: string;
       password: string;
     }) => {
-      await signInWithEmailAndPassword(auth, email, password);
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        fetchUserData(currentUser.uid);
-      }
+      await AuthController.login(email, password)
     },
     {
       onSuccess: () => {
@@ -172,45 +154,7 @@ export default function AuthContextProvider({
     mutate: register,
   } = useMutation(
     async ({ regisData, userType }: { regisData: UserRegis | VendorRegis, userType: UserType }) => {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        regisData.email,
-        regisData.password
-      );
-      if (userType === UserType.USER) {
-        let data = regisData as UserRegis;
-        const { password, confirmationPassword, ...dataWithoutPasswords } = data;
-        const userRef = doc(db, "users", userCredential.user.uid);
-        await setDoc(userRef, {
-          isSender: false,
-          ...dataWithoutPasswords,
-        });
-        return;
-      }
-      else if (userType === UserType.VENDOR) {
-        let data = regisData as VendorRegis;
-        const { password, confirmationPassword, ...dataWithoutPasswords } = data;
-        const campusDocRef = doc(db, "campus", data.campusName);
-        const campusDoc = await getDoc(campusDocRef);
-
-        if (campusDoc.exists()) {
-          const newVendorData = {
-            rating: 0,
-            review: 0,
-            id: userCredential.user.uid,
-            categories: [],
-            ...dataWithoutPasswords
-          };
-
-          await updateDoc(campusDocRef, {
-            vendors: arrayUnion(newVendorData),
-          });
-
-          return;
-        } else {
-          throw new Error("Campus document not found");
-        }
-      }
+      await AuthController.register(regisData, userType);
     },
     {
       onSuccess: () => {

@@ -2,7 +2,7 @@ import { Button } from "@components/ui/button";
 import MainLayout from "src/layout/main-layout";
 import CartCard, { CartCardSkeleton } from "./cart-card";
 import { useMutation, useQuery } from "react-query";
-import { addCart, fetchUserCartFE } from "@lib/services/vendor.service";
+import { fetchUserCartFE } from "@lib/services/vendor.service";
 import { UserCartFE, UserType } from "@lib/types/user-types";
 import { useEffect, useState } from "react";
 import { Input } from "@components/ui/input";
@@ -14,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { getTotalPriceMenu } from "@lib/services/price.service";
 import { useAuth } from "@lib/hooks/useAuth";
 import LoadingCircle from "@components/ui/loading-circle";
+import { CartController } from "@lib/controller/cart-controller";
+import { OrderController } from "@lib/controller/ordering-controller";
 
 export default function CartPage() {
   const [type, setType] = useState<"pick up" | "delivery">("delivery");
@@ -54,7 +56,7 @@ export default function CartPage() {
         throw new Error("Please insert your delivery address details");
       }
 
-      return addOrder({
+      return OrderController.addOrder({
         campusName: userCart?.vendor.campusName,
         menus: userCart?.menus,
         senderId: "",
@@ -98,7 +100,7 @@ export default function CartPage() {
       add?: boolean | null;
       notesUpdated?: boolean | null;
     }) => {
-      addCart({ vendorId, menuId, notes, add, notesUpdated });
+      CartController.addCart({ vendorId, menuId, notes, add, notesUpdated });
     },
     {
       onSuccess: () => {
