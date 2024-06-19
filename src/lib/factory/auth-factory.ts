@@ -1,5 +1,5 @@
 export const AuthFactory = {
-  createVendor: (rating : number, review : number, id: string, categories: any[], data : any) => {
+  createVendor: (id: string, data : any) => {
     return {
       rating: 0,
       review: 0,
@@ -8,7 +8,8 @@ export const AuthFactory = {
       ...data
     }
   },
-  createUser: (nim: string, email:string, firstName: string, lastName: string, isSender: Boolean, phoneNumber: string) => {
+  createUser: (nim: string, email:string, firstName: string, 
+    lastName: string, isSender: Boolean, phoneNumber: string) => {
     return {
       nim: nim,
       email: email,
@@ -18,5 +19,6 @@ export const AuthFactory = {
       phoneNumber: phoneNumber,
     }
   },
-  
+
 }
+
