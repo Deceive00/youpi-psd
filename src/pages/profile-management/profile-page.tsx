@@ -51,10 +51,10 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-          <h1 className='text-2xl font-bold my-11'>Personal Info</h1>
-          <div className='flex flex-col'>
+          {/* <h1 className='text-2xl font-bold my-11'>Personal Info</h1> */}
+          <div className='flex flex-col my-11'>
 
-            <div className='flex flex-col w-[calc(50%+3rem)]'>
+            <div className='flex flex-col w-full'>
               <div className='flex gap-12  mb-8'>
                 <div className='flex flex-col w-1/2'>
                   <Input type="text" id='first-name'  defaultValue={isLoading ? "Loading" : (user as User).firstName}
@@ -90,12 +90,12 @@ export default function ProfilePage() {
                   />
                 </div>
               </div>
-              <div className='flex flex-col mb-8'>
+              {/* <div className='flex flex-col mb-8'>
                 <label htmlFor="user-bio" className='font-extralight mb-1'>Bio</label>
                 <textarea name="user-bio" className="resize-none border rounded-md border-primary p-2 h-60"/>
-              </div>
+              </div> */}
             </div>
-            <div className='flex'>
+            <div className='flex justify-start items-start'>
               <button className='bg-primary color hover:bg-primary/90 rounded-md w-32 h-10 text-sm text-white'>Save Changes</button>
             </div>
           </div>
