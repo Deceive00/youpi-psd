@@ -11,8 +11,8 @@ export const AuthController = {
     AuthHandler.register(regisData, userType)
   },
   
-  login : (email: string, password: string) => {
-    AuthHandler.login(email, password);
+  login : async (email: string, password: string) => {
+    await AuthHandler.login(email, password);
   },
   
   logout: () =>{

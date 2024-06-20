@@ -28,7 +28,7 @@ export const AuthHandler = {
       const { password, confirmationPassword, ...dataWithoutPasswords } = data;
       const campusDoc = await AuthRepository.getCampusById(data.campusName);
       if (campusDoc.exists()) {
-        const newVendorData = AuthFactory.createVendor(0, 0, userCredential.user.uid, [], dataWithoutPasswords);
+        const newVendorData = AuthFactory.createVendor(userCredential.user.uid, dataWithoutPasswords);
         await AuthRepository.registerVendor(data, doc(db, "campus", newVendorData.campusName))
         return;
       } else {
@@ -36,8 +36,8 @@ export const AuthHandler = {
       }
     }
   },
-  login : (email: string, password: string) => {
-    AuthRepository.login(email, password);
+  login : async (email: string, password: string) => {
+    await AuthRepository.login(email, password);
   },
   logout: () =>{
     AuthRepository.logout()
