@@ -1,15 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-interface IAddAvatarProps{
-  label? : any,
-  register? : any,
-  rules? : any,
-  error? : any,
-  className : string,
-  disabled? : boolean,
-  currentImg : any;
-}
 
-export default function AddAvatar({ label , register , rules , error, className, disabled, currentImg} : IAddAvatarProps) {
+export default function AddAvatar({ value,onChange, className, disabled, currentImg} : any) {
   const [image, setImage] = useState(currentImg);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,11 +16,11 @@ export default function AddAvatar({ label , register , rules , error, className,
       const file = files[0];
 
       const reader = new FileReader();
-      register(label, { value: file, ...rules });
       console.log(file)
       reader.onload = (e) => {
         if (e.target?.result) {
           setImage(e.target.result.toString());
+          onChange(file);
 
         }
       };
@@ -42,7 +33,7 @@ export default function AddAvatar({ label , register , rules , error, className,
     <div className="flex justify-center items-center flex-col">
       <div className="relative">
         <div className={`rounded-[50%] overflow-hidden relative border-gray-300 ${className}`} onClick={handleImageClick}>
-          {image && <img src={image} alt="Profile Preview" />}
+          {image && <img src={image} alt="Profile Preview" className='object-cover w-full h-full'/>}
         </div>
         <input type="file"        
           onChange={(e) => {

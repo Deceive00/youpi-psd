@@ -16,7 +16,6 @@ export default function UserMiddleware({ children }: UserMiddlewareProps) {
         navigate("/");
       }
     }
-    console.log(user);
   }, [userType, isLoading, user]);
 
   if (isLoading) {
