@@ -39,8 +39,8 @@ export const AuthHandler = {
   login : async (email: string, password: string) => {
     await AuthRepository.login(email, password);
   },
-  logout: () =>{
-    AuthRepository.logout()
+  logout: async() =>{
+    await AuthRepository.logout()
   } 
 }
 

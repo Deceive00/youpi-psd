@@ -9,7 +9,7 @@ import { Order } from "@lib/types/order-types";
 import { Vendor } from "@lib/types/vendor-types";
 import { useEffect, useState } from "react";
 import VendorLayout from "src/layout/vendor-layout";
-import OrderCardAccordionItem from "./order-card-accordion-item";
+import OrderCardAccordionItem from "../ordering/order-card-accordion-item";
 enum OrderTab {
   INCOMING = "incoming",
   ONGOING = "ongoing",
@@ -23,7 +23,7 @@ export default function ManageOrderVendorPage() {
   const { user } = useAuth();
   const [tab, setTab] = useState<OrderTab>(OrderTab.INCOMING);
   const [transitioning, setTransitioning] = useState(false);
-  
+
   const handleTabChange = async (tab: OrderTab) => {
     setTransitioning(true);
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -123,18 +123,16 @@ export default function ManageOrderVendorPage() {
                       );
                     }
                   })}
-                {
-                  (!incomingOrderData || incomingOrderData.length <= 0) && (
-                    <div className="flex justify-center items-center h-[50vh]">
-                      <p>You got no incoming order</p>
-                    </div>
-                  )
-                }
+                {(!incomingOrderData || incomingOrderData.length <= 0) && (
+                  <div className="flex justify-center items-center h-[50vh]">
+                    <p>You got no incoming order</p>
+                  </div>
+                )}
               </>
             ) : (
               <>
-                {
-                  ongoingData && ongoingData.length > 0 && 
+                {ongoingData &&
+                  ongoingData.length > 0 &&
                   ongoingData?.map((order: Order, index: number) => {
                     if (vendor) {
                       return (
@@ -146,15 +144,12 @@ export default function ManageOrderVendorPage() {
                         />
                       );
                     }
-                  })
-                }
-                {
-                  (!ongoingData || ongoingData.length <= 0) && (
-                    <div className="flex justify-center items-center h-[50vh]">
-                      <p>You got no ongoing order</p>
-                    </div>
-                  )
-                }
+                  })}
+                {(!ongoingData || ongoingData.length <= 0) && (
+                  <div className="flex justify-center items-center h-[50vh]">
+                    <p>You got no ongoing order</p>
+                  </div>
+                )}
               </>
             )}
           </Accordion>

@@ -113,8 +113,8 @@ export default function AuthContextProvider({
     return () => unsubscribe();
   }, []);
 
-  const logout = () => {
-    AuthController.logout()
+  const logout = async () => {
+    await AuthController.logout()
   };
 
   const {

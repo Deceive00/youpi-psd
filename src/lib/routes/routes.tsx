@@ -1,20 +1,20 @@
-import About from "@pages/about/about-page";
-import AuthPage from "@pages/auth/auth-page";
-import CartPage from "@pages/cart/cart-page";
-import ChatPage from "@pages/chat/chat-page";
-import HistoryPage from "@pages/history/history-page";
-import LandingPage from "@pages/landing/landing-page";
-import ManageOrderVendorPage from "@pages/manage-order/manage-order-vendor-page";
-import OrderDetail from "@pages/order/order-detail-page";
-import Order from "@pages/order/order-page";
-import ProfilePage from "@pages/profile/profile-page";
-import SenderHistoryPage from "@pages/sender-history/sender-history-page";
-import ManageOrderSenderPage from "@pages/sender/manage-order-sender-page";
-import SenderRegisterPage from "@pages/sender/register-sender";
-import VendorDetailPage from "@pages/vendor-detail/vendor-detail-page";
-import VendorHistoryPage from "@pages/vendor-history/vendor-history-page";
-import ManageMenuPage from "@pages/vendor/manage-menu-page";
-import VendorRegisterPage from "@pages/vendor/register-vendor";
+import About from "@pages/front-ends/about-page";
+import AuthPage from "@pages/authentication/auth-page";
+import CartPage from "@pages/cart-management/cart-page";
+import ChatPage from "@pages/chat-management/chat-page";
+import HistoryPage from "@pages/history-management/history-page";
+import LandingPage from "@pages/front-ends/landing/landing-page";
+import ManageOrderVendorPage from "@pages/vendor-management/manage-order-vendor-page";
+import OrderDetail from "@pages/ordering/order-detail-page";
+import Order from "@pages/ordering/order-page";
+import ProfilePage from "@pages/profile-management/profile-page";
+import SenderHistoryPage from "@pages/history-management/sender-history-page";
+import ManageOrderSenderPage from "@pages/sender-order-management/manage-order-sender-page";
+import SenderRegisterPage from "@pages/authentication/register-sender";
+import VendorDetailPage from "@pages/vendor-management/vendor-detail-page";
+import VendorHistoryPage from "@pages/history-management/vendor-history-page";
+import ManageMenuPage from "@pages/vendor-management/manage-menu-page";
+import VendorRegisterPage from "@pages/vendor-management/register-vendor";
 import SenderLayout from "src/layout/sender-layout";
 import VendorLayout from "src/layout/vendor-layout";
 
@@ -104,7 +104,7 @@ export const router = [
     element: <OrderDetail />,
   },
   {
-    path: '/profile',
-    element: <ProfilePage/>
-  }
+    path: "/profile",
+    element: <ProfilePage />,
+  },
 ];

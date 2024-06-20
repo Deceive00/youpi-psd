@@ -8,7 +8,7 @@ import { getTotalPriceMenu } from "@lib/services/price.service";
 import { Order } from "@lib/types/order-types";
 import { Menu, Vendor } from "@lib/types/vendor-types";
 import { capitalizeFirstChar } from "@lib/utils/formatter";
-import MenuCard from "@pages/vendor-detail/menu-card";
+import MenuCard from "@pages/vendor-management/menu-card";
 import { GiCardPickup } from "react-icons/gi";
 import { MdOutlineDeliveryDining } from "react-icons/md";
 import { MdOutlinePriceChange } from "react-icons/md";

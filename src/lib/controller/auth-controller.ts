@@ -15,8 +15,9 @@ export const AuthController = {
     await AuthHandler.login(email, password);
   },
   
-  logout: () =>{
-    AuthHandler.logout()
+  logout: async () =>{
+    await AuthHandler.logout()
+    window.location.href = "/"
   }
   
 }

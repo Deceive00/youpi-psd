@@ -32,8 +32,8 @@ export const AuthRepository = {
     await signInWithEmailAndPassword(auth, email, password);
   },
 
-  logout: (): Promise<void> => {
-    return new Promise((resolve, reject) => {
+  logout: async (): Promise<void> => {
+    return await new Promise((resolve, reject) => {
       signOut(auth)
         .then(() => {
           console.log("Sign out successful");

@@ -136,7 +136,7 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
                     <Separator className="border-[0.5px] rounded-lg" />
                     <div
                       className="hover:bg-gray-100 text-sm transition-all rounded-md p-2 duration-200 font-nunito font-bold text-red-600"
-                      onClick={() => logout()}
+                      onClick={async () => await logout()}
                     >
                       Log Out
                     </div>
@@ -237,7 +237,7 @@ const Navbar = ({ className = "bg-transparent", isLoading }: Props) => {
                 style={user && "isSender" in user  &&(user as User).isSender ? navStyles7 : navStyles6}
               >
                 <div
-                  onClick={() => logout()}
+                  onClick={async () => await logout()}
                   className="rounded-md font-bold text-2xl text-red-600"
                 >
                   Log Out

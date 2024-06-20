@@ -92,7 +92,7 @@ export default function SenderLayout({
               <div
                 className="cursor-pointer flex-start p-6 px-12 w-full text-left transition-all duration-300 font-bold text-2xl flex text-red-600"
                 style={navStyles2}
-                onClick={() => logout()}
+                onClick={async () => await logout()}
               >
                 Log Out
               </div>
@@ -132,9 +132,9 @@ export default function SenderLayout({
 
               <div className="w-full h-fit">
                 <Button
-                  onClick={() => {
-                    logout();
-                    window.location.reload();
+                  onClick={async () => {
+                    await logout();
+                    // window.location.reload();
                   }}
                   className="bg-transaparent w-full justify-start text-base hover:bg-orange-100 hover:text-red-600 text-red-600"
                   variant={"ghost"}
