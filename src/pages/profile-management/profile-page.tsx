@@ -1,11 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import MainLayout from 'src/layout/main-layout'
 import { Input } from "@components/ui/input";
+import { auth } from 'src/firebase/firebase-config';
+import UserMiddleware from 'src/middleware/user-middleware';
+import { AuthController } from '@lib/controller/auth-controller';
+import { useQuery } from 'react-query';
+import { User, UserType } from '@lib/types/user-types';
+import { useNavigate } from 'react-router-dom';
+import LoadingCircle from '@components/ui/loading-circle';
+import { DatePicker } from '@components/ui/date-picker';
+import { useAuth } from '@lib/hooks/useAuth';
 
 export default function ProfilePage() {
+  const { user, userType, isLoading } = useAuth();
+  const [dob, setDob] = useState<Date | null>();
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLoading) {
+      if (
+        userType != UserType.USER 
+      ) {
+        navigate("/auth");
+      }
+    }
+  }, [isLoading]);
   return (
     <MainLayout>
-      
+      <UserMiddleware>
         <div className='container pt-20 w-4/5 mx-auto'>
           <div className='flex bg-center relative w-full h-68 rounded-2xl pb-8 pl-8 shadow-md'>
             <div className='w-full absolute left-0 top-0 h-32 bg-slate-400 rounded-t-2xl z-0'
@@ -22,10 +44,10 @@ export default function ProfilePage() {
               </div>
               <div className='flex flex-col pl-6 h-auto justify-end gap-4'>
                 <div className='mt-10'> 
-                  <h1 className='text-2xl font-bold'>GOYOUNJUNG</h1>
-                  <p className='text-gray-500 font-medium'>@goyounjung04</p>
+                  <h1 className='text-2xl font-bold'>{isLoading ? "Loading" : (user as User).firstName + " " + (user as User).lastName}</h1>
+                  {/* <p className='text-gray-500 font-medium'>@goyounjung04</p> */}
                 </div>
-                <button className='bg-primary color hover:bg-primary/90 rounded-md w-3/5 h-8 text-sm text-white'>Log Out</button>
+                <button className='bg-primary color hover:bg-primary/90 rounded-md w-20 h-8 text-sm text-white'>Log Out</button>
               </div>
             </div>
           </div>
@@ -35,32 +57,37 @@ export default function ProfilePage() {
             <div className='flex flex-col w-[calc(50%+3rem)]'>
               <div className='flex gap-12  mb-8'>
                 <div className='flex flex-col w-1/2'>
-                  <Input type="text" id='first-name'  
+                  <Input type="text" id='first-name'  defaultValue={isLoading ? "Loading" : (user as User).firstName}
                    placeholder='First Name'/>
                 </div>
                 <div className='flex flex-col w-1/2'>
-                  <Input type="text" id='last-name'  
+                  <Input type="text" id='last-name'  defaultValue={isLoading ? "Loading" : (user as User).lastName}
                    placeholder='Last Name'/>
                 </div>
               </div>
               <div className='flex gap-12 mb-8'>
                 <div className='flex flex-col w-1/2'>
-                  <Input type="text" id='nim'  
+                  <Input type="text" id='nim'  defaultValue={isLoading ? "Loading" : (user as User).nim}
                    placeholder='NIM'/>
                 </div>
                 <div className='flex flex-col w-1/2'>
-                  <Input type="text" id='email'  
+                  <Input type="text" id='email'  defaultValue={isLoading ? "Loading" : (user as User).email}
                    placeholder='Email'/>
                 </div>
               </div>
               <div className='flex gap-12 mb-8'>
                 <div className='flex flex-col w-1/2'>
-                  <Input type="text" id='phone-num'  
+                  <Input type="text" id='phone-num' defaultValue={isLoading ? "Loading" : (user as User).phoneNumber} 
                    placeholder='Phone Number'/>
                 </div>
                 <div className='flex flex-col w-1/2'>
-                  <Input type="date" id='first-name'  
-                   placeholder=''className='text-slate' />
+                  <DatePicker
+                    // value={field.value}
+                    onChange={(date)=>{setDob(date)}}
+                    value={dob}
+                    placeholder="Date Of Birth"
+                    className="col-span-2 lg:col-span-1"
+                  />
                 </div>
               </div>
               <div className='flex flex-col mb-8'>
@@ -73,6 +100,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+      </UserMiddleware>
 
     </MainLayout>
     

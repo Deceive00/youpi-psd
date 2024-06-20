@@ -6,7 +6,7 @@ import { Calendar } from "@components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 
 interface DatepickerProps {
-  value: Date | null;
+  value: Date | null | undefined;
   onChange: (date: Date | null) => void;
   placeholder: string;
   className?: string;
